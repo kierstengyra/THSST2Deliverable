@@ -8,6 +8,8 @@ public class WelcomeScreen extends AppCompatActivity {
 
     ImageView imgBackground;
 
+    DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,5 +17,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
         this.imgBackground = (ImageView) findViewById(R.id.imgBackground);
         this.imgBackground.setScaleType(ImageView.ScaleType.FIT_XY);
+
+        this.dbHelper = new DBHelper(this);
     }
 }
