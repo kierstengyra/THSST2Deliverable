@@ -1,5 +1,6 @@
 package com.thsst2;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,12 +38,15 @@ public class WelcomeScreen extends AppCompatActivity {
             Toast.makeText(WelcomeScreen.this, "Invalid password.", Toast.LENGTH_SHORT).show();
         }
         else {
-            StringBuffer buffer = new StringBuffer();
+            int school_id = 0;
             while(result.moveToNext()) {
-                buffer.append("School Name: "+result.getString(0));
+                school_id = result.getInt(0);
             }
 
-            Toast.makeText(WelcomeScreen.this, buffer, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, CheckStudentRecord.class);
+            intent.putExtra("SchoolID", school_id);
+            startActivity(intent);
+//            Toast.makeText(WelcomeScreen.this, school_id+"", Toast.LENGTH_SHORT).show();
         }
     }
 }

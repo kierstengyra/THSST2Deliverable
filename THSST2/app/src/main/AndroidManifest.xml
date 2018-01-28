@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CheckStudentRecord"
+            android:screenOrientation="landscape">
+
+        </activity>
     </application>
 
 </manifest>

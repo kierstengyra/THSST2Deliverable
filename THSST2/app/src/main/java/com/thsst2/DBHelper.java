@@ -180,8 +180,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor confirmSession(String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT col_school_name FROM "+TABLE_SCHOOL+" as School, "+TABLE_SESSION+" as Session "+
-                "WHERE School.col_school_id = Session.col_school_id AND Session.col_session_password = '"+password+"'", null);
+        Cursor result = db.rawQuery("SELECT col_school_id FROM "+TABLE_SESSION+" WHERE col_session_password = '"+password+"'", null);
 
         return result;
     }
