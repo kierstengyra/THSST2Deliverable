@@ -46,7 +46,6 @@ public class WelcomeScreen extends AppCompatActivity {
             Intent intent = new Intent(this, CheckStudentRecord.class);
             intent.putExtra("SchoolID", school_id);
             startActivity(intent);
-//            Toast.makeText(WelcomeScreen.this, school_id+"", Toast.LENGTH_SHORT).show();
         }
     }
 }

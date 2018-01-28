@@ -3,6 +3,7 @@ package com.thsst2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -13,8 +14,6 @@ public class CheckStudentRecord extends AppCompatActivity {
 
     ImageView imgBackgroundMenu;
     int school_id;
-
-    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,5 +27,20 @@ public class CheckStudentRecord extends AppCompatActivity {
 
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
+    }
+
+    public void createRecord(View view) {
+        Intent intent = new Intent(this, CreateStudentRecord.class);
+        intent.putExtra("SchoolID", this.school_id);
+
+        startActivity(intent);
+    }
+
+    public void selectRecord(View view) {
+
+    }
+
+    public void takePicture(View view) {
+
     }
 }
