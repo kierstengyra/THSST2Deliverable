@@ -23,7 +23,7 @@ public class CheckStudentRecord extends AppCompatActivity {
         Intent intent = getIntent();
         this.school_id = intent.getIntExtra("SchoolID", 0);
 
-        Toast.makeText(this, "School ID: "+this.school_id, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "School ID: "+this.school_id, Toast.LENGTH_SHORT).show();
 
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
