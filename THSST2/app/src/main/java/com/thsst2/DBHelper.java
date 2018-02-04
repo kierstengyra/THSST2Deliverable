@@ -188,6 +188,10 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    public void getAllStudentRecordsFromSchool(int schoolID) {
+
+    }
+
     public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
         SQLiteDatabase db = this.getWritableDatabase();
 

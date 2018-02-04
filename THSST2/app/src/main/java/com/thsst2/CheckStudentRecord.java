@@ -37,7 +37,10 @@ public class CheckStudentRecord extends AppCompatActivity {
     }
 
     public void selectRecord(View view) {
+        Intent intent = new Intent(this, ChooseStudentRecord.class);
+        intent.putExtra("SchoolID", this.school_id);
 
+        startActivity(intent);
     }
 
     public void takePicture(View view) {
