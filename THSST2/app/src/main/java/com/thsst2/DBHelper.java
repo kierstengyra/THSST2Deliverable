@@ -183,13 +183,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor confirmSession(String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor result = db.rawQuery("SELECT col_school_id FROM "+TABLE_SESSION+" WHERE col_session_password = '"+password+"'", null);
-
-        return result;
+        return db.rawQuery("SELECT "+COL_SCHOOL_ID+" FROM "+TABLE_SESSION+" WHERE "+COL_SESSION_PASSWORD+" = '"+password+"'", null);
+//        return result;
     }
 
-    public void getAllStudentRecordsFromSchool(int schoolID) {
-
+    public Cursor getAllStudentRecordsFromSchool(int schoolID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM "+TABLE_STUDENT+" WHERE "+COL_SCHOOL_ID+" = "+schoolID, null);
+//        return result;
     }
 
     public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
@@ -202,7 +203,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COL_STUDENT_SUFFIX, suffix);
         contentValues.put(COL_STUDENT_AGE, age);
         contentValues.put(COL_STUDENT_SEX, sex+"");
-        contentValues.put(COL_STUDENT_BIRTHDAY, year+"-"+month+"-"+day);
+        contentValues.put(COL_STUDENT_BIRTHDAY, year + "-" + month + "-" + day);
         contentValues.put(COL_SCHOOL_ID, schoolID);
 
         long result = db.insert(TABLE_STUDENT, null, contentValues);
