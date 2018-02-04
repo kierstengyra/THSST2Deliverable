@@ -2,22 +2,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/imgBackgroundForm"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="false"
-        android:src="@drawable/menu_screen" />
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="48dp"
         android:stretchColumns="0,1,2">
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rowHeading">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Create Student Record"
+                android:id="@+id/txtHeadingCreate"
+                android:layout_span="2"
+                android:padding="5dp"
+                android:textColor="#19975D" />
+        </TableRow>
 
         <TableRow
             android:layout_width="0dp"
@@ -28,19 +33,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtFirstName"
-                android:hint="First Name" />
+                android:hint="First Name"
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtMiddleName"
-                android:hint="Middle Name" />
+                android:hint="Middle Name"
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtLastName"
-                android:hint="Last Name" />
+                android:hint="Last Name"
+                android:backgroundTint="#19975D" />
 
         </TableRow>
 
@@ -53,7 +61,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtSuffix"
-                android:hint="Suffix" />
+                android:hint="Suffix"
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
@@ -61,7 +70,8 @@
                 android:inputType="number"
                 android:ems="10"
                 android:id="@+id/txtAge"
-                android:hint="Age" />
+                android:hint="Age"
+                android:backgroundTint="#19975D" />
 
             <RadioGroup
                 android:layout_width="0dp"
@@ -97,7 +107,9 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Birthday"
-                android:id="@+id/txtBirthday" />
+                android:id="@+id/txtBirthday"
+                android:textColor="#000000"
+                android:padding="5dp" />
 
         </TableRow>
 
@@ -109,17 +121,20 @@
             <Spinner
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinMonth" />
+                android:id="@+id/spinMonth"
+                android:backgroundTint="#7CBC9E" />
 
             <Spinner
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinDay" />
+                android:id="@+id/spinDay"
+                android:backgroundTint="#7CBC9E" />
 
             <Spinner
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/spinYear" />
+                android:id="@+id/spinYear"
+                android:backgroundTint="#7CBC9E" />
         </TableRow>
 
         <TableRow
@@ -133,8 +148,10 @@
                 android:text="Add Student"
                 android:id="@+id/btnSubmit"
                 android:layout_column="2"
-                android:background="#19975d"/>
+                android:background="#19975d"
+                android:onClick="onSubmit"/>
         </TableRow>
+
     </TableLayout>
 
 

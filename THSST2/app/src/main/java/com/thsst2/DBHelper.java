@@ -1,10 +1,13 @@
 package com.thsst2;
 
 //import android.content.ContentValues;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.Calendar;
 
 /**
  * Created by gyra on 01/28/2018.
@@ -185,18 +188,24 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-//    public boolean insertSchoolData(String school_name, String school_address) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put(COL_SCHOOL_NAME, school_name);
-//        contentValues.put(COL_SCHOOL_ADDRESS, school_address);
-//
-//        long result = db.insert(TABLE_SCHOOL, null, contentValues);
-//
-//        if(result == -1)
-//            return false;
-//        else
-//            return true;
-//    }
+    public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_STUDENT_FNAME, fname);
+        contentValues.put(COL_STUDENT_MNAME, mname);
+        contentValues.put(COL_STUDENT_LNAME, lname);
+        contentValues.put(COL_STUDENT_SUFFIX, suffix);
+        contentValues.put(COL_STUDENT_AGE, age);
+        contentValues.put(COL_STUDENT_SEX, sex+"");
+        contentValues.put(COL_STUDENT_BIRTHDAY, year+"-"+month+"-"+day);
+        contentValues.put(COL_SCHOOL_ID, schoolID);
+
+        long result = db.insert(TABLE_STUDENT, null, contentValues);
+
+        if(result == -1)
+            return false;
+        else
+            return true;
+    }
 }
