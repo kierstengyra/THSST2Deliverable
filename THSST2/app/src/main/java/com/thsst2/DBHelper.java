@@ -193,6 +193,13 @@ public class DBHelper extends SQLiteOpenHelper {
 //        return result;
     }
 
+    public Cursor getStudentID(String fname, String mname, String lname, String suffix, int age, int schoolID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT "+COL_STUDENT_ID+" FROM "+TABLE_STUDENT+
+                " WHERE "+COL_STUDENT_FNAME+" = '"+fname+"' AND "+COL_STUDENT_MNAME+" = '"+mname+"' AND "+COL_STUDENT_LNAME+" = '"+lname+"' AND "+
+                COL_STUDENT_SUFFIX+" = '"+suffix+"' AND "+COL_STUDENT_AGE+" = "+age+" AND "+COL_SCHOOL_ID+" = "+schoolID, null);
+    }
+
     public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
         SQLiteDatabase db = this.getWritableDatabase();
 

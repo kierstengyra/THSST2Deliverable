@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -14,7 +17,7 @@ import java.util.List;
 /**
  * Created by gyra on 02/04/2018.
  */
-public class ChooseStudentRecord extends AppCompatActivity {
+public class ChooseStudentRecord extends AppCompatActivity implements OnItemClickListener {
 
     DBHelper database;
     int schoolID;
@@ -23,6 +26,7 @@ public class ChooseStudentRecord extends AppCompatActivity {
 
     List<String> studentList;
     ArrayAdapter<String> studentListAdapter;
+    ArrayList<Integer> studentIDs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +36,6 @@ public class ChooseStudentRecord extends AppCompatActivity {
         this.initComponents();
     }
 
-    public void getStudentRecords() {
-
-    }
-
     private void initComponents() {
         Intent intent = getIntent();
         this.schoolID = intent.getIntExtra("SchoolID", 0);
@@ -43,6 +43,7 @@ public class ChooseStudentRecord extends AppCompatActivity {
         viewStudents = (ListView) findViewById(R.id.listStudents);
 
         this.database = new DBHelper(this);
+        this.studentIDs = new ArrayList<>();
 
         studentList = new ArrayList<String>();
         Cursor res = this.database.getAllStudentRecordsFromSchool(this.schoolID);
@@ -51,6 +52,7 @@ public class ChooseStudentRecord extends AppCompatActivity {
         }
 
         while(res.moveToNext()) {
+            studentIDs.add(res.getInt(res.getColumnIndex("col_student_id")));
             String firstname = res.getString(res.getColumnIndex("col_student_fname"));
             String middlename = res.getString(res.getColumnIndex("col_student_mname"));
             String lastname = res.getString(res.getColumnIndex("col_student_lname"));
@@ -62,5 +64,17 @@ public class ChooseStudentRecord extends AppCompatActivity {
 
         studentListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, studentList);
         viewStudents.setAdapter(studentListAdapter);
+        viewStudents.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        int selected = studentIDs.get(position);
+
+        Intent intent = new Intent(this, ChooseModule.class);
+        intent.putExtra("SchoolID", this.schoolID);
+        intent.putExtra("StudentID", selected);
+
+        startActivity(intent);
     }
 }

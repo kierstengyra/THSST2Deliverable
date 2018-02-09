@@ -1,6 +1,7 @@
 package com.thsst2;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -73,9 +74,25 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
         boolean isInserted = this.database.insertStudentRecord(firstName, middleName, lastName, suffix, age, sex, year, day, month, this.schoolID);
 
         if(isInserted)
-            Toast.makeText(this, "Student Record Added", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Student record added.", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Could not create record.", Toast.LENGTH_SHORT).show();
+
+        int studentID = 0;
+        Cursor res = this.database.getStudentID(firstName, middleName, lastName, suffix, age, this.schoolID);
+        if(res.getCount() == 0 || res.getCount() > 1)
+            Toast.makeText(this, "Student not found.", Toast.LENGTH_SHORT).show();
+        else {
+            while(res.moveToNext()) {
+                studentID = res.getInt(res.getColumnIndex("col_student_id"));
+            }
+        }
+
+        Intent intent = new Intent(this, ChooseModule.class);
+        intent.putExtra("SchoolID", this.schoolID);
+        intent.putExtra("StudentID", studentID);
+
+        startActivity(intent);
     }
 
     @Override
