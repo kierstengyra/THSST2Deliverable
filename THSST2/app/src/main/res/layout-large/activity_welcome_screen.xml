@@ -19,12 +19,11 @@
         android:layout_marginBottom="64dp"
         android:background="#19975d"
         android:layout_marginEnd="30dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:textSize="20sp"
-        android:onClick="verifyPassword"/>
+        android:textSize="28sp"
+        android:onClick="verifyPassword"
+        android:padding="20dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -35,5 +34,6 @@
         android:layout_above="@+id/btnStart"
         android:layout_alignEnd="@+id/btnStart"
         android:hint="Enter password"
-        android:textSize="20sp" />
+        android:textSize="28sp"
+        android:padding="20dp" />
 </RelativeLayout>

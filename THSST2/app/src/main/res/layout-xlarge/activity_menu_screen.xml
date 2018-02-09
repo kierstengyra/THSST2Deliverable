@@ -16,13 +16,12 @@
         android:text="Create Student Record"
         android:id="@+id/btnNewRecord"
         android:background="#19975d"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textSize="20sp"
+        android:textSize="38sp"
         android:onClick="createRecord"
         android:layout_marginBottom="25dp"
         android:layout_above="@+id/btnSelectRecord"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:padding="30dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -30,24 +29,22 @@
         android:text="Choose Student Record"
         android:id="@+id/btnSelectRecord"
         android:background="#19975d"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textSize="20sp"
+        android:textSize="38sp"
         android:onClick="selectRecord"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:padding="30dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Student Record Picture"
         android:background="#19975d"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:id="@+id/btnRecordPhoto"
         android:layout_marginTop="25dp"
-        android:textSize="20sp"
+        android:textSize="38sp"
         android:layout_below="@+id/btnSelectRecord"
         android:layout_centerHorizontal="true"
-        android:onClick="takePicture"/>
+        android:onClick="takePicture"
+        android:padding="30dp" />
 </RelativeLayout>

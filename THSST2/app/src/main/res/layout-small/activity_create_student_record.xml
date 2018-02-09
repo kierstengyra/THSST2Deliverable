@@ -34,24 +34,21 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtFirstName"
                 android:hint="First Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtMiddleName"
                 android:hint="Middle Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtLastName"
                 android:hint="Last Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+                android:backgroundTint="#19975D" />
 
         </TableRow>
 
@@ -65,8 +62,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txtSuffix"
                 android:hint="Suffix"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+                android:backgroundTint="#19975D" />
 
             <EditText
                 android:layout_width="0dp"
@@ -75,8 +71,7 @@
                 android:ems="10"
                 android:id="@+id/txtAge"
                 android:hint="Age"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+                android:backgroundTint="#19975D" />
 
             <RadioGroup
                 android:layout_width="0dp"
@@ -90,8 +85,7 @@
                     android:text="Male"
                     android:id="@+id/radioMale"
                     android:hint="Male"
-                    android:checked="true"
-                    android:textSize="20sp" />
+                    android:checked="true" />
 
                 <RadioButton
                     android:layout_width="wrap_content"
@@ -99,8 +93,7 @@
                     android:text="Female"
                     android:id="@+id/radioFemale"
                     android:checked="false"
-                    android:layout_gravity="fill"
-                    android:textSize="20sp" />
+                    android:layout_gravity="fill" />
             </RadioGroup>
         </TableRow>
 
@@ -116,8 +109,7 @@
                 android:text="Birthday"
                 android:id="@+id/txtBirthday"
                 android:textColor="#000000"
-                android:padding="5dp"
-                android:textSize="20sp" />
+                android:padding="5dp" />
 
         </TableRow>
 
@@ -143,38 +135,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/spinYear"
                 android:backgroundTint="#7CBC9E" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView2" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
         </TableRow>
 
         <TableRow
@@ -189,10 +149,7 @@
                 android:id="@+id/btnSubmit"
                 android:layout_column="2"
                 android:background="#19975d"
-                android:onClick="onSubmit"
-                android:textSize="20sp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true" />
+                android:onClick="onSubmit"/>
         </TableRow>
 
     </TableLayout>

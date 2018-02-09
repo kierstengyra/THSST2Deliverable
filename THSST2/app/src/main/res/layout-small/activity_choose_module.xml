@@ -16,11 +16,11 @@
         android:text="Pediatric Symptoms Checklist"
         android:id="@+id/btnPSC"
         android:background="#19975d"
-        android:padding="10dp"
-        android:layout_marginTop="110dp"
+        android:padding="5dp"
+        android:layout_marginTop="79dp"
+        android:textSize="16sp"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="20sp" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -28,9 +28,9 @@
         android:text="Draw-A-Person Test"
         android:id="@+id/btnDAP"
         android:background="#19975d"
-        android:padding="10dp"
+        android:padding="5dp"
         android:layout_marginTop="44dp"
         android:layout_below="@+id/btnPSC"
         android:layout_centerHorizontal="true"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 </RelativeLayout>

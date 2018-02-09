@@ -21,7 +21,7 @@
                 android:id="@+id/txtHeadingChoose"
                 android:padding="5dp"
                 android:textColor="#19975D"
-                android:textSize="20sp" />
+                android:textSize="38sp" />
         </TableRow>
 
         <TableRow
@@ -36,7 +36,7 @@
                 android:footerDividersEnabled="false"
                 android:divider="#72bf9c"
                 android:padding="5dp"
-                android:minHeight="20dp" />
+                android:minHeight="38dp" />
         </TableRow>
     </TableLayout>
 </RelativeLayout>
