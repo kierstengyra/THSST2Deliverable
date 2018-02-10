@@ -38,6 +38,10 @@
             android:screenOrientation="landscape">
 
         </activity>
+        <activity android:name=".PSCQuestions"
+            android:screenOrientation="landscape">
+
+        </activity>
     </application>
 
 </manifest>

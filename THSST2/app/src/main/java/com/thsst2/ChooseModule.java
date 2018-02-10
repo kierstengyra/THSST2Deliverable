@@ -3,18 +3,19 @@ package com.thsst2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 /**
  * Created by gyra on 02/09/2018.
  */
 public class ChooseModule extends AppCompatActivity {
     ImageView background;
-
     Button btnPSC;
     Button btnDAP;
+
+    int studentID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,7 @@ public class ChooseModule extends AppCompatActivity {
         setContentView(R.layout.activity_choose_module);
 
         Intent intent = getIntent();
-        int studentID = intent.getIntExtra("StudentID", 0);
-
-        Toast.makeText(this, "Student ID: "+studentID, Toast.LENGTH_SHORT).show();
+        this.studentID = intent.getIntExtra("StudentID", 0);
 
         this.initComponents();
     }
@@ -35,5 +34,11 @@ public class ChooseModule extends AppCompatActivity {
 
         this.btnPSC = (Button) findViewById(R.id.btnPSC);
         this.btnDAP = (Button) findViewById(R.id.btnDAP);
+    }
+
+    public void loadPSC(View view) {
+        Intent intent = new Intent(this, PSCQuestions.class);
+        intent.putExtra("StudentID", this.studentID);
+        startActivity(intent);
     }
 }

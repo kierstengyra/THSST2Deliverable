@@ -20,7 +20,8 @@
         android:layout_marginTop="110dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:onClick="loadPSC"/>
 
     <Button
         android:layout_width="wrap_content"

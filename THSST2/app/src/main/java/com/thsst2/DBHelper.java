@@ -1,17 +1,17 @@
 package com.thsst2;
 
-//import android.content.ContentValues;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 
-import java.util.Calendar;
+import java.io.ByteArrayOutputStream;
 
-/**
- * Created by gyra on 01/28/2018.
- */
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "wellbeingapp.db";
 
@@ -52,8 +52,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_QUESTION_ENG = "col_question_eng";
     public static final String COL_QUESTION_TAG = "col_question_tag";
 
+    public static final String TABLE_PSC_DRAWING = "tbl_psc_drawing";
+    public static final String COL_PSCDRAW_ID = "col_pscdraw_id";
+    public static final String COL_PSCDRAW_IMG = "col_pscdraw_img";
+
+    public Context passedContext;
+
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
+        this.passedContext = context;
     }
 
     @Override
@@ -124,6 +131,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "("+COL_ASSESSMENT_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 COL_ANSWERS_PSC+" TEXT NOT NULL,"+
                 COL_SCORE_PSC+" INTEGER NOT NULL,"+
+                COL_ASSESSMENT_REMARKS+" TEXT,"+
                 COL_STUDENT_ID+" INTEGER NOT NULL,"+
                 COL_DAP_ID+" INTEGER,"+
                 "FOREIGN KEY("+COL_STUDENT_ID+") REFERENCES "+TABLE_STUDENT+"("+COL_STUDENT_ID+"),"+
@@ -136,42 +144,77 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_QUESTION_ENG+" TEXT NOT NULL);");
 
         // Insert values for tbl_psc:
-        db.execSQL("INSERT INTO "+TABLE_PSC+"("+COL_QUESTION_TAG+","+COL_QUESTION_ENG+")"+
-                " VALUES ('May reklamo na nakakaramdam ng sakit', 'Complaints about aches and pains'),"+
-                "('Mas maraming oras akong mag-isa', 'Spends more time alone'),"+
-                "('Madali akong mapagod, unti-unting nauubos ang aking lakas', 'Tires easily, has little energy'),"+
-                "('Magalaw ako sa aking upuan, hindi ako makaupo ng diretso', 'Fidgety, unable to sit still'),"+
-                "('Lagi akong napapagsabihan (napapagalitan) ni titser', 'Has trouble with teacher'),"+
-                "('Hindi masyado interesado sa aking pag-aaral', 'Less interested in school'),"+
-                "('Kumilos na parang hinihimok ng motor (sasakyan)', 'Acts as if driven by motor'),"+
-                "('Madalas na nananaginip ng gising', 'Daydreams too much'),"+
-                "('Madaling maguluhan sa bagay-bagay, hindi maka-focus ng maayos sa aking gawain','Distracted easily'),"+
-                "('Takot ako sa bagong sitwasyon sa paligid', 'Is afraid of new situations'),"+
-                "('Nakakaramdam ng lungkot, hindi masaya','Feels sad, unhappy'),"+
-                "('Ako ay iritable at galit','Is irritable, angry'),"+
-                "('Nakakaramdam ng kawalang pag-asa', 'Feels hopeless'),"+
-                "('May problema sa pag-focus', 'Has trouble concentrating'),"+
-                "('Hindi masyado interesado sa mga kaibigan', 'Less interested in friends'),"+
-                "('Nakikipag-away sa ibang bata','Fights with other children'),"+
-                "('Lumiliban sa klase/eskwela', 'Absent from school'),"+
-                "('Bumababa ang mga marka/grado sa eskwela','School grades dropping'),"+
-                "('Bumababa ang tingin sa sarili', 'Is down on him or herself'),"+
-                "('Bumibisita sa doktor, kahit walang nakikitang sakit','Visits the doctor with doctor finding nothing wrong'),"+
-                "('Nahihirapan matulog/may problema sa pagtulog','Has trouble sleeping'),"+
-                "('Madalas mag-alala', 'Worries a lot'),"+
-                "('Mas gustong may kasama lagi hindi tulad dati (na mas kayang mag-isa)', 'Wants to be with you more than before'),"+
-                "('Nararamdaman na masama ang sarili', 'Feels he or she is bad'),"+
-                "('Madalas na sumusubok ng hindi kinakailangang bagay','Takes unnecessary risks'),"+
-                "('Madalas na nakakaramdam ng sakit', 'Gets hurt frequently'),"+
-                "('Tila nakakaramdam ng mas kaunting kasiyahan','Seems to be having less fun'),"+
-                "('Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad', 'Acts younger than children his or her age'),"+
-                "('Hindi nakikinig sa mga paalala/panuntunan', 'Does not listen to rules'),"+
-                "('Hindi pagpapakita ng damdamin', 'Does not show feelings'),"+
-                "('Hindi inuunawa ang damdamin ng iba','Does not understand people''s feelings'),"+
-                "('Mapanukso sa ibang tao', 'Teases others'),"+
-                "('Sinisisi ang iba dahil sa kanyang problema', 'Blames others for his or her troubles'),"+
-                "('Kumukuha ng bagay na hindi sa kanya/o hindi niya pag-aari', 'Takes things that do not belong to him or her'),"+
+        db.execSQL("INSERT INTO " + TABLE_PSC + "(" + COL_QUESTION_TAG + "," + COL_QUESTION_ENG + ")" +
+                " VALUES ('May reklamo na nakakaramdam ng sakit', 'Complaints about aches and pains')," +
+                "('Mas maraming oras akong mag-isa', 'Spends more time alone')," +
+                "('Madali akong mapagod, unti-unting nauubos ang aking lakas', 'Tires easily, has little energy')," +
+                "('Magalaw ako sa aking upuan, hindi ako makaupo ng diretso', 'Fidgety, unable to sit still')," +
+                "('Lagi akong napapagsabihan (napapagalitan) ni titser', 'Has trouble with teacher')," +
+                "('Hindi masyado interesado sa aking pag-aaral', 'Less interested in school')," +
+                "('Kumilos na parang hinihimok ng motor (sasakyan)', 'Acts as if driven by motor')," +
+                "('Madalas na nananaginip ng gising', 'Daydreams too much')," +
+                "('Madaling maguluhan sa bagay-bagay, hindi maka-focus ng maayos sa aking gawain','Distracted easily')," +
+                "('Takot ako sa bagong sitwasyon sa paligid', 'Is afraid of new situations')," +
+                "('Nakakaramdam ng lungkot, hindi masaya','Feels sad, unhappy')," +
+                "('Ako ay iritable at galit','Is irritable, angry')," +
+                "('Nakakaramdam ng kawalang pag-asa', 'Feels hopeless')," +
+                "('May problema sa pag-focus', 'Has trouble concentrating')," +
+                "('Hindi masyado interesado sa mga kaibigan', 'Less interested in friends')," +
+                "('Nakikipag-away sa ibang bata','Fights with other children')," +
+                "('Lumiliban sa klase/eskwela', 'Absent from school')," +
+                "('Bumababa ang mga marka/grado sa eskwela','School grades dropping')," +
+                "('Bumababa ang tingin sa sarili', 'Is down on him or herself')," +
+                "('Bumibisita sa doktor, kahit walang nakikitang sakit','Visits the doctor with doctor finding nothing wrong')," +
+                "('Nahihirapan matulog/may problema sa pagtulog','Has trouble sleeping')," +
+                "('Madalas mag-alala', 'Worries a lot')," +
+                "('Mas gustong may kasama lagi hindi tulad dati (na mas kayang mag-isa)', 'Wants to be with you more than before')," +
+                "('Nararamdaman na masama ang sarili', 'Feels he or she is bad')," +
+                "('Madalas na sumusubok ng hindi kinakailangang bagay','Takes unnecessary risks')," +
+                "('Madalas na nakakaramdam ng sakit', 'Gets hurt frequently')," +
+                "('Tila nakakaramdam ng mas kaunting kasiyahan','Seems to be having less fun')," +
+                "('Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad', 'Acts younger than children his or her age')," +
+                "('Hindi nakikinig sa mga paalala/panuntunan', 'Does not listen to rules')," +
+                "('Hindi pagpapakita ng damdamin', 'Does not show feelings')," +
+                "('Hindi inuunawa ang damdamin ng iba','Does not understand people''s feelings')," +
+                "('Mapanukso sa ibang tao', 'Teases others')," +
+                "('Sinisisi ang iba dahil sa kanyang problema', 'Blames others for his or her troubles')," +
+                "('Kumukuha ng bagay na hindi sa kanya/o hindi niya pag-aari', 'Takes things that do not belong to him or her')," +
                 "('Tumatangging mag-bahagi', 'Refuses to share');");
+
+        //Create tbl_psc_drawings
+        db.execSQL("CREATE TABLE " + TABLE_PSC_DRAWING +
+                "(" + COL_PSCDRAW_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COL_PSCDRAW_IMG + " BLOB,"
+                + COL_PSC_ID + " INTEGER NOT NULL," +
+                "FOREIGN KEY(" + COL_PSC_ID + ") REFERENCES " + TABLE_PSC + "(" + COL_PSC_ID + "));");
+
+        //Insert values to tbl_psc_drawings
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q3), 3);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q5), 5);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q8), 8);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q9), 9);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q11), 11);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q12), 12);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q18), 18);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q21), 21);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q26), 26);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q32), 32);
+        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q34), 34);
+    }
+
+    public byte[] convertToByteArray(int resID) {
+        Drawable d = ContextCompat.getDrawable(this.passedContext, resID);
+        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public void insertToPSCDrawings(SQLiteDatabase database, byte[] image, int pscID) {
+        ContentValues cv = new ContentValues();
+        cv.put(COL_PSCDRAW_IMG, image);
+        cv.put(COL_PSC_ID, pscID);
+        database.insert(TABLE_PSC_DRAWING, null, cv);
     }
 
     @Override
@@ -184,13 +227,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor confirmSession(String password) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT "+COL_SCHOOL_ID+" FROM "+TABLE_SESSION+" WHERE "+COL_SESSION_PASSWORD+" = '"+password+"'", null);
-//        return result;
     }
 
     public Cursor getAllStudentRecordsFromSchool(int schoolID) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM "+TABLE_STUDENT+" WHERE "+COL_SCHOOL_ID+" = "+schoolID, null);
-//        return result;
     }
 
     public Cursor getStudentID(String fname, String mname, String lname, String suffix, int age, int schoolID) {
@@ -219,5 +260,12 @@ public class DBHelper extends SQLiteOpenHelper {
             return false;
         else
             return true;
+    }
+
+    public Cursor getAllPSCQuestions() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT "+COL_PSCDRAW_IMG+", "+COL_QUESTION_TAG+
+                " FROM "+TABLE_PSC_DRAWING+", "+TABLE_PSC+
+                " WHERE "+TABLE_PSC_DRAWING+"."+COL_PSC_ID+" = "+TABLE_PSC+"."+COL_PSC_ID, null);
     }
 }

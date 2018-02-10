@@ -1,0 +1,81 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="6dp"
+    android:background="#FFFFFF">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="0, 1"
+        android:id="@+id/tblPSC">
+
+        <TableRow
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rowQuestion">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/imgQuestion"
+                android:src="@drawable/placeholder" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Question"
+                    android:id="@+id/txtQuestion"
+                    android:padding="10dp"
+                    android:textSize="20dp"
+                    android:textColor="#000000" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/radioPSCOptions">
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Madalas"
+                        android:id="@+id/radioMadalas"
+                        android:textSize="16dp"
+                        android:textColor="#444444" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Minsan"
+                        android:id="@+id/radioMinsan"
+                        android:textSize="16dp"
+                        android:textColor="#444444" />
+
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hindi"
+                        android:id="@+id/radioHindi"
+                        android:textSize="16dp"
+                        android:textColor="#444444" />
+                </RadioGroup>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Susunod"
+                    android:id="@+id/btnNext"
+                    android:layout_gravity="bottom|right"
+                    android:background="#19975D"
+                    android:textSize="20sp"
+                    android:padding="10dp"
+                    android:onClick="nextQuestion"/>
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>
