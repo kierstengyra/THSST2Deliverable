@@ -3,28 +3,27 @@ package com.thsst2;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.sql.Blob;
 import java.util.ArrayList;
 
-/**
- * Created by gyra on 02/10/2018.
- */
 public class PSCQuestions extends AppCompatActivity {
 
     ImageView imgQuestion;
     TextView txtQuestion;
+    RadioGroup radioChoices;
 
     DBHelper db;
     ArrayList<Bitmap> pscDrawings;
     ArrayList<String> pscQuestions;
+    ArrayList<Integer> pscAnswers;
     int questionCtr;
 
     @Override
@@ -38,10 +37,12 @@ public class PSCQuestions extends AppCompatActivity {
     public void initComponents() {
         this.imgQuestion = (ImageView) findViewById(R.id.imgQuestion);
         this.txtQuestion = (TextView) findViewById(R.id.txtQuestion);
+        this.radioChoices = (RadioGroup) findViewById(R.id.radioPSCOptions);
 
         this.db = new DBHelper(this);
         this.pscDrawings = new ArrayList<Bitmap>();
         this.pscQuestions = new ArrayList<String>();
+        this.pscAnswers = new ArrayList<Integer>();
         this.questionCtr = 1;
 
         Cursor res = this.db.getAllPSCQuestions();
@@ -60,11 +61,26 @@ public class PSCQuestions extends AppCompatActivity {
     }
 
     public void nextQuestion(View view) {
-        if(this.questionCtr <= pscDrawings.size()) {
-            this.imgQuestion.setImageBitmap(pscDrawings.get(this.questionCtr-1));
-            this.txtQuestion.setText(pscQuestions.get(this.questionCtr-1));
+        int selectedId = this.radioChoices.getCheckedRadioButtonId();
+        if(this.questionCtr <= pscDrawings.size() && selectedId != -1) {
+            RadioButton radioAnswer = (RadioButton) findViewById(selectedId);
+            switch(radioAnswer.getText().toString()) {
+                case "Madalas": pscAnswers.add(3);
+                    break;
+                case "Minsan": pscAnswers.add(2);
+                    break;
+                case "Hindi": pscAnswers.add(1);
+                    break;
+            }
+
+            if(this.questionCtr != pscDrawings.size()) {
+                this.imgQuestion.setImageBitmap(pscDrawings.get(this.questionCtr));
+                this.txtQuestion.setText(pscQuestions.get(this.questionCtr));
+                this.radioChoices.clearCheck();
+            }
 
             this.questionCtr++;
         }
     }
+
 }

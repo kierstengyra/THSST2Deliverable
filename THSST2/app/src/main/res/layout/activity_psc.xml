@@ -24,7 +24,8 @@
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,6 +64,7 @@
                         android:id="@+id/radioHindi"
                         android:textSize="16dp"
                         android:textColor="#444444" />
+
                 </RadioGroup>
 
                 <Button
@@ -70,11 +72,13 @@
                     android:layout_height="wrap_content"
                     android:text="Susunod"
                     android:id="@+id/btnNext"
-                    android:layout_gravity="bottom|right"
                     android:background="#19975D"
                     android:textSize="20sp"
                     android:padding="10dp"
-                    android:onClick="nextQuestion"/>
+                    android:onClick="nextQuestion"
+                    android:layout_column="1"
+                    android:layout_gravity="right" />
+
             </LinearLayout>
         </TableRow>
     </TableLayout>
