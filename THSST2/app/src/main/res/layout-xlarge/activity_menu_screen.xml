@@ -19,7 +19,7 @@
         android:textSize="38sp"
         android:onClick="createRecord"
         android:layout_marginBottom="25dp"
-        android:layout_above="@+id/btnSelectRecord"
+        android:layout_above="@+id/btnNextStudent"
         android:layout_centerHorizontal="true"
         android:padding="30dp" />
 
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Choose Student Record"
-        android:id="@+id/btnSelectRecord"
+        android:id="@+id/btnNextStudent"
         android:background="#19975d"
         android:textSize="38sp"
         android:onClick="selectRecord"
@@ -43,7 +43,7 @@
         android:id="@+id/btnRecordPhoto"
         android:layout_marginTop="25dp"
         android:textSize="38sp"
-        android:layout_below="@+id/btnSelectRecord"
+        android:layout_below="@+id/btnNextStudent"
         android:layout_centerHorizontal="true"
         android:onClick="takePicture"
         android:padding="30dp" />

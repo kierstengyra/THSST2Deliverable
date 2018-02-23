@@ -21,14 +21,14 @@
         android:textSize="16sp"
         android:onClick="createRecord"
         android:layout_marginBottom="25dp"
-        android:layout_above="@+id/btnSelectRecord"
+        android:layout_above="@+id/btnNextStudent"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Choose Student Record"
-        android:id="@+id/btnSelectRecord"
+        android:id="@+id/btnNextStudent"
         android:background="#19975d"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
@@ -47,7 +47,7 @@
         android:id="@+id/btnRecordPhoto"
         android:layout_marginTop="25dp"
         android:textSize="16sp"
-        android:layout_below="@+id/btnSelectRecord"
+        android:layout_below="@+id/btnNextStudent"
         android:layout_centerHorizontal="true"
         android:onClick="takePicture"/>
 </RelativeLayout>

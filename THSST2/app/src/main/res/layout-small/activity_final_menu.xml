@@ -13,41 +13,42 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create Student Record"
-        android:id="@+id/btnNewRecord"
+        android:text="Draw-a-Person Test"
+        android:id="@+id/btnSwitch"
         android:background="#19975d"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:textSize="20sp"
-        android:onClick="createRecord"
+        android:textSize="16sp"
         android:layout_marginBottom="25dp"
         android:layout_above="@+id/btnNextStudent"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="switchMode"
+        android:nestedScrollingEnabled="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Choose Student Record"
+        android:text="Next Student"
         android:id="@+id/btnNextStudent"
         android:background="#19975d"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:textSize="20sp"
-        android:onClick="selectRecord"
+        android:textSize="16sp"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="nextStudent" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Student Record Picture"
+        android:text="Exit"
         android:background="#19975d"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:id="@+id/btnRecordPhoto"
+        android:id="@+id/btnExit"
         android:layout_marginTop="25dp"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_below="@+id/btnNextStudent"
         android:layout_centerHorizontal="true"
-        android:onClick="takePicture"/>
+        android:onClick="exit" />
 </RelativeLayout>

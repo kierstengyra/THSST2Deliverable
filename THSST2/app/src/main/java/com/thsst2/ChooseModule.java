@@ -23,7 +23,7 @@ public class ChooseModule extends AppCompatActivity {
         setContentView(R.layout.activity_choose_module);
 
         Intent intent = getIntent();
-        this.studentID = intent.getIntExtra("StudentID", 0);
+        this.studentID = intent.getIntExtra("StudentID", -1);
 
         this.initComponents();
     }

@@ -110,7 +110,7 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
     private void initComponents() {
         // Get school ID from previous activity
         Intent intent = getIntent();
-        this.schoolID = intent.getIntExtra("SchoolID", 0);
+        this.schoolID = intent.getIntExtra("SchoolID", -1);
 
         // Instantiate DBHelper
         this.database = new DBHelper(this);

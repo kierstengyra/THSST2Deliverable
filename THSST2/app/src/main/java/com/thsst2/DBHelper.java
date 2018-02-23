@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "wellbeingapp.db";
@@ -129,8 +130,8 @@ public class DBHelper extends SQLiteOpenHelper {
         // Create tbl_assessment:
         db.execSQL("CREATE TABLE "+TABLE_ASSESSMENT+
                 "("+COL_ASSESSMENT_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                COL_ANSWERS_PSC+" TEXT NOT NULL,"+
-                COL_SCORE_PSC+" INTEGER NOT NULL,"+
+                COL_ANSWERS_PSC+" TEXT,"+
+                COL_SCORE_PSC+" INTEGER,"+
                 COL_ASSESSMENT_REMARKS+" TEXT,"+
                 COL_STUDENT_ID+" INTEGER NOT NULL,"+
                 COL_DAP_ID+" INTEGER,"+
@@ -219,8 +220,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_SESSION);
-        db.execSQL("DROP TABLE IF EXISTS "+TABLE_SCHOOL);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SESSION);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCHOOL);
         onCreate(db);
     }
 
@@ -267,5 +268,21 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT "+COL_PSCDRAW_IMG+", "+COL_QUESTION_TAG+
                 " FROM "+TABLE_PSC_DRAWING+", "+TABLE_PSC+
                 " WHERE "+TABLE_PSC_DRAWING+"."+COL_PSC_ID+" = "+TABLE_PSC+"."+COL_PSC_ID, null);
+    }
+
+    public boolean insertAssessment(String answers, int score, int studentID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_STUDENT_ID, studentID);
+        contentValues.put(COL_ANSWERS_PSC, answers);
+        contentValues.put(COL_SCORE_PSC, score);
+
+        long result = db.insert(TABLE_ASSESSMENT, null, contentValues);
+
+        if(result == -1)
+            return false;
+        else
+            return true;
     }
 }

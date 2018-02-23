@@ -1,5 +1,6 @@
 package com.thsst2;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,10 +27,17 @@ public class PSCQuestions extends AppCompatActivity {
     ArrayList<Integer> pscAnswers;
     int questionCtr;
 
+    int studentID;
+    int schoolID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_psc);
+
+        Intent intent = getIntent();
+        this.studentID = intent.getIntExtra("StudentID", -1);
+        this.schoolID = intent.getIntExtra("SchoolID", -1);
 
         this.initComponents();
     }
@@ -62,24 +70,59 @@ public class PSCQuestions extends AppCompatActivity {
 
     public void nextQuestion(View view) {
         int selectedId = this.radioChoices.getCheckedRadioButtonId();
-        if(this.questionCtr <= pscDrawings.size() && selectedId != -1) {
-            RadioButton radioAnswer = (RadioButton) findViewById(selectedId);
-            switch(radioAnswer.getText().toString()) {
-                case "Madalas": pscAnswers.add(3);
-                    break;
-                case "Minsan": pscAnswers.add(2);
-                    break;
-                case "Hindi": pscAnswers.add(1);
-                    break;
-            }
+        if(selectedId != -1) {
+            if(this.questionCtr <= pscDrawings.size()) {
+                RadioButton radioAnswer = (RadioButton) findViewById(selectedId);
+                switch(radioAnswer.getText().toString()) {
+                    case "Madalas": pscAnswers.add(3);
+                        break;
+                    case "Minsan": pscAnswers.add(2);
+                        break;
+                    case "Hindi": pscAnswers.add(1);
+                        break;
+                }
 
-            if(this.questionCtr != pscDrawings.size()) {
-                this.imgQuestion.setImageBitmap(pscDrawings.get(this.questionCtr));
-                this.txtQuestion.setText(pscQuestions.get(this.questionCtr));
-                this.radioChoices.clearCheck();
-            }
+                if(this.questionCtr != pscDrawings.size()) {
+                    this.imgQuestion.setImageBitmap(pscDrawings.get(this.questionCtr));
+                    this.txtQuestion.setText(pscQuestions.get(this.questionCtr));
+                    this.radioChoices.clearCheck();
+                }
 
-            this.questionCtr++;
+                this.questionCtr++;
+            }
+            else {
+                String answers = "";
+                int sum = 0;
+
+                for(int i = 0; i < pscAnswers.size(); i++) {
+                    sum += pscAnswers.get(i);
+
+                    switch(pscAnswers.get(i)) {
+                        case 3: answers += "Madalas";
+                            break;
+                        case 2: answers += "Minsan";
+                            break;
+                        case 1: answers += "Hindi";
+                            break;
+                    }
+
+                    if(i < pscAnswers.size()-1)
+                        answers += ",";
+                }
+
+                boolean result = this.db.insertAssessment(answers, sum, this.studentID);
+                if(result) {
+                    Intent intent = new Intent(this, FinalMenu.class);
+                    intent.putExtra("StudentID", this.studentID);
+                    intent.putExtra("SchoolID", this.schoolID);
+                    intent.putExtra("PSCAnswers", this.pscAnswers);
+                    intent.putExtra("Mode", "DAP");
+
+                    startActivity(intent);
+                }
+                else
+                    Toast.makeText(this, "Could not insert PSC Answers", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

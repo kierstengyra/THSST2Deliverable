@@ -17,7 +17,7 @@ public class CheckStudentRecord extends AppCompatActivity {
         setContentView(R.layout.activity_menu_screen);
 
         Intent intent = getIntent();
-        this.school_id = intent.getIntExtra("SchoolID", 0);
+        this.school_id = intent.getIntExtra("SchoolID", -1);
 
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);

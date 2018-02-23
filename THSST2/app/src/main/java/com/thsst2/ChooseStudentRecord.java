@@ -38,7 +38,7 @@ public class ChooseStudentRecord extends AppCompatActivity implements OnItemClic
 
     private void initComponents() {
         Intent intent = getIntent();
-        this.schoolID = intent.getIntExtra("SchoolID", 0);
+        this.schoolID = intent.getIntExtra("SchoolID", -1);
 
         viewStudents = (ListView) findViewById(R.id.listStudents);
 
