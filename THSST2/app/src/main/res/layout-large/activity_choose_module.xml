@@ -13,7 +13,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pediatric Symptoms Checklist"
+        android:text="DIGITAL FORM"
         android:id="@+id/btnPSC"
         android:background="#19975d"
         android:padding="20dp"
@@ -26,7 +26,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Draw-A-Person Test"
+        android:text="PAPER FORM"
         android:id="@+id/btnDAP"
         android:background="#19975d"
         android:padding="20dp"
