@@ -33,5 +33,6 @@
         android:layout_marginTop="44dp"
         android:layout_below="@+id/btnPSC"
         android:layout_centerHorizontal="true"
-        android:textSize="28sp" />
+        android:textSize="28sp"
+        android:onClick="loadCamera"/>
 </RelativeLayout>

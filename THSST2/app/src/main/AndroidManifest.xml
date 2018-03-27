@@ -8,13 +8,18 @@
         android:smallScreens="true"
         android:xlargeScreens="true"/>
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".WelcomeScreen"
+        <activity android:name=".activities.WelcomeScreen"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,27 +27,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CheckStudentRecord"
+        <activity android:name=".activities.CheckStudentRecord"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name=".CreateStudentRecord"
+        <activity android:name=".activities.CreateStudentRecord"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name=".ChooseStudentRecord"
+        <activity android:name=".activities.ChooseStudentRecord"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name=".ChooseModule"
+        <activity android:name=".activities.ChooseModule"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name=".PSCQuestions"
+        <activity android:name=".activities.PSCQuestions"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity android:name=".FinalMenu"
+        <activity android:name=".activities.FinalMenu"
             android:screenOrientation="landscape">
 
         </activity>
