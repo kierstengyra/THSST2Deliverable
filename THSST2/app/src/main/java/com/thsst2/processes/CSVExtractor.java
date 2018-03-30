@@ -1,4 +1,4 @@
-package com.thsst2.processes;
+package com.trial;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,7 +18,7 @@ public class CSVExtractor {
 				String[] info = line.split(splitter);
 				
 				Field field = new Field(Double.parseDouble(info[1]), Double.parseDouble(info[2]), Double.parseDouble(info[3]),
-						Double.parseDouble(info[4]), Double.parseDouble(info[5]), Double.parseDouble(info[6]));
+						Double.parseDouble(info[4]), Double.parseDouble(info[5]), Integer.parseInt(info[6]));
 				
 				FieldManager.getInstance().addField(field);
 			}

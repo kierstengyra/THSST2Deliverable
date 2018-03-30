@@ -1,4 +1,4 @@
-package com.thsst2.processes;
+package com.trial;
 
 public class Field {
 
@@ -9,9 +9,11 @@ public class Field {
 	private double height;
 	
 	private double question;
-	private double score;
+	private int score;
 	
-	public Field(double x, double y, double width, double height, double question, double score) {
+	private boolean isChecked;
+	
+	public Field(double x, double y, double width, double height, double question, int score) {
 		this.setX(x);
 		this.setY(y);
 		
@@ -20,6 +22,8 @@ public class Field {
 		
 		this.setQuestion(question);
 		this.setScore(score);
+		
+		this.setChecked(false);
 	}
 
 	public double getX() {
@@ -62,14 +66,20 @@ public class Field {
 		this.question = question;
 	}
 
-	public double getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(double score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
-	
-	
+
+	public boolean isChecked() {
+		return isChecked;
+	}
+
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
+	}
 	
 }

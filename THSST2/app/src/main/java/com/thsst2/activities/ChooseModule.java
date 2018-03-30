@@ -62,51 +62,51 @@ public class ChooseModule extends AppCompatActivity {
     }
 
     public void loadCamera(View view) {
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if(takePicture.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
-        }
+//        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if(takePicture.resolveActivity(getPackageManager()) != null) {
+//            startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
+//        }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-
-            FormDetector fd = new FormDetector();
-            Bitmap dest = fd.extract(imageBitmap);
-
-            this.saveToFile(dest);
-        }
-    }
-
-    private void saveToFile(Bitmap img) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/req_images");
-        myDir.mkdirs();
-
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-
-        String fname = "Image-"+n+".jpg";
-        File file = new File(myDir, fname);
-
-        if(file.exists())
-            file.delete();
-
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            img.compress(Bitmap.CompressFormat.JPEG, 90, out);
-
-            out.flush();
-            out.close();
-
-            Toast.makeText(this, "File saved", Toast.LENGTH_SHORT).show();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//
+//            FormDetector fd = new FormDetector();
+//            Bitmap dest = fd.extract(imageBitmap);
+//
+//            this.saveToFile(dest);
+//        }
+//    }
+//
+//    private void saveToFile(Bitmap img) {
+//        String root = Environment.getExternalStorageDirectory().toString();
+//        File myDir = new File(root + "/req_images");
+//        myDir.mkdirs();
+//
+//        Random generator = new Random();
+//        int n = 10000;
+//        n = generator.nextInt(n);
+//
+//        String fname = "Image-"+n+".jpg";
+//        File file = new File(myDir, fname);
+//
+//        if(file.exists())
+//            file.delete();
+//
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            img.compress(Bitmap.CompressFormat.JPEG, 90, out);
+//
+//            out.flush();
+//            out.close();
+//
+//            Toast.makeText(this, "File saved", Toast.LENGTH_SHORT).show();
+//        }
+//        catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

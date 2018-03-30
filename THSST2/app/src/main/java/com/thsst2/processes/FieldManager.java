@@ -1,4 +1,4 @@
-package com.thsst2.processes;
+package com.trial;
 
 import java.util.ArrayList;
 
@@ -6,9 +6,11 @@ public class FieldManager {
 	
 	private static FieldManager instance = null;
 	private ArrayList<Field> fieldList;
+	private int score;
 	
 	protected FieldManager() {
 		this.fieldList = new ArrayList<Field>();
+		this.setScore(0);
 	}
 	
 	public static FieldManager getInstance() {
@@ -37,6 +39,18 @@ public class FieldManager {
 	public void printFieldList() {
 		for(int i = 0; i < this.fieldList.size(); i++)
 			System.out.println(this.fieldList.get(i).getQuestion()+"\t"+this.fieldList.get(i).getScore());
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+	
+	public void addScore(int score) {
+		this.score += score;
 	}
 
 }

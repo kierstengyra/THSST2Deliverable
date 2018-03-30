@@ -1,4 +1,4 @@
-package com.thsst2.processes;
+package com.trial;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -18,11 +18,13 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 public class BoxPositions {
 	
 	private Mat srcOrig;
+	private Mat scratch;
 	private ArrayList<Point> points;
 	private ArrayList<Double> widths;
 	private ArrayList<Double> heights;
@@ -42,6 +44,7 @@ public class BoxPositions {
 		
 			this.srcOrig = new Mat(bufferedSrc.getHeight(), bufferedSrc.getWidth(), CvType.CV_8UC4);
 			this.srcOrig = this.bufferedImageToMat(bufferedSrc);
+			this.scratch = this.srcOrig.clone();
 			
 			this.extract();
 		}
@@ -73,6 +76,7 @@ public class BoxPositions {
         this.detectSquares(contours);
         
         this.writeToFile();
+        
         System.out.println("Success");
 	}
 	
@@ -88,15 +92,22 @@ public class BoxPositions {
 			Imgproc.approxPolyDP(contour2f, approx2f, perimeter*0.04, false);
 			approx2f.convertTo(approx, CvType.CV_32S);
 			
-			if(approx.size().height == 4 || approx.size().height == 5) {
+			if(approx.size().height == 4) {
 				Rect rect = Imgproc.boundingRect(contour);
 				if(rect.width < 130 && rect.width >= 120 && rect.height < 100) {
-					Point point = new Point((double)rect.x/this.srcOrig.width(), (double)rect.y/this.srcOrig.height());
+					double roi_x = Math.abs(rect.x-(rect.width/2));
+					double roi_y = Math.abs(rect.y-(rect.height/2));
+					double roi_width = rect.width*2;
+					double roi_height = rect.height*2;
+					
+					Imgproc.rectangle(scratch, new Point(roi_x, roi_y), new Point(roi_x+roi_width, roi_y+roi_height), new Scalar(78, 0, 150));
+					
+					Point point = new Point((double)roi_x/this.srcOrig.width(), (double)roi_y/this.srcOrig.height());
 					
 					if(this.points.size() == 0 || !point.equals(this.points.get(points.size()-1))) {
 						this.points.add(point);
-						this.widths.add((double)rect.width/this.srcOrig.width());
-						this.heights.add((double)rect.height/this.srcOrig.height());
+						this.widths.add((double)roi_width/this.srcOrig.width());
+						this.heights.add((double)roi_height/this.srcOrig.height());
 					}
 				}
 			}
@@ -108,7 +119,7 @@ public class BoxPositions {
 		FileWriter fw = null;
 		
 		try {
-			fw = new FileWriter("C:/Users/gyra/Desktop/Page4.csv");
+			fw = new FileWriter("C:/Users/gyra/Desktop/Page1Test.csv");
 			bw = new BufferedWriter(fw);
 			int j = 0;
 			
