@@ -1,13 +1,13 @@
-package com.trial;
+package com.thsst2.processes;
 
 import java.util.List;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
+//import java.awt.image.BufferedImage;
+//import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+//import javax.imageio.ImageIO;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -30,27 +30,27 @@ public class Transform {
 	private Point ref_br;
 	private Point ref_bl;
 	
-	public void fourPointTransform(String filename, String destname) {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		
-		try {
-			File fileSrc = new File(filename);
-			BufferedImage bufferedSrc = ImageIO.read(fileSrc);
-		
-			this.srcOrig = new Mat(bufferedSrc.getHeight(), bufferedSrc.getWidth(), CvType.CV_8UC4);
-			this.srcOrig = this.bufferedImageToMat(bufferedSrc);
-			
-			this.ref_tl = new Point(0, 0);
-			this.ref_tr = new Point(this.srcOrig.cols(), 0);
-			this.ref_br = new Point(this.srcOrig.cols(), this.srcOrig.rows());
-			this.ref_bl = new Point(0, this.srcOrig.rows());
-			
-			this.transform(destname);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void fourPointTransform(String filename, String destname) {
+//		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//
+//		try {
+//			File fileSrc = new File(filename);
+//			BufferedImage bufferedSrc = ImageIO.read(fileSrc);
+//
+//			this.srcOrig = new Mat(bufferedSrc.getHeight(), bufferedSrc.getWidth(), CvType.CV_8UC4);
+//			this.srcOrig = this.bufferedImageToMat(bufferedSrc);
+//
+//			this.ref_tl = new Point(0, 0);
+//			this.ref_tr = new Point(this.srcOrig.cols(), 0);
+//			this.ref_br = new Point(this.srcOrig.cols(), this.srcOrig.rows());
+//			this.ref_bl = new Point(0, this.srcOrig.rows());
+//
+//			this.transform(destname);
+//		}
+//		catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	private void transform(String destname) {
 		Mat scratch = this.srcOrig.clone();
@@ -177,13 +177,13 @@ public class Transform {
 		return Math.sqrt(x+y);
 	}
 	
-	private Mat bufferedImageToMat(BufferedImage bi) {
-		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
-		
-		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
-		mat.put(0, 0, data);
-		
-		return mat;
-	}
+//	private Mat bufferedImageToMat(BufferedImage bi) {
+//		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
+//
+//		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
+//		mat.put(0, 0, data);
+//
+//		return mat;
+//	}
 	
 }

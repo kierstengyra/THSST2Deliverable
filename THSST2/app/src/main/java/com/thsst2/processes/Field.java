@@ -1,29 +1,29 @@
-package com.trial;
+package com.thsst2.processes;
 
 public class Field {
 
 	private double x;
 	private double y;
-	
+
 	private double width;
 	private double height;
-	
-	private double question;
+
+	private Question question;
 	private int score;
-	
-	private boolean isChecked;
-	
-	public Field(double x, double y, double width, double height, double question, int score) {
+
+	private int nonzero_pixels;
+
+	public Field(double x, double y, double width, double height, int question, int score) {
 		this.setX(x);
 		this.setY(y);
-		
+
 		this.setWidth(width);
 		this.setHeight(height);
-		
+
 		this.setQuestion(question);
 		this.setScore(score);
-		
-		this.setChecked(false);
+
+		this.setNonzeroPixels(0);
 	}
 
 	public double getX() {
@@ -58,12 +58,12 @@ public class Field {
 		this.height = height;
 	}
 
-	public double getQuestion() {
+	public Question getQuestion() {
 		return question;
 	}
 
-	public void setQuestion(double question) {
-		this.question = question;
+	public void setQuestion(double number) {
+		this.question = FieldManager.getInstance().getQuestions().get((int)number-1);;
 	}
 
 	public int getScore() {
@@ -74,12 +74,12 @@ public class Field {
 		this.score = score;
 	}
 
-	public boolean isChecked() {
-		return isChecked;
+	public int getNonzeroPixels() {
+		return nonzero_pixels;
 	}
 
-	public void setChecked(boolean isChecked) {
-		this.isChecked = isChecked;
+	public void setNonzeroPixels(int nonzero_pixels) {
+		this.nonzero_pixels = nonzero_pixels;
 	}
-	
+
 }
