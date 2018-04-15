@@ -3,6 +3,7 @@ package com.thsst2.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -29,7 +30,11 @@ public class CheckStudentRecord extends AppCompatActivity {
         this.school_id = intent.getIntExtra("SchoolID", -1);
 
         this.readCSV("Page1.csv");
-        this.readCSV("Page2.csv");
+        this.readCSV2("Page1.csv");
+        Log.e("CheckStudentRecord", "CSVs read 1: " + FieldManager.getInstance().getFieldList().size());
+//        this.readCSV("Page2.csv");
+//        Log.e("CheckStudentRecord", "CSVs read 2: "+FieldManager.getInstance().getFieldList().size());
+
 
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -57,26 +62,79 @@ public class CheckStudentRecord extends AppCompatActivity {
         try {
             InputStreamReader is = new InputStreamReader(getAssets().open(filename));
             BufferedReader reader = new BufferedReader(is);
-            BufferedReader reader2 = new BufferedReader(is);
+//            BufferedReader reader2 = new BufferedReader(is);
 
-            String line;
+            String line1;
+//            String line2;
             String splitter = ",";
             int i = 0;
 
-            while((line = reader.readLine()) != null) {
-                String[] info = line.split(splitter);
+            while((line1 = reader.readLine()) != null) {
+
+                String[] info = line1.split(splitter);
 
                 if((i+1)%3 == 0) {
                     Question q = new Question(Double.parseDouble(info[5]));
                     FieldManager.getInstance().addQuestion(q);
+                    Log.e("CheckStudentRecord|CSV1", "Question Size: "+FieldManager.getInstance().getQuestions().size());
                 }
 
                 i++;
             }
 
-            line = "";
-            while((line = reader2.readLine()) != null) {
-                String[] info = line.split(splitter);
+            Log.e("CheckStudentRecord|CSV1", "Finished Line 1");
+
+//            while((line2 = reader2.readLine()) != null) {
+//                Log.e("CheckStudentRecord", "Enter Line 2");
+//                String[] info = line2.split(splitter);
+//
+//                Field field = new Field(Double.parseDouble(info[1]),
+//                        Double.parseDouble(info[2]),
+//                        Double.parseDouble(info[3]),
+//                        Double.parseDouble(info[4]),
+//                        Integer.parseInt(info[5]),
+//                        Integer.parseInt(info[6]));
+//
+//                FieldManager.getInstance().addField(field);
+//                Log.e("CheckStudentRecord", "Field Size: " + FieldManager.getInstance().getFieldList().size());
+//            }
+//
+//            Log.e("CheckStudentRecord", "Finished Line 2");
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readCSV2(String filename) {
+        try {
+            InputStreamReader is = new InputStreamReader(getAssets().open(filename));
+//            BufferedReader reader = new BufferedReader(is);
+            BufferedReader reader2 = new BufferedReader(is);
+
+//            String line1;
+            String line2;
+            String splitter = ",";
+//            int i = 0;
+
+//            while((line1 = reader.readLine()) != null) {
+//
+//                String[] info = line1.split(splitter);
+//
+//                if((i+1)%3 == 0) {
+//                    Question q = new Question(Double.parseDouble(info[5]));
+//                    FieldManager.getInstance().addQuestion(q);
+//                    Log.e("CheckStudentRecord", "Question Size: "+FieldManager.getInstance().getQuestions().size());
+//                }
+//
+//                i++;
+//            }
+//
+//            Log.e("CheckStudentRecord", "Finished Line 1");
+
+            while((line2 = reader2.readLine()) != null) {
+                Log.e("CheckStudentRecord|CSV2", "Enter Line 2");
+                String[] info = line2.split(splitter);
 
                 Field field = new Field(Double.parseDouble(info[1]),
                         Double.parseDouble(info[2]),
@@ -86,7 +144,10 @@ public class CheckStudentRecord extends AppCompatActivity {
                         Integer.parseInt(info[6]));
 
                 FieldManager.getInstance().addField(field);
+                Log.e("CheckStudentRecord|CSV2", "Field Size: " + FieldManager.getInstance().getFieldList().size());
             }
+
+            Log.e("CheckStudentRecord|CSV2", "Finished Line 2");
         }
         catch(IOException e) {
             e.printStackTrace();

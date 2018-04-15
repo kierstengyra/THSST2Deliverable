@@ -1,5 +1,7 @@
 package com.thsst2.processes;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class FieldManager {
@@ -29,25 +31,31 @@ public class FieldManager {
 		for(int i = 0; i < this.questionList.size(); i++)
 			tempScore += this.questionList.get(i).getScore();
 
+		Log.e("FieldManager", "Temp Score: "+tempScore);
 		return tempScore;
 	}
 
 	public void validateCheckMarks() {
 		this.computeAvgs();
-		for(int i = 15; i < this.fieldList.size(); i++) {
+		for(int i = 0; i < this.fieldList.size(); i++) {
 			double question = this.fieldList.get(i).getQuestion().getNumber();
 			double avg = this.questionList.get((int)question-1).getAverage();
 
+			Log.e("FieldManager", "Field "+i);
 			if(this.fieldList.get(i).getNonzeroPixels() > avg) {
+
 				double score = 0;
 				this.questionList.get((int)question-1).addChecked();
 
-				if(this.questionList.get((int)question-1).getChecked() > 1)
+				if(this.questionList.get((int)question-1).getChecked() > 1) {
 					score = 0;
-				else
+				}
+				else {
 					score = this.fieldList.get(i).getScore();
+				}
 
 				this.questionList.get((int)question-1).setScore(score);
+				Log.e("FieldManager", "["+question+"] Score: " + this.questionList.get((int) question - 1).getScore());
 			}
 		}
 	}
@@ -63,6 +71,7 @@ public class FieldManager {
 			if((i+1) % 3 == 0) {
 				avg = sum/3;
 				this.questionList.get(question).setAverage(avg);
+				Log.e("FieldManager", "Question Avgs: "+this.questionList.get(question).getAverage());
 				sum = 0;
 				question++;
 			}

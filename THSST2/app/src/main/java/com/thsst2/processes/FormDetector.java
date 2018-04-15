@@ -26,7 +26,7 @@ public class FormDetector {
 //    private Mat src;
     private Mat srcOrig;
     private Mat srcGray;
-    private Mat output_mat;
+//    private Mat output_mat;
     private Bitmap output_bmp;
 
 //    private int scaleFactor;
@@ -36,14 +36,15 @@ public class FormDetector {
     private Point ref_br;
     private Point ref_bl;
 
-    public Bitmap extract(Bitmap source) {
+    public Mat extract(Bitmap source) {
         this.convertToMat(source);
         this.transform();
         this.drawRectangle();
 
-        this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(this.output_mat, this.output_bmp);
-        return this.output_bmp;
+//        this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
+//        Utils.matToBitmap(this.output_mat, this.output_bmp);
+//        return this.output_bmp;
+        return this.srcGray;
     }
 
     private void convertToMat(Bitmap source) {
@@ -60,7 +61,7 @@ public class FormDetector {
         this.ref_bl = new Point(0, this.srcOrig.rows());
 
         this.srcGray = this.srcOrig.clone();
-        this.output_mat = this.srcOrig.clone();
+//        this.output_mat = this.srcOrig.clone();
     }
 
     private void transform() {
@@ -98,8 +99,8 @@ public class FormDetector {
         Log.e("FormDetector", "Rectangle "+rectangle.size());
 
         //Apply four-point transform
-        this.output_mat = this.getFourPointTransform(rectangle, this.output_mat);
-        this.output_mat.convertTo(this.output_mat, -1, 1.5, 1);
+        this.srcGray = this.getFourPointTransform(rectangle, this.srcGray);
+        this.srcGray.convertTo(this.srcGray, -1, 1.5, 1);
         Log.e("FormDetector", "Transformed");
     }
 

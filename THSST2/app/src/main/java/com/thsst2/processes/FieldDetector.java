@@ -1,6 +1,7 @@
 package com.thsst2.processes;
 
 import android.graphics.Bitmap;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,8 +17,11 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.photo.Photo;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FieldDetector {
 	
@@ -28,8 +32,10 @@ public class FieldDetector {
 
 	private double finalScore;
 
-	public Bitmap analyze(Bitmap source) {
-		this.convertToMat(source);
+	public Bitmap analyze(Mat source) {
+//		this.convertToMat(source);
+		this.srcOrig = source;
+		this.srcGray = this.srcOrig.clone();
 		this.extract();
 
 		this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
@@ -46,11 +52,11 @@ public class FieldDetector {
 	}
 
 	private void extract() {
-		this.srcGray = new Mat();
-
-		Imgproc.cvtColor(srcOrig, srcGray, Imgproc.COLOR_BGR2GRAY);
-		Photo.fastNlMeansDenoising(srcGray, srcGray);
-		Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 41, 2);
+//		this.srcGray = new Mat();
+//
+//		Imgproc.cvtColor(srcOrig, srcGray, Imgproc.COLOR_BGR2GRAY);
+//		Photo.fastNlMeansDenoising(srcGray, srcGray);
+//		Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, -2);
 
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		Mat hierarchy = new Mat();
@@ -63,47 +69,52 @@ public class FieldDetector {
 	}
 
 	private void detectChecks() {
-		Mat bw = this.srcGray.clone();
-		Core.bitwise_not(srcGray, srcGray);
-		Imgproc.adaptiveThreshold(srcGray, bw, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, -2);
-
-		//Create containers for horizontal and vertical lines
-		Mat horizontal = bw.clone();
-		Mat vertical = bw.clone();
-
-		//Horizontal+Vertical Lines
-		int horizontal_size = horizontal.cols() / 30;
-		int vertical_size = vertical.cols() / 30;
-		Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(horizontal_size, 1));
-		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
-
-		//Apply morphological operations
-		Imgproc.erode(horizontal, horizontal, horizontalStructure);
-		Imgproc.dilate(horizontal, horizontal, horizontalStructure);
-		Imgproc.erode(vertical, vertical, verticalStructure);
-		Imgproc.dilate(vertical, vertical, verticalStructure);
-
-		Mat cleaned = new Mat();
-		Core.add(horizontal, vertical, cleaned);
-		Mat kernel = Mat.ones(new Size(10, 10), CvType.CV_8U);
-		Imgproc.morphologyEx(cleaned, cleaned, Imgproc.MORPH_CLOSE, kernel);
-
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat hierarchy = new Mat();
-		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
-		Mat colored = new Mat(cleaned.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
-		Imgproc.cvtColor(srcGray, colored, Imgproc.COLOR_GRAY2BGR);
+//		Mat bw = this.srcGray.clone();
+//
+//		//Create containers for horizontal and vertical lines
+//		Mat horizontal = bw.clone();
+//		Mat vertical = bw.clone();
+//
+//		//Horizontal+Vertical Lines
+//		int horizontal_size = horizontal.cols() / 100;
+//		int vertical_size = vertical.cols() / 100;
+//		Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(horizontal_size, 1));
+//		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
+//
+//		//Apply morphological operations
+//		Imgproc.erode(horizontal, horizontal, horizontalStructure);
+//		Imgproc.dilate(horizontal, horizontal, horizontalStructure);
+//		Imgproc.erode(vertical, vertical, verticalStructure);
+//		Imgproc.dilate(vertical, vertical, verticalStructure);
+//
+//		Mat cleaned = new Mat();
+//		Core.add(horizontal, vertical, cleaned);
+//		Mat kernel = Mat.ones(new Size(10, 10), CvType.CV_8U);
+//		Imgproc.morphologyEx(cleaned, cleaned, Imgproc.MORPH_CLOSE, kernel);
+//
+//		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+//		Mat hierarchy = new Mat();
+//		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+//
+//		Mat colored = new Mat(cleaned.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
+//		Imgproc.cvtColor(srcGray, colored, Imgproc.COLOR_GRAY2BGR);
 
 		Log.e("FieldDetector", "Field List: "+FieldManager.getInstance().getFieldList().size());
-		for(int i = 15; i < FieldManager.getInstance().getFieldList().size(); i++) {
+		for(int i = 0; i < FieldManager.getInstance().getFieldList().size(); i++) {
 			double x = FieldManager.getInstance().getField(i).getX() * this.srcOrig.width();
 			double y = FieldManager.getInstance().getField(i).getY() * this.srcOrig.height();
 			double width = FieldManager.getInstance().getField(i).getWidth() * this.srcOrig.width();
 			double height = FieldManager.getInstance().getField(i).getHeight() * this.srcOrig.height();
 
+//			Imgproc.drawMarker(colored, new Point(x, y), new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 50, 1, Imgproc.LINE_AA);
+//			Imgproc.drawMarker(colored, new Point(x+width, y+height), new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 50, 1, Imgproc.LINE_AA);
+
 			Rect roi = new Rect(new Point(x, y), new Point(x + width, y + height));
 			Mat roi_submat = srcGray.submat(roi);
+
+//			Bitmap bmp = Bitmap.createBitmap(roi_submat.cols(), roi_submat.rows(), Bitmap.Config.ARGB_8888);
+//			Utils.matToBitmap(roi_submat, bmp);
+//			this.saveToFile(bmp, i);
 
 			int nonzero = Core.countNonZero(roi_submat);
 			Log.e("FieldDetector", "Nonzero: " + nonzero);
@@ -111,6 +122,29 @@ public class FieldDetector {
 		}
 
 		this.output_mat = srcGray;
+	}
+
+	private void saveToFile(Bitmap img, int index) {
+		String root = Environment.getExternalStorageDirectory().toString();
+		File myDir = new File(root + "/req_images");
+		myDir.mkdirs();
+
+		String fname = "PSCImage_"+index+".jpg";
+		File file = new File(myDir, fname);
+
+		if(file.exists())
+			file.delete();
+
+		try {
+			FileOutputStream out = new FileOutputStream(file);
+			img.compress(Bitmap.CompressFormat.JPEG, 90, out);
+
+			out.flush();
+			out.close();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public double getScore() {

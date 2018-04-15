@@ -20,6 +20,7 @@ import com.thsst2.processes.FieldDetector;
 import com.thsst2.processes.FormDetector;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Mat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -103,11 +104,11 @@ public class ChooseModule extends AppCompatActivity {
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
                 FormDetector fd = new FormDetector();
-                Bitmap dest = fd.extract(selectedImage);
+                Mat dest = fd.extract(selectedImage);
                 FieldDetector field = new FieldDetector();
                 Bitmap dest2 = field.analyze(dest);
 
-                Toast.makeText(this, "Score: "+field.getScore(), Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Score: "+field.getScore(), Toast.LENGTH_SHORT).show();
 
                 this.saveToFile(dest2);
             }
