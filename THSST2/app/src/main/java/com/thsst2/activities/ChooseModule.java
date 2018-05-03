@@ -76,19 +76,22 @@ public class ChooseModule extends AppCompatActivity {
     }
 
     public void loadCamera(View view) {
-        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent intent = new Intent(this, CameraOverlay.class);
+        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
 
-        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Projectives";
-        File imagesFolder = new File(file_path);
-        imagesFolder.mkdirs();
-
-        File image = new File(imagesFolder, "test.jpg");
-        this.fileURI = Uri.fromFile(image);
-
-        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, fileURI);
-        if(takePicture.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
-        }
+//        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath()+"/Projectives";
+//        File imagesFolder = new File(file_path);
+//        imagesFolder.mkdirs();
+//
+//        File image = new File(imagesFolder, "test.jpg");
+//        this.fileURI = Uri.fromFile(image);
+//
+//        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, fileURI);
+//        if(takePicture.resolveActivity(getPackageManager()) != null) {
+//            startActivityForResult(takePicture, REQUEST_IMAGE_CAPTURE);
+//        }
     }
 
     @Override
@@ -96,25 +99,28 @@ public class ChooseModule extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            Uri picture = (Uri) data.getExtras().get("Form");
+//            Toast.makeText(this, "Finished", Toast.LENGTH_SHORT).show();
+
 //            Bundle extras = data.getExtras();
 //            Bitmap image = (Bitmap) extras.get("data");
 
-            try {
-                final InputStream imageStream = getContentResolver().openInputStream(this.fileURI);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//            try {
+//                final InputStream imageStream = getContentResolver().openInputStream(picture);
+//                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
 
-                FormDetector fd = new FormDetector();
-                Mat dest = fd.extract(selectedImage);
-                FieldDetector field = new FieldDetector();
-                Bitmap dest2 = field.analyze(dest);
-
-                Toast.makeText(this, "Score: "+field.getScore(), Toast.LENGTH_SHORT).show();
-
-                this.saveToFile(dest2);
-            }
-            catch(FileNotFoundException e) {
-                e.printStackTrace();
-            }
+//                FormDetector fd = new FormDetector();
+//                Mat dest = fd.extract(selectedImage);
+//                FieldDetector field = new FieldDetector();
+//                Bitmap dest2 = field.analyze(dest);
+//
+//                Toast.makeText(this, "Score: "+field.getScore(), Toast.LENGTH_SHORT).show();
+//
+//                this.saveToFile(selectedImage);
+//            }
+//            catch(FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
 
 //            FieldDetector field = new FieldDetector();
 //            Bitmap dest2 = field.analyze(dest);
