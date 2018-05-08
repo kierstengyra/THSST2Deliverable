@@ -12,15 +12,18 @@ import com.thsst2.R;
 import java.util.ArrayList;
 
 /**
- * Created by gyra on 02/13/2018.
+ * Type: Activity
+ * FinalMenu is the last screen of the workflow. It
+ * asks the user if there are still other students or
+ * close the app instead.
  */
 public class FinalMenu extends AppCompatActivity {
 
+    //Properties
     ImageView imgBackgroundMenu;
     Button btnSwitch;
     Button btnNextStudent;
     Button btnExit;
-
     int studentID;
     int schoolID;
     ArrayList<Integer> pscAnswers;
@@ -44,6 +47,7 @@ public class FinalMenu extends AppCompatActivity {
 
     }
 
+    //This method goes back to the CheckStudentRecord Activity.
     public void nextStudent(View view) {
         Intent intent = new Intent(this, CheckStudentRecord.class);
         intent.putExtra("SchoolID", this.schoolID);
@@ -54,6 +58,7 @@ public class FinalMenu extends AppCompatActivity {
 
     }
 
+    //This method initializes the properties.
     public void initComponents() {
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);

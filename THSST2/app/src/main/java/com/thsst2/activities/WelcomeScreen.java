@@ -13,12 +13,19 @@ import android.widget.Toast;
 import com.thsst2.processes.DBHelper;
 import com.thsst2.R;
 
+/**
+ * Type: Activity
+ * WelcomeScreen is the first screen seen by the user.
+ * This screen asks the user for the password initially
+ * given by an administrator.
+ * */
+
 public class WelcomeScreen extends AppCompatActivity {
 
+    //Properties
     ImageView imgBackground;
     Button btnStart;
     EditText txtPassword;
-
     DBHelper dbHelper;
 
     @Override
@@ -35,6 +42,7 @@ public class WelcomeScreen extends AppCompatActivity {
         this.dbHelper = new DBHelper(this);
     }
 
+    //This method verifies the password entered.
     public void verifyPassword(View view) {
         Cursor result = this.dbHelper.confirmSession(this.txtPassword.getText().toString());
         if(result.getCount() == 0) {

@@ -244,6 +244,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_STUDENT_SUFFIX+" = '"+suffix+"' AND "+COL_STUDENT_AGE+" = "+age+" AND "+COL_SCHOOL_ID+" = "+schoolID, null);
     }
 
+    public Cursor getAllQuestions() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM "+TABLE_PSC, null);
+    }
+
     public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -265,7 +270,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public Cursor getAllPSCQuestions() {
+    public Cursor getAllPSCQuestionsWithDrawings() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT "+COL_PSCDRAW_IMG+", "+COL_QUESTION_TAG+
                 " FROM "+TABLE_PSC_DRAWING+", "+TABLE_PSC+

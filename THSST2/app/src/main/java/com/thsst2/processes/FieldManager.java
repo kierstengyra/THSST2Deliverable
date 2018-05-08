@@ -1,79 +1,44 @@
 package com.thsst2.processes;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 
 public class FieldManager {
 
-	private static FieldManager instance = null;
 	private ArrayList<Field> fieldList;
-	private ArrayList<Question> questionList;
-	private int final_score;
+	private int page;
+	private int partialScore;
+	private ArrayList<String> partialAnswers;
+	private double avgPixels;
 
-	protected FieldManager() {
+	public FieldManager() {
 		this.fieldList = new ArrayList<Field>();
-		this.questionList = new ArrayList<Question>();
-		this.setScore(0);
 	}
 
-	public static FieldManager getInstance() {
-		if(instance == null)
-			instance = new FieldManager();
+	public void setAvgPixelsPerQuestion() {
+		int qIndex = 0;
 
-		return instance;
-	}
-
-	public double computeScore() {
-		this.validateCheckMarks();
-
-		double tempScore = 0;
-		for(int i = 0; i < this.questionList.size(); i++)
-			tempScore += this.questionList.get(i).getScore();
-
-		Log.e("FieldManager", "Temp Score: "+tempScore);
-		return tempScore;
-	}
-
-	public void validateCheckMarks() {
-		this.computeAvgs();
 		for(int i = 0; i < this.fieldList.size(); i++) {
-			double question = this.fieldList.get(i).getQuestion().getNumber();
-			double avg = this.questionList.get((int)question-1).getAverage();
+			int question = this.fieldList.get(i).getQuestion();
+			int nonzero = this.fieldList.get(i).getNonzero_pixels();
+			FormManager.getInstance().getQuestion(question-1).addPixel(nonzero);
 
-			Log.e("FieldManager", "Field "+i);
-			if(this.fieldList.get(i).getNonzeroPixels() > avg) {
-
-				double score = 0;
-				this.questionList.get((int)question-1).addChecked();
-
-				if(this.questionList.get((int)question-1).getChecked() > 1) {
-					score = 0;
-				}
-				else {
-					score = this.fieldList.get(i).getScore();
-				}
-
-				this.questionList.get((int)question-1).setScore(score);
-				Log.e("FieldManager", "["+question+"] Score: " + this.questionList.get((int) question - 1).getScore());
+			if((i+1)%3 == 0) {
+				FormManager.getInstance().getQuestion(qIndex).setAvgPixels();
+				qIndex++;
 			}
 		}
 	}
 
-	public void computeAvgs() {
-		int sum = 0;
-		double avg = 0;
-		int question = 0;
+	public void selectPossibleAnswers() {
+		this.setAvgPixelsPerQuestion();
 
 		for(int i = 0; i < this.fieldList.size(); i++) {
-			sum += this.fieldList.get(i).getNonzeroPixels();
+			int question = this.fieldList.get(i).getQuestion();
+			double avg = FormManager.getInstance().getQuestion(question-1).getAvgPixels();
 
-			if((i+1) % 3 == 0) {
-				avg = sum/3;
-				this.questionList.get(question).setAverage(avg);
-				Log.e("FieldManager", "Question Avgs: "+this.questionList.get(question).getAverage());
-				sum = 0;
-				question++;
+			if(this.fieldList.get(i).getNonzero_pixels() > avg) {
+				FormManager.getInstance().getQuestion(question-1).addAnswerCnt();
+				this.fieldList.get(i).setSelected(true);
 			}
 		}
 	}
@@ -82,41 +47,47 @@ public class FieldManager {
 		return fieldList;
 	}
 
-	public void setFieldList(ArrayList<Field> fieldList) {
-		this.fieldList = fieldList;
+	public Field getField(int index) {
+		return this.fieldList.get(index);
 	}
 
 	public void addField(Field field) {
 		this.fieldList.add(field);
 	}
 
-	public Field getField(int index) {
-		return this.fieldList.get(index);
+	public void setFieldList(ArrayList<Field> fieldList) {
+		this.fieldList = fieldList;
 	}
 
-	public void printFieldList() {
-		for(int i = 0; i < this.fieldList.size(); i++)
-			System.out.println(this.fieldList.get(i).getQuestion()+"\t"+this.fieldList.get(i).getScore());
+	public int getPage() {
+		return page;
 	}
 
-	public int getScore() {
-		return final_score;
+	public void setPage(int page) {
+		this.page = page;
 	}
 
-	public void setScore(int score) {
-		this.final_score = score;
+	public int getPartialScore() {
+		return partialScore;
 	}
 
-	public ArrayList<Question> getQuestions() {
-		return questionList;
+	public void setPartialScore(int partialScore) {
+		this.partialScore = partialScore;
 	}
 
-	public void addQuestion(Question q) {
-		this.questionList.add(q);
+	public ArrayList<String> getPartialAnswers() {
+		return partialAnswers;
 	}
 
-	public void setQuestions(ArrayList<Question> questions) {
-		this.questionList = questions;
+	public void setPartialAnswers(ArrayList<String> partialAnswers) {
+		this.partialAnswers = partialAnswers;
 	}
 
+	public double getAvgPixels() {
+		return avgPixels;
+	}
+
+	public void setAvgPixels(double avgPixels) {
+		this.avgPixels = avgPixels;
+	}
 }

@@ -1,9 +1,6 @@
 package com.thsst2.processes;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -15,25 +12,23 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.photo.Photo;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class FieldDetector {
-	
+
 	private Mat srcOrig;
 	private Mat srcGray;
 	private Mat output_mat;
 	private Bitmap output_bmp;
+	private int page;
 
-	private double finalScore;
+	public FieldDetector(int pageNo) {
+		this.setPageNo(pageNo);
+	}
 
 	public Bitmap analyze(Mat source) {
-//		this.convertToMat(source);
 		this.srcOrig = source;
 		this.srcGray = this.srcOrig.clone();
 		this.extract();
@@ -43,194 +38,68 @@ public class FieldDetector {
 		return this.output_bmp;
 	}
 
-	private void convertToMat(Bitmap source) {
-		Bitmap copy = source.copy(Bitmap.Config.ARGB_8888, true);
-		this.srcOrig = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC1);
-		Utils.bitmapToMat(copy, this.srcOrig);
-
-		this.srcGray = this.srcOrig.clone();
-	}
-
 	private void extract() {
-//		this.srcGray = new Mat();
-//
-//		Imgproc.cvtColor(srcOrig, srcGray, Imgproc.COLOR_BGR2GRAY);
-//		Photo.fastNlMeansDenoising(srcGray, srcGray);
-//		Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 11, -2);
-
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		Mat hierarchy = new Mat();
 		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
 		this.detectChecks();
-		this.finalScore = FieldManager.getInstance().computeScore();
-
-		Log.e("FieldDetector", "Score: "+finalScore);
 	}
 
 	private void detectChecks() {
-//		Mat bw = this.srcGray.clone();
-//
-//		//Create containers for horizontal and vertical lines
-//		Mat horizontal = bw.clone();
-//		Mat vertical = bw.clone();
-//
-//		//Horizontal+Vertical Lines
-//		int horizontal_size = horizontal.cols() / 100;
-//		int vertical_size = vertical.cols() / 100;
-//		Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(horizontal_size, 1));
-//		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
-//
-//		//Apply morphological operations
-//		Imgproc.erode(horizontal, horizontal, horizontalStructure);
-//		Imgproc.dilate(horizontal, horizontal, horizontalStructure);
-//		Imgproc.erode(vertical, vertical, verticalStructure);
-//		Imgproc.dilate(vertical, vertical, verticalStructure);
-//
-//		Mat cleaned = new Mat();
-//		Core.add(horizontal, vertical, cleaned);
-//		Mat kernel = Mat.ones(new Size(10, 10), CvType.CV_8U);
-//		Imgproc.morphologyEx(cleaned, cleaned, Imgproc.MORPH_CLOSE, kernel);
-//
-//		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-//		Mat hierarchy = new Mat();
-//		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//		Mat colored = new Mat(cleaned.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
-//		Imgproc.cvtColor(srcGray, colored, Imgproc.COLOR_GRAY2BGR);
+		//Apply adaptive threshold at the bitwise_not of gray
+		Mat bw = this.srcGray.clone();
 
-		Log.e("FieldDetector", "Field List: "+FieldManager.getInstance().getFieldList().size());
-		for(int i = 0; i < FieldManager.getInstance().getFieldList().size(); i++) {
-			double x = FieldManager.getInstance().getField(i).getX() * this.srcOrig.width();
-			double y = FieldManager.getInstance().getField(i).getY() * this.srcOrig.height();
-			double width = FieldManager.getInstance().getField(i).getWidth() * this.srcOrig.width();
-			double height = FieldManager.getInstance().getField(i).getHeight() * this.srcOrig.height();
+		//Create containers for horizontal and vertical lines
+		Mat horizontal = bw.clone();
+		Mat vertical = bw.clone();
 
-//			Imgproc.drawMarker(colored, new Point(x, y), new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 50, 1, Imgproc.LINE_AA);
-//			Imgproc.drawMarker(colored, new Point(x+width, y+height), new Scalar(0, 0, 255), Imgproc.MARKER_CROSS, 50, 1, Imgproc.LINE_AA);
+		//Horizontal+Vertical Lines
+		int horizontal_size = horizontal.cols() / 30;
+		int vertical_size = vertical.cols() / 30;
+		Mat horizontalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(horizontal_size, 1));
+		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
 
-			Rect roi = new Rect(new Point(x, y), new Point(x + width, y + height));
+		//Apply morphological operations
+		Imgproc.erode(horizontal, horizontal, horizontalStructure);
+		Imgproc.dilate(horizontal, horizontal, horizontalStructure);
+
+		Imgproc.erode(vertical, vertical, verticalStructure);
+		Imgproc.dilate(vertical, vertical, verticalStructure);
+
+		Mat cleaned = new Mat();
+		Core.add(horizontal, vertical, cleaned);
+		Mat kernel = Mat.ones(new Size(10, 10), CvType.CV_8U);
+		Imgproc.morphologyEx(cleaned, cleaned, Imgproc.MORPH_CLOSE, kernel);
+
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+		Mat colored = new Mat(cleaned.size(), CvType.CV_8UC3, new Scalar(0, 0, 0));
+		Imgproc.cvtColor(srcGray, colored, Imgproc.COLOR_GRAY2BGR);
+		Imgproc.drawContours(colored, contours, -1, new Scalar(212, 173, 70));
+
+		FieldManager fm = FormManager.getInstance().getPage(this.page);
+		int size = fm.getFieldList().size();
+
+		for(int i = 0; i < size; i++) {
+			double x = fm.getField(i).getX()*this.srcOrig.width();
+			double y = fm.getField(i).getY()*this.srcOrig.height();
+			double width = fm.getField(i).getWidth()*this.srcOrig.width();
+			double height = fm.getField(i).getHeight()*this.srcOrig.height();
+
+			Rect roi = new Rect(new Point(x, y), new Point(x+width, y+height));
 			Mat roi_submat = srcGray.submat(roi);
 
-//			Bitmap bmp = Bitmap.createBitmap(roi_submat.cols(), roi_submat.rows(), Bitmap.Config.ARGB_8888);
-//			Utils.matToBitmap(roi_submat, bmp);
-//			this.saveToFile(bmp, i);
-
 			int nonzero = Core.countNonZero(roi_submat);
-			Log.e("FieldDetector", "Nonzero: " + nonzero);
-			FieldManager.getInstance().getField(i).setNonzeroPixels(nonzero);
+			FormManager.getInstance().getPage(this.page).getField(i).setNonzero_pixels(nonzero);
 		}
 
 		this.output_mat = srcGray;
 	}
 
-	private void saveToFile(Bitmap img, int index) {
-		String root = Environment.getExternalStorageDirectory().toString();
-		File myDir = new File(root + "/req_images");
-		myDir.mkdirs();
-
-		String fname = "PSCImage_"+index+".jpg";
-		File file = new File(myDir, fname);
-
-		if(file.exists())
-			file.delete();
-
-		try {
-			FileOutputStream out = new FileOutputStream(file);
-			img.compress(Bitmap.CompressFormat.JPEG, 90, out);
-
-			out.flush();
-			out.close();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+	public void setPageNo(int pageNo) {
+		this.page = pageNo;
 	}
-
-	public double getScore() {
-		return this.finalScore;
-	}
-
-//	public void readFile(String filename, String destname) {
-//
-//		try {
-//			File fileSrc = new File(filename);
-//			BufferedImage bufferedSrc = ImageIO.read(fileSrc);
-//
-//			this.srcOrig = new Mat(bufferedSrc.getHeight(), bufferedSrc.getWidth(), CvType.CV_8UC3);
-//			this.srcOrig = this.bufferedImageToMat(bufferedSrc);
-//
-//			this.extract(destname);
-//		}
-//		catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
-//	private Mat bufferedImageToMat(BufferedImage bi) {
-//		Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3);
-//
-//		byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
-//		mat.put(0, 0, data);
-//
-//		return mat;
-//	}
-//
-//	private void extract(String destname) {
-//		//---Do this once the app starts
-//		this.template = Imgcodecs.imread("C:/Users/gyra/Desktop/checkmarks/Check1.jpg");
-//		Imgproc.cvtColor(template, template, Imgproc.COLOR_BGR2GRAY);
-//		//--------------------------------
-//
-//		this.srcGray = new Mat();
-//
-//		Imgproc.cvtColor(srcOrig, srcGray, Imgproc.COLOR_BGR2GRAY);
-//		Photo.fastNlMeansDenoising(srcGray, srcGray);
-//		Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 21, 2);
-//
-//		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-//		Mat hierarchy = new Mat();
-//		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//		this.detectChecks();
-//		System.out.println("Done.");
-//	}
-	
-//	private void detectChecks() {
-//		for(int i = 0; i < 15; i++) {
-//
-//			double x = FieldManager.getInstance().getField(i).getX()*this.srcOrig.width();
-//			double y = FieldManager.getInstance().getField(i).getY()*this.srcOrig.height();
-//			double width = FieldManager.getInstance().getField(i).getWidth()*this.srcOrig.width();
-//			double height = FieldManager.getInstance().getField(i).getHeight()*this.srcOrig.height();
-//
-//			Rect roi = new Rect(new Point(x, y), new Point(x+width, y+height));
-//			Mat roi_submat = srcGray.submat(roi);
-//			int result_cols = roi_submat.cols() - this.template.cols() + 1;
-//			int result_rows = roi_submat.rows() - this.template.rows() + 1;
-//			Mat result = new Mat(result_rows, result_cols, CvType.CV_8U);
-//
-//			Imgproc.matchTemplate(roi_submat, this.template, result, Imgproc.TM_SQDIFF);
-//			Core.normalize(result, result, 0, 1, Core.NORM_MINMAX, -1, new Mat());
-//			MinMaxLocResult mmr = Core.minMaxLoc(result);
-//			Point matchLoc = mmr.minLoc;
-//			Rect new_roi = new Rect(new Point(matchLoc.x, matchLoc.y), new Point(matchLoc.x+template.cols(), matchLoc.y+template.rows()));
-//			roi_submat = roi_submat.submat(new_roi);
-//
-//			List<MatOfPoint> template_contours = new ArrayList<MatOfPoint>();
-//			Mat template_hierarchy = new Mat();
-//			Imgproc.findContours(this.template, template_contours, template_hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//			List<MatOfPoint> roi_contours = new ArrayList<MatOfPoint>();
-//			Mat roi_hierarchy = new Mat();
-//			Imgproc.findContours(roi_submat, roi_contours, roi_hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-//
-//			double similarity = Imgproc.matchShapes(template, roi_submat, Imgproc.CV_CONTOURS_MATCH_I1, 0) * 100;
-//
-//			Imgproc.cvtColor(roi_submat, roi_submat, Imgproc.COLOR_GRAY2BGR);
-//			Imgproc.drawContours(roi_submat, roi_contours, -1, new Scalar(0, 0, 255));
-//			Imgcodecs.imwrite("Test"+(i+1)+".jpg", roi_submat);
-//
-//		}
-//	}
 }

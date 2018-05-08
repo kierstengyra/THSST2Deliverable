@@ -22,24 +22,26 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
- * Created by gyra on 01/28/2018.
+ * Type: Activity
+ * CreateStudentRecord displays a form to be filled up
+ * by the Test Administrator. The information will be saved
+ * to the database.
  */
 public class CreateStudentRecord extends AppCompatActivity implements OnItemSelectedListener {
+
+    //Properties
     ArrayAdapter<String> monthAdapter;
     List<String> months;
     Spinner spinMonths;
-
     ArrayAdapter<Integer> dayAdapter;
     List<Integer> days;
     Spinner spinDays;
-
     ArrayAdapter<Integer> yearAdapter;
     List<Integer> years;
     Spinner spinYears;
     Calendar now;
     private int startYear;
     private int endYear;
-
     EditText fname;
     EditText mname;
     EditText lname;
@@ -47,7 +49,6 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
     EditText age;
     RadioGroup radioSexGroup;
     RadioButton radioSexButton;
-
     DBHelper database;
     int schoolID;
 
@@ -59,6 +60,7 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
         this.initComponents();
     }
 
+    //This method creates the student record and uploads it to the database.
     public void onSubmit(View view) {
         String firstName = this.fname.getText().toString();
         String middleName = this.mname.getText().toString();
@@ -109,6 +111,7 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
 
     }
 
+    //This method initializes the properties.
     private void initComponents() {
         // Get school ID from previous activity
         Intent intent = getIntent();

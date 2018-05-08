@@ -1,6 +1,14 @@
 package com.thsst2.activities;
 
+/**
+ * Type: Activity
+ * CheckStudentRecord handles the screen for determining
+ * the availability of the student record.
+ * */
+
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,18 +16,23 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.thsst2.R;
+import com.thsst2.processes.DBHelper;
 import com.thsst2.processes.Field;
 import com.thsst2.processes.FieldManager;
+import com.thsst2.processes.FormManager;
 import com.thsst2.processes.Question;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class CheckStudentRecord extends AppCompatActivity {
 
+    //Properties
     ImageView imgBackgroundMenu;
     int school_id;
+    DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +42,16 @@ public class CheckStudentRecord extends AppCompatActivity {
         Intent intent = getIntent();
         this.school_id = intent.getIntExtra("SchoolID", -1);
 
-        this.readCSV("Page1.csv");
-        this.readCSV2("Page1.csv");
-        Log.e("CheckStudentRecord", "CSVs read 1: " + FieldManager.getInstance().getFieldList().size());
-//        this.readCSV("Page2.csv");
-//        Log.e("CheckStudentRecord", "CSVs read 2: "+FieldManager.getInstance().getFieldList().size());
+        this.dbHelper = new DBHelper(this);
+        this.readQuestions();
 
+        this.readCSV();
 
         this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
         this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
+    //This method starts the CreateStudentRecord Activity.
     public void createRecord(View view) {
         Intent intent = new Intent(this, CreateStudentRecord.class);
         intent.putExtra("SchoolID", this.school_id);
@@ -47,6 +59,7 @@ public class CheckStudentRecord extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //This method starts the ChooseStudentRecord Activity.
     public void selectRecord(View view) {
         Intent intent = new Intent(this, ChooseStudentRecord.class);
         intent.putExtra("SchoolID", this.school_id);
@@ -54,103 +67,73 @@ public class CheckStudentRecord extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //TODO: Delete
     public void takePicture(View view) {
 
     }
 
-    private void readCSV(String filename) {
-        try {
-            InputStreamReader is = new InputStreamReader(getAssets().open(filename));
-            BufferedReader reader = new BufferedReader(is);
-//            BufferedReader reader2 = new BufferedReader(is);
+    //This method retrieves the questions from the database
+    //and creates an object for each.
+    private void readQuestions() {
+        Cursor result = this.dbHelper.getAllQuestions();
 
-            String line1;
-//            String line2;
-            String splitter = ",";
-            int i = 0;
-
-            while((line1 = reader.readLine()) != null) {
-
-                String[] info = line1.split(splitter);
-
-                if((i+1)%3 == 0) {
-                    Question q = new Question(Double.parseDouble(info[5]));
-                    FieldManager.getInstance().addQuestion(q);
-                    Log.e("CheckStudentRecord|CSV1", "Question Size: "+FieldManager.getInstance().getQuestions().size());
-                }
-
-                i++;
-            }
-
-            Log.e("CheckStudentRecord|CSV1", "Finished Line 1");
-
-//            while((line2 = reader2.readLine()) != null) {
-//                Log.e("CheckStudentRecord", "Enter Line 2");
-//                String[] info = line2.split(splitter);
-//
-//                Field field = new Field(Double.parseDouble(info[1]),
-//                        Double.parseDouble(info[2]),
-//                        Double.parseDouble(info[3]),
-//                        Double.parseDouble(info[4]),
-//                        Integer.parseInt(info[5]),
-//                        Integer.parseInt(info[6]));
-//
-//                FieldManager.getInstance().addField(field);
-//                Log.e("CheckStudentRecord", "Field Size: " + FieldManager.getInstance().getFieldList().size());
-//            }
-//
-//            Log.e("CheckStudentRecord", "Finished Line 2");
+        if(result.getCount() == 0) {
+            Log.e("CheckStudentRecord", "No questions found.");
         }
-        catch(IOException e) {
-            e.printStackTrace();
+        else {
+            while(result.moveToNext()) {
+                int num = result.getInt(result.getColumnIndex("col_psc_id"));
+                String question = result.getString(result.getColumnIndex("col_question_tag"));
+
+                Question q = new Question(num, question);
+                FormManager.getInstance().addQuestion(q);
+            }
         }
     }
 
-    private void readCSV2(String filename) {
+    //This method creates the Field objects.
+    private void readCSV() {
+        AssetManager assetManager = getAssets();
+        String[] list;
+        BufferedReader reader = null;
+
         try {
-            InputStreamReader is = new InputStreamReader(getAssets().open(filename));
-//            BufferedReader reader = new BufferedReader(is);
-            BufferedReader reader2 = new BufferedReader(is);
-
-//            String line1;
-            String line2;
+            list = assetManager.list("csv");
             String splitter = ",";
-//            int i = 0;
 
-//            while((line1 = reader.readLine()) != null) {
-//
-//                String[] info = line1.split(splitter);
-//
-//                if((i+1)%3 == 0) {
-//                    Question q = new Question(Double.parseDouble(info[5]));
-//                    FieldManager.getInstance().addQuestion(q);
-//                    Log.e("CheckStudentRecord", "Question Size: "+FieldManager.getInstance().getQuestions().size());
-//                }
-//
-//                i++;
-//            }
-//
-//            Log.e("CheckStudentRecord", "Finished Line 1");
+            if(list.length > 0) {
+                for(String csvfile : list) {
+                    InputStream is = assetManager.open("csv/"+csvfile);
+                    InputStreamReader isr = new InputStreamReader(is);
+                    String line = "";
 
-            while((line2 = reader2.readLine()) != null) {
-                Log.e("CheckStudentRecord|CSV2", "Enter Line 2");
-                String[] info = line2.split(splitter);
+                    if(csvfile.startsWith("Page") && csvfile.endsWith("csv")) {
+                        FieldManager fm = new FieldManager();
+                        reader = new BufferedReader(isr);
 
-                Field field = new Field(Double.parseDouble(info[1]),
-                        Double.parseDouble(info[2]),
-                        Double.parseDouble(info[3]),
-                        Double.parseDouble(info[4]),
-                        Integer.parseInt(info[5]),
-                        Integer.parseInt(info[6]));
+                        while((line = reader.readLine()) != null) {
+                            String[] info = line.split(splitter);
+                            Field field = new Field(Double.parseDouble(info[1]), Double.parseDouble(info[2]), Double.parseDouble(info[3]), Double.parseDouble(info[4]), Integer.parseInt(info[5]), Integer.parseInt(info[6]));
+                            fm.addField(field);
+                        }
 
-                FieldManager.getInstance().addField(field);
-                Log.e("CheckStudentRecord|CSV2", "Field Size: " + FieldManager.getInstance().getFieldList().size());
+                        FormManager.getInstance().addPage(fm);
+                    }
+                }
             }
-
-            Log.e("CheckStudentRecord|CSV2", "Finished Line 2");
         }
         catch(IOException e) {
             e.printStackTrace();
+        }
+        finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

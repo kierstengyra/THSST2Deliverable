@@ -1,10 +1,14 @@
 package com.thsst2.activities;
 
 /**
- * Created by JeruelJr on 11/04/2018.
+ * Type: Activity
+ * CameraOverlay is the custom camera made solely
+ * for the purpose of this project. It has an overlay
+ * which guides the user on how to properly capture
+ * the paper form.
  */
+
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +39,7 @@ import android.widget.Toast;
 import com.thsst2.R;
 import com.thsst2.processes.FieldDetector;
 import com.thsst2.processes.FormDetector;
+import com.thsst2.processes.FormManager;
 
 import org.opencv.core.Mat;
 
@@ -49,7 +54,7 @@ import java.util.Date;
 
 public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    //global variables
+    //Properties
     Bitmap croppedBmp;
     Uri photoUri;
     String path;
@@ -61,9 +66,8 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     LayoutInflater controlInflater = null;
 
     int startRectX,startRectY, endRectX, endRectY, rectWidth, rectHeight;
-    //int topLeft, bottomRight;
-
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,19 +98,21 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
             @Override
             public void onClick(View v) {
                 camera.takePicture(null, null, picture);
-                finish();
             }
         });
     }
 
+    //This method gets the screen width of the device in use.
     public static int getScreenWidth() {
         return Resources.getSystem().getDisplayMetrics().widthPixels;
     }
 
+    //This method gets the screen height of the device in use.
     public static int getScreenHeight() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    //This method draws the guide over the camera preview.
     private void Draw() {
         Canvas canvas = holderTransparent.lockCanvas(null);
         Paint  paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -137,6 +143,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         holderTransparent.unlockCanvasAndPost(canvas);
     }
 
+    //This method handles the action performed after taking a picture.
     Camera.PictureCallback picture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -163,8 +170,9 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
                 FormDetector fd = new FormDetector();
                 Mat dest = fd.extract(croppedBmp);
-                FieldDetector field = new FieldDetector();
+                FieldDetector field = new FieldDetector(0);
                 Bitmap dest2 = field.analyze(dest);
+                //FormManager.getInstance().summarize();
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
                 dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
@@ -231,6 +239,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
     }*/
 
+    //This method gets the media file created.
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(
                 Environment
@@ -297,9 +306,10 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        refreshCamera(); //call method for refress camera
+        refreshCamera(); //call method for refresh camera
     }
 
+    //This method refreshes the camera preview.
     public void refreshCamera() {
         if (holder.getSurface() == null) {
             return;

@@ -18,15 +18,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by gyra on 02/04/2018.
+ * Type: Activity
+ * ChooseStudentRecord retrieves all the student records
+ * for a particular school and displays all.
  */
 public class ChooseStudentRecord extends AppCompatActivity implements OnItemClickListener {
 
+    //Properties
     DBHelper database;
     int schoolID;
-
     ListView viewStudents;
-
     List<String> studentList;
     ArrayAdapter<String> studentListAdapter;
     ArrayList<Integer> studentIDs;
@@ -39,6 +40,7 @@ public class ChooseStudentRecord extends AppCompatActivity implements OnItemClic
         this.initComponents();
     }
 
+    //This method initializes the properties.
     private void initComponents() {
         Intent intent = getIntent();
         this.schoolID = intent.getIntExtra("SchoolID", -1);

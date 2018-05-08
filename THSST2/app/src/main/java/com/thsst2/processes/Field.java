@@ -8,8 +8,11 @@ public class Field {
 	private double width;
 	private double height;
 
-	private Question question;
+	private int question;
 	private int score;
+	private String answer;
+
+	private boolean isSelected;
 
 	private int nonzero_pixels;
 
@@ -23,7 +26,9 @@ public class Field {
 		this.setQuestion(question);
 		this.setScore(score);
 
-		this.setNonzeroPixels(0);
+		this.setSelected(false);
+
+		this.setNonzero_pixels(0);
 	}
 
 	public double getX() {
@@ -58,12 +63,12 @@ public class Field {
 		this.height = height;
 	}
 
-	public Question getQuestion() {
+	public int getQuestion() {
 		return question;
 	}
 
-	public void setQuestion(double number) {
-		this.question = FieldManager.getInstance().getQuestions().get((int)number-1);;
+	public void setQuestion(int question) {
+		this.question = question;
 	}
 
 	public int getScore() {
@@ -72,14 +77,40 @@ public class Field {
 
 	public void setScore(int score) {
 		this.score = score;
+
+		switch(score) {
+			case 1: this.setAnswer("Hindi nangyayari");
+				break;
+			case 2: this.setAnswer("Paminsan-minsang nangyayari");
+				break;
+			case 3: this.setAnswer("Madalas mangyari");
+				break;
+			default: break;
+		}
 	}
 
-	public int getNonzeroPixels() {
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
+	public int getNonzero_pixels() {
 		return nonzero_pixels;
 	}
 
-	public void setNonzeroPixels(int nonzero_pixels) {
+	public void setNonzero_pixels(int nonzero_pixels) {
 		this.nonzero_pixels = nonzero_pixels;
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 
 }

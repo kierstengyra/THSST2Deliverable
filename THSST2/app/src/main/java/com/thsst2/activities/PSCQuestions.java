@@ -18,18 +18,22 @@ import com.thsst2.R;
 
 import java.util.ArrayList;
 
+/**
+ * Type: Activity
+ * PSCQuestions displays the Digital Form.
+ * */
+
 public class PSCQuestions extends AppCompatActivity {
 
+    //Properties
     ImageView imgQuestion;
     TextView txtQuestion;
     RadioGroup radioChoices;
-
     DBHelper db;
     ArrayList<Bitmap> pscDrawings;
     ArrayList<String> pscQuestions;
     ArrayList<Integer> pscAnswers;
     int questionCtr;
-
     int studentID;
     int schoolID;
 
@@ -45,6 +49,7 @@ public class PSCQuestions extends AppCompatActivity {
         this.initComponents();
     }
 
+    //This method initializes the properties.
     public void initComponents() {
         this.imgQuestion = (ImageView) findViewById(R.id.imgQuestion);
         this.txtQuestion = (TextView) findViewById(R.id.txtQuestion);
@@ -56,7 +61,7 @@ public class PSCQuestions extends AppCompatActivity {
         this.pscAnswers = new ArrayList<Integer>();
         this.questionCtr = 1;
 
-        Cursor res = this.db.getAllPSCQuestions();
+        Cursor res = this.db.getAllPSCQuestionsWithDrawings();
         if(res.getCount() == 0) {
             Toast.makeText(this, "Could not retrieve questions.", Toast.LENGTH_SHORT).show();
         }
@@ -71,6 +76,7 @@ public class PSCQuestions extends AppCompatActivity {
         this.txtQuestion.setText(pscQuestions.get(0));
     }
 
+    //This method displays the next question.
     public void nextQuestion(View view) {
         int selectedId = this.radioChoices.getCheckedRadioButtonId();
         if(selectedId != -1) {
