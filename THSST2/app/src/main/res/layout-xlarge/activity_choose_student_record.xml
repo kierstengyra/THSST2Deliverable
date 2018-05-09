@@ -19,9 +19,11 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Select Student Record"
                 android:id="@+id/txtHeadingChoose"
-                android:padding="5dp"
-                android:textColor="#19975D"
-                android:textSize="38sp" />
+                android:padding="15dp"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                android:background="#0B5D51" />
         </TableRow>
 
         <TableRow
@@ -36,7 +38,7 @@
                 android:footerDividersEnabled="false"
                 android:divider="#72bf9c"
                 android:padding="5dp"
-                android:minHeight="38dp" />
+                android:minHeight="20dp" />
         </TableRow>
     </TableLayout>
 </RelativeLayout>

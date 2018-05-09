@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".activities.WelcomeScreen"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,19 +27,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.CheckStudentRecord"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".activities.CreateStudentRecord"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".activities.ChooseStudentRecord"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".activities.ChooseModule"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".activities.CameraOverlay"
@@ -51,11 +51,11 @@
 
         </activity>
         <activity android:name=".activities.PSCQuestions"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
         <activity android:name=".activities.FinalMenu"
-            android:screenOrientation="landscape">
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

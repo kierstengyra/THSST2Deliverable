@@ -2,200 +2,177 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TableLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:stretchColumns="0,1,2">
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Create Student Record"
+        android:id="@+id/txtHeadingCreate"
+        android:layout_span="2"
+        android:padding="15dp"
+        android:textColor="#FFFFFF"
+        android:background="#0B5D51" />
 
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowHeading">
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtFirstName"
+        android:hint="First Name"
+        android:backgroundTint="#19975D"
+        android:textSize="20sp"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@+id/txtHeadingCreate"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Create Student Record"
-                android:id="@+id/txtHeadingCreate"
-                android:layout_span="2"
-                android:padding="5dp"
-                android:textColor="#19975D" />
-        </TableRow>
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtMiddleName"
+        android:hint="Middle Name"
+        android:backgroundTint="#19975D"
+        android:textSize="20sp"
+        android:layout_below="@+id/txtFirstName"
+        android:layout_alignStart="@+id/txtFirstName"
+        android:layout_marginBottom="5dp" />
 
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowName">
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtLastName"
+        android:hint="Last Name"
+        android:backgroundTint="#19975D"
+        android:textSize="20sp"
+        android:layout_alignStart="@id/txtFirstName"
+        android:layout_below="@+id/txtMiddleName"
+        android:layout_marginBottom="5dp" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtFirstName"
-                android:hint="First Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSuffix"
+        android:hint="Suffix"
+        android:backgroundTint="#19975D"
+        android:textSize="20sp"
+        android:layout_alignStart="@id/txtFirstName"
+        android:layout_below="@+id/txtLastName"
+        android:layout_marginBottom="5dp" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtMiddleName"
-                android:hint="Middle Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/txtAge"
+        android:hint="Age"
+        android:backgroundTint="#19975D"
+        android:textSize="20sp"
+        android:layout_alignStart="@+id/txtFirstName"
+        android:layout_below="@+id/spinMonth"
+        android:layout_marginBottom="5dp" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtLastName"
-                android:hint="Last Name"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/radioSex"
+        android:orientation="horizontal"
+        android:layout_alignStart="@id/txtFirstName"
+        android:layout_below="@id/txtSuffix"
+        android:layout_marginBottom="5dp">
 
-        </TableRow>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"
+            android:id="@+id/radioMale"
+            android:hint="Male"
+            android:checked="true"
+            android:textSize="20sp" />
 
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowAge">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"
+            android:id="@+id/radioFemale"
+            android:checked="false"
+            android:layout_gravity="fill"
+            android:textSize="20sp" />
+    </RadioGroup>
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtSuffix"
-                android:hint="Suffix"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Birthday"
+        android:id="@+id/txtBirthday"
+        android:textColor="#000000"
+        android:padding="5dp"
+        android:textSize="20sp"
+        android:layout_alignStart="@+id/txtFirstName"
+        android:layout_below="@+id/radioSex"
+        android:layout_marginBottom="5dp" />
 
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/txtAge"
-                android:hint="Age"
-                android:backgroundTint="#19975D"
-                android:textSize="20sp" />
+    <Spinner
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:id="@+id/spinDay"
+        android:backgroundTint="#179E9A"
+        android:layout_below="@+id/txtBirthday"
+        android:layout_toEndOf="@+id/spinMonth"
+        android:layout_marginBottom="5dp" />
 
-            <RadioGroup
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/radioSex"
-                android:orientation="horizontal">
+    <Spinner
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:id="@+id/spinMonth"
+        android:backgroundTint="#179E9A"
+        android:layout_below="@+id/txtBirthday"
+        android:layout_alignStart="@+id/radioSex"
+        android:layout_marginBottom="5dp" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Male"
-                    android:id="@+id/radioMale"
-                    android:hint="Male"
-                    android:checked="true"
-                    android:textSize="20sp" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Female"
-                    android:id="@+id/radioFemale"
-                    android:checked="false"
-                    android:layout_gravity="fill"
-                    android:textSize="20sp" />
-            </RadioGroup>
-        </TableRow>
+    <Spinner
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:id="@+id/spinYear"
+        android:backgroundTint="#179E9A"
+        android:layout_toEndOf="@+id/spinDay"
+        android:layout_alignEnd="@+id/txtFirstName"
+        android:layout_below="@+id/txtBirthday"
+        android:layout_marginBottom="5dp" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rowBirthdayTitle">
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtGrade"
+        android:layout_below="@+id/txtAge"
+        android:layout_alignStart="@+id/txtFirstName"
+        android:hint="Grade Level" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Birthday"
-                android:id="@+id/txtBirthday"
-                android:textColor="#000000"
-                android:padding="5dp"
-                android:textSize="20sp" />
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSection"
+        android:layout_below="@+id/txtAge"
+        android:hint="Section"
+        android:layout_toEndOf="@+id/txtGrade" />
 
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowBirthdayInput">
-
-            <Spinner
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinMonth"
-                android:backgroundTint="#7CBC9E" />
-
-            <Spinner
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinDay"
-                android:backgroundTint="#7CBC9E" />
-
-            <Spinner
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinYear"
-                android:backgroundTint="#7CBC9E" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView2" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/textView3" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowSubmit">
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="Add Student"
-                android:id="@+id/btnSubmit"
-                android:layout_column="2"
-                android:background="#19975d"
-                android:onClick="onSubmit"
-                android:textSize="20sp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true" />
-        </TableRow>
-
-    </TableLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Student"
+        android:id="@+id/btnSubmit"
+        android:layout_column="2"
+        android:background="#179E9A"
+        android:onClick="onSubmit"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:padding="10dp"
+        android:layout_below="@+id/txtGrade"
+        android:layout_alignParentBottom="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF" />
 
 
 </RelativeLayout>
