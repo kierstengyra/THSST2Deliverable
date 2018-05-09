@@ -23,7 +23,6 @@ import com.thsst2.R;
 public class WelcomeScreen extends AppCompatActivity {
 
     //Properties
-    ImageView imgBackground;
     Button btnStart;
     EditText txtPassword;
     DBHelper dbHelper;
@@ -32,9 +31,6 @@ public class WelcomeScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
-
-        this.imgBackground = (ImageView) findViewById(R.id.imgBackground);
-        this.imgBackground.setScaleType(ImageView.ScaleType.FIT_XY);
 
         this.btnStart = (Button) findViewById(R.id.btnStart);
         this.txtPassword = (EditText) findViewById(R.id.txtPassword);
@@ -50,11 +46,15 @@ public class WelcomeScreen extends AppCompatActivity {
         }
         else {
             int school_id = 0;
+            String school_name = "";
+
             while(result.moveToNext()) {
-                school_id = result.getInt(0);
+                school_id = result.getInt(result.getColumnIndex("col_school_id"));
+                school_name = result.getString(result.getColumnIndex("col_school_name"));
             }
 
             Intent intent = new Intent(this, CheckStudentRecord.class);
+            intent.putExtra("SchoolName", school_name);
             intent.putExtra("SchoolID", school_id);
             startActivity(intent);
         }

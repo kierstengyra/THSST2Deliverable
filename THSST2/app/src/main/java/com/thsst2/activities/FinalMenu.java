@@ -20,8 +20,6 @@ import java.util.ArrayList;
 public class FinalMenu extends AppCompatActivity {
 
     //Properties
-    ImageView imgBackgroundMenu;
-    Button btnSwitch;
     Button btnNextStudent;
     Button btnExit;
     int studentID;
@@ -43,10 +41,6 @@ public class FinalMenu extends AppCompatActivity {
         this.pscAnswers = intent.getIntegerArrayListExtra("PSCAnswers");
     }
 
-    public void switchMode(View view) {
-
-    }
-
     //This method goes back to the CheckStudentRecord Activity.
     public void nextStudent(View view) {
         Intent intent = new Intent(this, CheckStudentRecord.class);
@@ -55,15 +49,11 @@ public class FinalMenu extends AppCompatActivity {
     }
 
     public void exit(View view) {
-
+        super.finish();
     }
 
     //This method initializes the properties.
     public void initComponents() {
-        this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
-        this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
-
-        this.btnSwitch = (Button) findViewById(R.id.btnSwitch);
         this.btnNextStudent = (Button) findViewById(R.id.btnNextStudent);
         this.btnExit = (Button) findViewById(R.id.btnExit);
 

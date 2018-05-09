@@ -4,79 +4,115 @@
     android:padding="6dp"
     android:background="#FFFFFF">
 
-    <TableLayout
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="0, 1"
-        android:id="@+id/tblPSC">
+        android:layout_height="wrap_content"
+        android:text="1."
+        android:id="@+id/txtQuestionNo"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:background="#0B5D51"
+        android:padding="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
-        <TableRow
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/rowQuestion">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Susunod"
+        android:id="@+id/btnNext"
+        android:background="#179E9A"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:onClick="nextQuestion"
+        android:layout_column="1"
+        android:layout_gravity="right"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:layout_below="@+id/txtMinsan"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="111dp" />
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/imgQuestion"
-                android:src="@drawable/placeholder" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad"
+        android:id="@+id/txtQuestion"
+        android:layout_below="@+id/txtQuestionNo"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#5D4F42"
+        android:layout_marginBottom="30dp"/>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="100dp"
+        android:id="@+id/btnHindi"
+        android:layout_below="@+id/txtQuestion"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/q1_1"
+        android:onClick="highlightAnswer" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Question"
-                    android:id="@+id/txtQuestion"
-                    android:padding="10dp"
-                    android:textSize="16sp"
-                    android:textColor="#000000" />
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="100dp"
+        android:id="@+id/btnMinsan"
+        android:src="@drawable/q1_1"
+        android:onClick="highlightAnswer"
+        android:layout_alignTop="@+id/btnHindi"
+        android:layout_centerHorizontal="true" />
 
-                <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/radioPSCOptions">
+    <ImageView
+        android:layout_width="75dp"
+        android:layout_height="100dp"
+        android:id="@+id/btnMadalas"
+        android:src="@drawable/q1_1"
+        android:onClick="highlightAnswer"
+        android:layout_above="@+id/txtMadalas"
+        android:layout_alignEnd="@+id/txtQuestion" />
 
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Madalas"
-                        android:id="@+id/radioMadalas"
-                        android:textSize="14sp"
-                        android:textColor="#444444" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hindi"
+        android:id="@+id/txtHindi"
+        android:layout_below="@+id/btnHindi"
+        android:layout_alignParentStart="true"
+        android:layout_alignStart="@+id/btnHindi"
+        android:layout_alignEnd="@+id/btnHindi"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="#5D4F42"
+        android:textStyle="bold"
+        android:onClick="highlightAnswer"/>
 
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Minsan"
-                        android:id="@+id/radioMinsan"
-                        android:textSize="14sp"
-                        android:textColor="#444444" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minsan"
+        android:id="@+id/txtMinsan"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="#5D4F42"
+        android:textStyle="bold"
+        android:layout_below="@+id/btnMinsan"
+        android:layout_alignStart="@+id/btnMinsan"
+        android:layout_alignEnd="@+id/btnMinsan"
+        android:onClick="highlightAnswer"/>
 
-                    <RadioButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hindi"
-                        android:id="@+id/radioHindi"
-                        android:textSize="14sp"
-                        android:textColor="#444444" />
-                </RadioGroup>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Madalas"
+        android:id="@+id/txtMadalas"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="#5D4F42"
+        android:textStyle="bold"
+        android:layout_below="@+id/btnMinsan"
+        android:layout_alignStart="@+id/btnMadalas"
+        android:layout_alignEnd="@+id/btnMadalas"
+        android:onClick="highlightAnswer"/>
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Susunod"
-                    android:id="@+id/btnNext"
-                    android:layout_gravity="bottom|right"
-                    android:background="#19975D"
-                    android:textSize="16sp"
-                    android:padding="10dp"
-                    android:onClick="nextQuestion"/>
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
 </RelativeLayout>

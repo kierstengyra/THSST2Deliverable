@@ -14,19 +14,19 @@
         android:background="#0B5D51" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtFirstName"
         android:hint="First Name"
         android:backgroundTint="#19975D"
         android:textSize="16sp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="30dp"
         android:layout_below="@+id/txtHeadingCreate"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtMiddleName"
         android:hint="Middle Name"
@@ -37,7 +37,7 @@
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtLastName"
         android:hint="Last Name"
@@ -48,7 +48,7 @@
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtSuffix"
         android:hint="Suffix"
@@ -59,7 +59,7 @@
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
@@ -87,7 +87,7 @@
             android:id="@+id/radioMale"
             android:hint="Male"
             android:checked="true"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -96,18 +96,18 @@
             android:id="@+id/radioFemale"
             android:checked="false"
             android:layout_gravity="fill"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </RadioGroup>
 
     <TextView
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Birthday"
         android:id="@+id/txtBirthday"
         android:textColor="#000000"
         android:padding="5dp"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:layout_alignStart="@+id/txtFirstName"
         android:layout_below="@+id/radioSex"
         android:layout_marginBottom="5dp" />
@@ -142,7 +142,7 @@
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtGrade"
         android:layout_below="@+id/txtAge"
@@ -151,7 +151,7 @@
         android:textSize="16sp" />
 
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtSection"
         android:layout_below="@+id/txtAge"

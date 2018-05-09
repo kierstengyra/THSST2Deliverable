@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -26,14 +28,28 @@ import java.util.ArrayList;
 public class PSCQuestions extends AppCompatActivity {
 
     //Properties
-    ImageView imgQuestion;
+    ImageView btnHindi;
+    ImageView btnMinsan;
+    ImageView btnMadalas;
+
+    TextView txtHindi;
+    TextView txtMinsan;
+    TextView txtMadalas;
+
     TextView txtQuestion;
-    RadioGroup radioChoices;
+    TextView txtQuestionNo;
+
     DBHelper db;
+
+    ImageView imgQuestion;
+    RadioGroup radioChoices;
     ArrayList<Bitmap> pscDrawings;
     ArrayList<String> pscQuestions;
     ArrayList<Integer> pscAnswers;
     int questionCtr;
+    int optionCtr;
+    int selected;
+
     int studentID;
     int schoolID;
 
@@ -51,53 +67,97 @@ public class PSCQuestions extends AppCompatActivity {
 
     //This method initializes the properties.
     public void initComponents() {
-        this.imgQuestion = (ImageView) findViewById(R.id.imgQuestion);
+        this.selected = 0;
+
+        this.btnHindi = (ImageView) findViewById(R.id.btnHindi);
+        this.btnMinsan = (ImageView) findViewById(R.id.btnMinsan);
+        this.btnMadalas = (ImageView) findViewById(R.id.btnMadalas);
+
+        this.txtHindi = (TextView) findViewById(R.id.txtHindi);
+        this.txtMinsan = (TextView) findViewById(R.id.txtMinsan);
+        this.txtMadalas = (TextView) findViewById(R.id.txtMadalas);
+
         this.txtQuestion = (TextView) findViewById(R.id.txtQuestion);
-        this.radioChoices = (RadioGroup) findViewById(R.id.radioPSCOptions);
+        this.txtQuestionNo = (TextView) findViewById(R.id.txtQuestionNo);
 
         this.db = new DBHelper(this);
         this.pscDrawings = new ArrayList<Bitmap>();
         this.pscQuestions = new ArrayList<String>();
         this.pscAnswers = new ArrayList<Integer>();
         this.questionCtr = 1;
+        this.optionCtr = 3;
 
-        Cursor res = this.db.getAllPSCQuestionsWithDrawings();
-        if(res.getCount() == 0) {
+        Cursor res = this.db.getAllQuestions();
+        if(res.getCount() == 0)
             Toast.makeText(this, "Could not retrieve questions.", Toast.LENGTH_SHORT).show();
-        }
 
-        while (res.moveToNext()) {
-            byte[] imgarray = res.getBlob(res.getColumnIndex("col_pscdraw_img"));
-            pscDrawings.add(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
+        while (res.moveToNext())
             pscQuestions.add(res.getString(res.getColumnIndex("col_question_tag")));
+
+        Cursor drawings = this.db.getAllPSCOptionDrawings();
+        if(drawings.getCount() == 0)
+            Toast.makeText(this, "No drawings.", Toast.LENGTH_SHORT).show();
+
+        while(drawings.moveToNext()) {
+            byte[] imgarray = drawings.getBlob(drawings.getColumnIndex("col_pscoptions_img"));
+            pscDrawings.add(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
         }
 
-        this.imgQuestion.setImageBitmap(pscDrawings.get(0));
+        this.btnHindi.setImageBitmap(pscDrawings.get(0));
+        this.btnMinsan.setImageBitmap(pscDrawings.get(1));
+        this.btnMinsan.setImageBitmap(pscDrawings.get(2));
+
+//        this.imgQuestion.setImageBitmap(pscDrawings.get(0));
         this.txtQuestion.setText(pscQuestions.get(0));
+    }
+
+    public void highlightAnswer(View view) {
+        if(this.btnHindi.isPressed() || this.txtHindi.isPressed()) {
+            this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+            this.txtMinsan.setBackgroundColor(Color.WHITE);
+            this.txtMadalas.setBackgroundColor(Color.WHITE);
+            this.selected = 1;
+        }
+
+        if(this.btnMinsan.isPressed() || this.txtMinsan.isPressed()) {
+            this.txtHindi.setBackgroundColor(Color.WHITE);
+            this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
+            this.txtMadalas.setBackgroundColor(Color.WHITE);
+            this.selected = 2;
+        }
+
+        if(this.btnMadalas.isPressed() || this.txtMadalas.isPressed()) {
+            this.txtHindi.setBackgroundColor(Color.WHITE);
+            this.txtMinsan.setBackgroundColor(Color.WHITE);
+            this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
+            this.selected = 3;
+        }
     }
 
     //This method displays the next question.
     public void nextQuestion(View view) {
-        int selectedId = this.radioChoices.getCheckedRadioButtonId();
-        if(selectedId != -1) {
-            if(this.questionCtr <= pscDrawings.size()) {
-                RadioButton radioAnswer = (RadioButton) findViewById(selectedId);
-                switch(radioAnswer.getText().toString()) {
-                    case "Madalas": pscAnswers.add(3);
+        if(this.selected != 0) {
+            if(this.questionCtr <= pscQuestions.size()) {
+                switch(selected) {
+                    case 3: pscAnswers.add(3);
                         break;
-                    case "Minsan": pscAnswers.add(2);
+                    case 2: pscAnswers.add(2);
                         break;
-                    case "Hindi": pscAnswers.add(1);
+                    case 1: pscAnswers.add(1);
                         break;
                 }
 
-                if(this.questionCtr != pscDrawings.size()) {
-                    this.imgQuestion.setImageBitmap(pscDrawings.get(this.questionCtr));
+                if(this.questionCtr != pscQuestions.size() && this.optionCtr != pscDrawings.size()) {
+                    this.btnHindi.setImageBitmap(pscDrawings.get(this.optionCtr));
+                    this.btnMinsan.setImageBitmap(pscDrawings.get(this.optionCtr+1));
+                    this.btnMadalas.setImageBitmap(pscDrawings.get(this.optionCtr+2));
                     this.txtQuestion.setText(pscQuestions.get(this.questionCtr));
-                    this.radioChoices.clearCheck();
+                    this.optionCtr += 3;
+                    this.clearAnswers();
                 }
 
                 this.questionCtr++;
+                this.txtQuestionNo.setText(this.questionCtr+".");
             }
             else {
                 String answers = "";
@@ -119,6 +179,8 @@ public class PSCQuestions extends AppCompatActivity {
                         answers += ",";
                 }
 
+                Log.e("PSCQuestions", "Answers: "+answers);
+
                 boolean result = this.db.insertAssessment(answers, sum, this.studentID);
                 if(result) {
                     Intent intent = new Intent(this, FinalMenu.class);
@@ -133,6 +195,14 @@ public class PSCQuestions extends AppCompatActivity {
                     Toast.makeText(this, "Could not insert PSC Answers", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void clearAnswers() {
+        this.txtHindi.setBackgroundColor(Color.WHITE);
+        this.txtMinsan.setBackgroundColor(Color.WHITE);
+        this.txtMadalas.setBackgroundColor(Color.WHITE);
+
+        this.selected = 0;
     }
 
 }

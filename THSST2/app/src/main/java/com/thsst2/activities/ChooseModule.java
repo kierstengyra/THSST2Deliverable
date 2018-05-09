@@ -20,7 +20,6 @@ import org.opencv.android.OpenCVLoader;
 public class ChooseModule extends AppCompatActivity {
 
     //Properties
-    ImageView background;
     Button btnPSC;
     Button btnDAP;
     int studentID;
@@ -41,9 +40,6 @@ public class ChooseModule extends AppCompatActivity {
 
     //This method initializes the properties.
     public void initComponents() {
-        this.background = (ImageView) findViewById(R.id.imgBGModule);
-        this.background.setScaleType(ImageView.ScaleType.FIT_XY);
-
         this.btnPSC = (Button) findViewById(R.id.btnPSC);
         this.btnDAP = (Button) findViewById(R.id.btnDAP);
     }

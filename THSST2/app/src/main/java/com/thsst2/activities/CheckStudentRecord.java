@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.thsst2.R;
 import com.thsst2.processes.DBHelper;
@@ -30,8 +31,9 @@ import java.io.InputStreamReader;
 public class CheckStudentRecord extends AppCompatActivity {
 
     //Properties
-    ImageView imgBackgroundMenu;
+    TextView txtSchoolName;
     int school_id;
+    String school_name;
     DBHelper dbHelper;
 
     @Override
@@ -41,14 +43,15 @@ public class CheckStudentRecord extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.school_id = intent.getIntExtra("SchoolID", -1);
+        this.school_name = intent.getStringExtra("SchoolName");
+
+        this.txtSchoolName = (TextView) findViewById(R.id.txtSchoolName);
+        this.txtSchoolName.setText(this.school_name);
 
         this.dbHelper = new DBHelper(this);
         this.readQuestions();
 
         this.readCSV();
-
-        this.imgBackgroundMenu = (ImageView) findViewById(R.id.imgBackgroundMenu);
-        this.imgBackgroundMenu.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     //This method starts the CreateStudentRecord Activity.
@@ -65,11 +68,6 @@ public class CheckStudentRecord extends AppCompatActivity {
         intent.putExtra("SchoolID", this.school_id);
 
         startActivity(intent);
-    }
-
-    //TODO: Delete
-    public void takePicture(View view) {
-
     }
 
     //This method retrieves the questions from the database

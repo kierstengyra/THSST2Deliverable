@@ -2,17 +2,23 @@ package com.thsst2.processes;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.thsst2.R;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper {
@@ -38,6 +44,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_STUDENT_BIRTHDAY = "col_student_birthday";
     public static final String COL_STUDENT_AGE = "col_student_age";
     public static final String COL_STUDENT_SEX = "col_student_sex";
+    public static final String COL_STUDENT_GRADE = "col_student_grade";
+    public static final String COL_STUDENT_SECTION = "col_student_sec";
 
     public static final String TABLE_DAP = "tbl_dap";
     public static final String COL_DAP_ID = "col_dap_id";
@@ -59,11 +67,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COL_PSCDRAW_ID = "col_pscdraw_id";
     public static final String COL_PSCDRAW_IMG = "col_pscdraw_img";
 
+    public static final String TABLE_PSC_OPTIONS = "tbl_psc_options";
+    public static final String COL_PSCOPTIONS_ID = "col_pscoptions_id";
+    public static final String COL_PSCOPTIONS_IMG = "col_pscoptions_img";
+
     public Context passedContext;
+    private AssetManager assetManager;
+    private int pscSize;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
         this.passedContext = context;
+        this.assetManager = this.passedContext.getAssets();
+        this.pscSize = 35;
     }
 
     @Override
@@ -108,18 +124,21 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_STUDENT_BIRTHDAY+" DATE NOT NULL,"+
                 COL_STUDENT_AGE+" INTEGER NOT NULL,"+
                 COL_STUDENT_SEX+" CHAR NOT NULL,"+
+                COL_STUDENT_GRADE+" INTEGER NOT NULL,"+
+                COL_STUDENT_SECTION+" VARCHAR NOT NULL,"+
                 COL_SCHOOL_ID+" INTEGER NOT NULL,"+
                 "FOREIGN KEY("+COL_SCHOOL_ID+") REFERENCES "+TABLE_SCHOOL+"("+COL_SCHOOL_ID+"));");
 
         //Insert values for tbl_students:
-        db.execSQL("INSERT INTO "+TABLE_STUDENT+"("+COL_STUDENT_FNAME+","+COL_STUDENT_MNAME+","+COL_STUDENT_LNAME+","+COL_STUDENT_SUFFIX+","+COL_STUDENT_BIRTHDAY+","+COL_STUDENT_AGE+","+COL_STUDENT_SEX+","+COL_SCHOOL_ID+")"+
-                " VALUES ('Amze', 'Lauguico', 'Raymundo', null, '1997-09-18', 20, 'F', 1),"+
-                "('Candy', 'Herminado', 'Espulgar', null, '1997-02-02', 20, 'F', 1),"+
-                "('Jazmine', 'Manongsong', 'Sace', null, '1998-07-09', 19, 'F', 5),"+
-                "('Gyra', 'Abanes', 'Ramos', null, '1998-09-30', 19, 'F', 3),"+
-                "('Jeruel', 'Garrido', 'Trinidad', 'Jr.', '1998-02-13', 19, 'M', 5),"+
-                "('Luis', 'Quibol', 'Madrigal', null, '1998-05-18', 19, 'M', 3),"+
-                "('Neil', 'Villagracia', 'Romblon', null, '1997-11-19', 20, 'M', 4);");
+        db.execSQL("INSERT INTO "+TABLE_STUDENT+"("+COL_STUDENT_FNAME+","+COL_STUDENT_MNAME+","+COL_STUDENT_LNAME+","+COL_STUDENT_SUFFIX+","+
+                COL_STUDENT_BIRTHDAY+","+COL_STUDENT_AGE+","+COL_STUDENT_SEX+","+COL_SCHOOL_ID+","+COL_STUDENT_GRADE+","+COL_STUDENT_SECTION+")"+
+                " VALUES ('Amze', 'Lauguico', 'Raymundo', null, '1997-09-18', 20, 'F', 1, 5, 'Emerald'),"+
+                "('Candy', 'Herminado', 'Espulgar', null, '1997-02-02', 20, 'F', 1, 5, 'Amethyst'),"+
+                "('Jazmine', 'Manongsong', 'Sace', null, '1998-07-09', 19, 'F', 5, 5, 'Ruby'),"+
+                "('Gyra', 'Abanes', 'Ramos', null, '1998-09-30', 19, 'F', 3, 5, 'Sapphire'),"+
+                "('Jeruel', 'Garrido', 'Trinidad', 'Jr.', '1998-02-13', 19, 'M', 5, 6, 'Opal'),"+
+                "('Luis', 'Quibol', 'Madrigal', null, '1998-05-18', 19, 'M', 3, 6, 'Garnet'),"+
+                "('Neil', 'Villagracia', 'Romblon', null, '1997-11-19', 20, 'M', 4, 6, 'Diamond');");
 
         // Create tbl_dap:
         db.execSQL("CREATE TABLE "+TABLE_DAP+
@@ -192,33 +211,75 @@ public class DBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + COL_PSC_ID + ") REFERENCES " + TABLE_PSC + "(" + COL_PSC_ID + "));");
 
         //Insert values to tbl_psc_drawings
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q3), 3);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q5), 5);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q8), 8);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q9), 9);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q11), 11);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q12), 12);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q18), 18);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q21), 21);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q26), 26);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q32), 32);
-        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q34), 34);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q3), 3);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q5), 5);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q8), 8);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q9), 9);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q11), 11);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q12), 12);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q18), 18);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q21), 21);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q26), 26);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q32), 32);
+//        this.insertToPSCDrawings(db, convertToByteArray(R.drawable.q34), 34);
+
+        //Create tbl_psc_options
+        db.execSQL("CREATE TABLE " + TABLE_PSC_OPTIONS +
+                "(" + COL_PSCOPTIONS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COL_PSCOPTIONS_IMG + " BLOB,"
+                + COL_PSC_ID + " INTEGER NOT NULL," +
+                "FOREIGN KEY(" + COL_PSC_ID + ") REFERENCES " + TABLE_PSC + "(" + COL_PSC_ID + "));");
+
+        int questionCounter = 1;
+        int optionCounter = 0;
+
+        for(int i = 1; i <= pscSize*3; i++) {
+            optionCounter++;
+
+            Log.e("DBHelper", "Q"+questionCounter+"-"+optionCounter+".jpg");
+
+            ContentValues cv = new ContentValues();
+            cv.put(COL_PSCOPTIONS_IMG, this.convertToByteArray("Q"+questionCounter+"-"+optionCounter+".jpg"));
+            cv.put(COL_PSC_ID, questionCounter);
+            db.insert(TABLE_PSC_OPTIONS, null, cv);
+
+            if(i%3 == 0) {
+                optionCounter = 0;
+                questionCounter++;
+            }
+        }
     }
 
-    public byte[] convertToByteArray(int resID) {
-        Drawable d = ContextCompat.getDrawable(this.passedContext, resID);
-        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+    public byte[] convertToByteArray(String filename) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        try {
+            InputStream is = this.assetManager.open("pscoptions/" + filename);
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            return stream.toByteArray();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
         return stream.toByteArray();
     }
 
-    public void insertToPSCDrawings(SQLiteDatabase database, byte[] image, int pscID) {
-        ContentValues cv = new ContentValues();
-        cv.put(COL_PSCDRAW_IMG, image);
-        cv.put(COL_PSC_ID, pscID);
-        database.insert(TABLE_PSC_DRAWING, null, cv);
-    }
+//    public byte[] convertToByteArray(int resID) {
+//        Drawable d = ContextCompat.getDrawable(this.passedContext, resID);
+//        Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+//        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//        return stream.toByteArray();
+//    }
+//
+//    public void insertToPSCDrawings(SQLiteDatabase database, byte[] image, int pscID) {
+//        ContentValues cv = new ContentValues();
+//        cv.put(COL_PSCDRAW_IMG, image);
+//        cv.put(COL_PSC_ID, pscID);
+//        database.insert(TABLE_PSC_DRAWING, null, cv);
+//    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -229,7 +290,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor confirmSession(String password) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT "+COL_SCHOOL_ID+" FROM "+TABLE_SESSION+" WHERE "+COL_SESSION_PASSWORD+" = '"+password+"'", null);
+        return db.rawQuery("SELECT "+TABLE_SCHOOL+"."+COL_SCHOOL_ID+", "+COL_SCHOOL_NAME+" FROM "+TABLE_SESSION+", "+TABLE_SCHOOL+
+                " WHERE "+COL_SESSION_PASSWORD+" = '"+password+"' AND "+TABLE_SCHOOL+"."+COL_SCHOOL_ID+" = "+TABLE_SESSION+"."+COL_SCHOOL_ID, null);
     }
 
     public Cursor getAllStudentRecordsFromSchool(int schoolID) {
@@ -249,7 +311,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM "+TABLE_PSC, null);
     }
 
-    public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int schoolID) {
+    public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int grade, String section, int schoolID) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -261,6 +323,8 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COL_STUDENT_SEX, sex+"");
         contentValues.put(COL_STUDENT_BIRTHDAY, year + "-" + month + "-" + day);
         contentValues.put(COL_SCHOOL_ID, schoolID);
+        contentValues.put(COL_STUDENT_GRADE, grade);
+        contentValues.put(COL_STUDENT_SECTION, section);
 
         long result = db.insert(TABLE_STUDENT, null, contentValues);
 
@@ -275,6 +339,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT "+COL_PSCDRAW_IMG+", "+COL_QUESTION_TAG+
                 " FROM "+TABLE_PSC_DRAWING+", "+TABLE_PSC+
                 " WHERE "+TABLE_PSC_DRAWING+"."+COL_PSC_ID+" = "+TABLE_PSC+"."+COL_PSC_ID, null);
+    }
+
+    public Cursor getAllPSCOptionDrawings() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.rawQuery("SELECT * FROM "+TABLE_PSC_OPTIONS, null);
     }
 
     public boolean insertAssessment(String answers, int score, int studentID) {

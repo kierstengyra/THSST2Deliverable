@@ -19,10 +19,9 @@
         android:id="@+id/txtFirstName"
         android:hint="First Name"
         android:backgroundTint="#19975D"
-        android:textSize="20sp"
-        android:layout_marginLeft="40dp"
+        android:textSize="18sp"
+        android:layout_marginLeft="20dp"
         android:layout_below="@+id/txtHeadingCreate"
-        android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp" />
 
     <EditText
@@ -31,7 +30,7 @@
         android:id="@+id/txtMiddleName"
         android:hint="Middle Name"
         android:backgroundTint="#19975D"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_below="@+id/txtFirstName"
         android:layout_alignStart="@+id/txtFirstName"
         android:layout_marginBottom="5dp" />
@@ -42,7 +41,7 @@
         android:id="@+id/txtLastName"
         android:hint="Last Name"
         android:backgroundTint="#19975D"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_alignStart="@id/txtFirstName"
         android:layout_below="@+id/txtMiddleName"
         android:layout_marginBottom="5dp" />
@@ -53,20 +52,20 @@
         android:id="@+id/txtSuffix"
         android:hint="Suffix"
         android:backgroundTint="#19975D"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_alignStart="@id/txtFirstName"
         android:layout_below="@+id/txtLastName"
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
         android:id="@+id/txtAge"
         android:hint="Age"
         android:backgroundTint="#19975D"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_alignStart="@+id/txtFirstName"
         android:layout_below="@+id/spinMonth"
         android:layout_marginBottom="5dp" />
@@ -87,7 +86,7 @@
             android:id="@+id/radioMale"
             android:hint="Male"
             android:checked="true"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <RadioButton
             android:layout_width="wrap_content"
@@ -96,7 +95,7 @@
             android:id="@+id/radioFemale"
             android:checked="false"
             android:layout_gravity="fill"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </RadioGroup>
 
     <TextView
@@ -107,7 +106,7 @@
         android:id="@+id/txtBirthday"
         android:textColor="#000000"
         android:padding="5dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_alignStart="@+id/txtFirstName"
         android:layout_below="@+id/radioSex"
         android:layout_marginBottom="5dp" />
@@ -130,7 +129,6 @@
         android:layout_alignStart="@+id/radioSex"
         android:layout_marginBottom="5dp" />
 
-
     <Spinner
         android:layout_width="75dp"
         android:layout_height="50dp"
@@ -142,20 +140,22 @@
         android:layout_marginBottom="5dp" />
 
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtGrade"
-        android:layout_below="@+id/txtAge"
-        android:layout_alignStart="@+id/txtFirstName"
-        android:hint="Grade Level" />
+        android:layout_toEndOf="@+id/txtAge"
+        android:layout_below="@+id/spinDay"
+        android:hint="Grade"
+        android:textSize="18sp" />
 
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/txtSection"
-        android:layout_below="@+id/txtAge"
+        android:layout_below="@+id/spinYear"
         android:hint="Section"
-        android:layout_toEndOf="@+id/txtGrade" />
+        android:layout_toEndOf="@+id/txtGrade"
+        android:textSize="18sp" />
 
     <Button
         android:layout_width="wrap_content"

@@ -2,6 +2,7 @@ package com.thsst2.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thsst2.processes.DBHelper;
@@ -31,25 +33,35 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
 
     //Properties
     ArrayAdapter<String> monthAdapter;
-    List<String> months;
-    Spinner spinMonths;
     ArrayAdapter<Integer> dayAdapter;
-    List<Integer> days;
-    Spinner spinDays;
     ArrayAdapter<Integer> yearAdapter;
+
     List<Integer> years;
+    List<String> months;
+    List<Integer> days;
+
+    Spinner spinMonths;
+    Spinner spinDays;
     Spinner spinYears;
+
     Calendar now;
     private int startYear;
     private int endYear;
+
+    TextView txtEditCreate;
     EditText fname;
     EditText mname;
     EditText lname;
     EditText suffix;
     EditText age;
+    EditText grade;
+    EditText section;
+
     RadioGroup radioSexGroup;
     RadioButton radioSexButton;
+
     DBHelper database;
+
     int schoolID;
 
     @Override
@@ -66,7 +78,8 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
         String middleName = this.mname.getText().toString();
         String lastName = this.lname.getText().toString();
         String suffix = this.suffix.getText().toString();
-        int age = Integer.parseInt(this.age.getText().toString());
+
+        String rawAge = this.age.getText().toString();
         int year = Integer.parseInt(spinYears.getSelectedItem().toString());
         int day = Integer.parseInt(spinDays.getSelectedItem().toString());
         int month = spinMonths.getSelectedItemPosition()+1;
@@ -75,28 +88,50 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
         this.radioSexButton = (RadioButton) findViewById(selectedId);
         char sex = (radioSexButton.getText().toString().equals("Male") ? 'M' : 'F');
 
-        boolean isInserted = this.database.insertStudentRecord(firstName, middleName, lastName, suffix, age, sex, year, day, month, this.schoolID);
+        String rawGrade = this.grade.getText().toString();
+        String sec = this.section.getText().toString();
 
-        if(isInserted)
-            Toast.makeText(this, "Student record added.", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Could not create record.", Toast.LENGTH_SHORT).show();
+        if(isValid(firstName, lastName, rawAge, rawGrade, sec)) {
+            int age = Integer.parseInt(rawAge);
+            int gradeLevel = Integer.parseInt(rawGrade);
 
-        int studentID = 0;
-        Cursor res = this.database.getStudentID(firstName, middleName, lastName, suffix, age, this.schoolID);
-        if(res.getCount() == 0 || res.getCount() > 1)
-            Toast.makeText(this, "Student not found.", Toast.LENGTH_SHORT).show();
-        else {
-            while(res.moveToNext()) {
-                studentID = res.getInt(res.getColumnIndex("col_student_id"));
+            boolean isInserted = this.database.insertStudentRecord(firstName, middleName, lastName, suffix, age, sex, year, day, month, gradeLevel, sec, this.schoolID);
+
+            if(isInserted)
+                Toast.makeText(this, "Student record added.", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(this, "Could not create record.", Toast.LENGTH_SHORT).show();
+
+            int studentID = 0;
+            Cursor res = this.database.getStudentID(firstName, middleName, lastName, suffix, age, this.schoolID);
+            if(res.getCount() == 0 || res.getCount() > 1)
+                Toast.makeText(this, "Student not found.", Toast.LENGTH_SHORT).show();
+            else {
+                while(res.moveToNext()) {
+                    studentID = res.getInt(res.getColumnIndex("col_student_id"));
+                }
             }
+
+            Intent intent = new Intent(this, ChooseModule.class);
+            intent.putExtra("SchoolID", this.schoolID);
+            intent.putExtra("StudentID", studentID);
+
+            startActivity(intent);
         }
+        else {
+            this.txtEditCreate.setBackgroundColor(Color.rgb(238,99,99));
+            this.txtEditCreate.setText("Fill up the form completely.");
+        }
+    }
 
-        Intent intent = new Intent(this, ChooseModule.class);
-        intent.putExtra("SchoolID", this.schoolID);
-        intent.putExtra("StudentID", studentID);
+    private boolean isValid(String firstName, String lastName, String age, String gradeLevel, String sec) {
+        boolean valid = true;
 
-        startActivity(intent);
+        if(firstName.equals("") || lastName.equals("") || age.equals("") || gradeLevel.equals("") || sec.equals(""))
+            valid = false;
+
+        return valid;
+
     }
 
     @Override
@@ -160,6 +195,9 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
         this.suffix = (EditText) findViewById(R.id.txtSuffix);
         this.age = (EditText) findViewById(R.id.txtAge);
         this.radioSexGroup = (RadioGroup) findViewById(R.id.radioSex);
+        this.grade = (EditText) findViewById(R.id.txtGrade);
+        this.section = (EditText) findViewById(R.id.txtSection);
+        this.txtEditCreate = (TextView) findViewById(R.id.txtHeadingCreate);
 
         // Fill spinners with data
         monthAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, months);
