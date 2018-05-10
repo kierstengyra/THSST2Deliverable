@@ -23,6 +23,8 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +37,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thsst2.R;
@@ -59,6 +62,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     int schoolID;
     int studentID;
     int pageCounter;
+    TextView txtPageNum;
 
     Bitmap croppedBmp;
     Uri photoUri;
@@ -103,6 +107,8 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         this.schoolID = intent.getIntExtra("SchoolID", -1);
         this.studentID = intent.getIntExtra("StudentID", -1);
         this.pageCounter = 0;
+        this.txtPageNum = (TextView) findViewById(R.id.txtPageNum);
+        this.txtPageNum.setText("PAGE 1");
         //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
 
         Button captureButton = (Button) findViewById(R.id.takepicture);
@@ -199,6 +205,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 }
 
                 pageCounter++;
+                txtPageNum.setText("PAGE "+pageCounter+1);
                 //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
@@ -217,6 +224,40 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
             }
         }
     };
+
+    //Thread Start
+//                Runnable r = new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.e("CameraOverlay", "Page "+pageCounter);
+//                        FormDetector fd = new FormDetector();
+//                        Mat dest = fd.extract(croppedBmp);
+//                        FieldDetector field = new FieldDetector(pageCounter);
+//                        Bitmap dest2 = field.analyze(dest);
+//
+//                        PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
+//
+//                        if(PaperFormManager.getInstance().isComplete()) {
+//                            PaperFormManager.getInstance().summarize();
+//                            Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
+//                            intent.putExtra("SchoolID", schoolID);
+//                            startActivity(intent);
+//                        }
+//                    }
+//                };
+//                Thread analyzer = new Thread(r);
+//                analyzer.start();
+//                if(analyzer.isInterrupted()) {
+//                    PaperFormManager.getInstance().summarize();
+//                    Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
+//                    intent.putExtra("SchoolID", schoolID);
+//                    startActivity(intent);
+//                }
+//
+//                refreshCamera();
+//                pageCounter++;
+//                txtPageNum.setText(pageCounter+1 + "");
+    //Thread End
 
    /* public void cropImage(){
         Bitmap bitmap = BitmapFactory.decodeFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+
