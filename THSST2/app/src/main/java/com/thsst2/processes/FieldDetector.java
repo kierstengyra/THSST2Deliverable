@@ -1,6 +1,7 @@
 package com.thsst2.processes;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -44,6 +45,7 @@ public class FieldDetector {
 		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
 		this.detectChecks();
+		Log.e("FieldDetector", "Done processing.");
 	}
 
 	private void detectChecks() {

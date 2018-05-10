@@ -55,6 +55,20 @@ public class PaperFormManager {
         }
     }
 
+    public boolean isComplete() {
+        int ctr = 0;
+
+        for(int i = 0; i < this.allPages.size(); i++) {
+            if(this.allPages.get(i).containsPicture())
+                ctr++;
+        }
+
+        if(ctr == 6)
+            return true;
+        else
+            return false;
+    }
+
     public ArrayList<FieldManager> getAllPages() {
         return allPages;
     }

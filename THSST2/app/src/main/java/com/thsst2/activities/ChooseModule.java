@@ -57,6 +57,8 @@ public class ChooseModule extends AppCompatActivity {
     //This method loads the CameraOverlay Activity.
     public void loadCamera(View view) {
         Intent intent = new Intent(this, CameraOverlay.class);
+        intent.putExtra("StudentID", this.studentID);
+        intent.putExtra("SchoolID", this.schoolID);
         startActivity(intent);
     }
 }

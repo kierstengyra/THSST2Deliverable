@@ -9,6 +9,7 @@ package com.thsst2.activities;
  */
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 import com.thsst2.R;
 import com.thsst2.processes.FieldDetector;
 import com.thsst2.processes.FormDetector;
+import com.thsst2.processes.PaperFormManager;
 
 import org.opencv.core.Mat;
 
@@ -53,9 +55,11 @@ import java.util.Date;
 
 public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Callback {
 
-    //TODO: Get school ID intent
-
     //Properties
+    int schoolID;
+    int studentID;
+    int pageCounter;
+
     Bitmap croppedBmp;
     Uri photoUri;
     String path;
@@ -93,6 +97,13 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         View viewControl = controlInflater.inflate(R.layout.control, null);
         LayoutParams layoutParamsControl = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         this.addContentView(viewControl, layoutParamsControl);
+
+        //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
+        Intent intent = getIntent();
+        this.schoolID = intent.getIntExtra("SchoolID", -1);
+        this.studentID = intent.getIntExtra("StudentID", -1);
+        this.pageCounter = 0;
+        //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
 
         Button captureButton = (Button) findViewById(R.id.takepicture);
         captureButton.setOnClickListener(new View.OnClickListener() {
@@ -169,11 +180,26 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
                 croppedBmp = Bitmap.createBitmap(bitmap, (int)startX, (int)startY, (int)endX, (int)endY);
 
+                //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
                 FormDetector fd = new FormDetector();
                 Mat dest = fd.extract(croppedBmp);
-                FieldDetector field = new FieldDetector(0);
+                FieldDetector field = new FieldDetector(pageCounter);
                 Bitmap dest2 = field.analyze(dest);
-                //PaperFormManager.getInstance().summarize();
+
+                PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
+
+                if(PaperFormManager.getInstance().isComplete()) {
+                    PaperFormManager.getInstance().summarize();
+                    Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
+                    intent.putExtra("SchoolID", schoolID);
+                    startActivity(intent);
+                }
+                else {
+                    refreshCamera();
+                }
+
+                pageCounter++;
+                //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
                 dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);

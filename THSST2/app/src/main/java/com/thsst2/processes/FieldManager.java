@@ -1,5 +1,7 @@
 package com.thsst2.processes;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -15,9 +17,11 @@ public class FieldManager {
 	private int partialScore;
 	private ArrayList<String> partialAnswers;
 	private double avgPixels;
+	private boolean hasPicture;
 
 	public FieldManager() {
 		this.fieldList = new ArrayList<Field>();
+		this.hasPicture = false;
 	}
 
 	public void setAvgPixelsPerQuestion() {
@@ -27,9 +31,11 @@ public class FieldManager {
 			int question = this.fieldList.get(i).getQuestion();
 			int nonzero = this.fieldList.get(i).getNonzero_pixels();
 			PaperFormManager.getInstance().getQuestion(question-1).addPixel(nonzero);
+			Log.e("FieldManager", i+" Nonzero - "+nonzero);
 
 			if((i+1)%3 == 0) {
 				PaperFormManager.getInstance().getQuestion(qIndex).setAvgPixels();
+				Log.e("FieldManager", "AVG: "+PaperFormManager.getInstance().getQuestion(qIndex).getAvgPixels());
 				qIndex++;
 			}
 		}
@@ -95,5 +101,13 @@ public class FieldManager {
 
 	public void setAvgPixels(double avgPixels) {
 		this.avgPixels = avgPixels;
+	}
+
+	public boolean containsPicture() {
+		return hasPicture;
+	}
+
+	public void setHasPicture(boolean hasPicture) {
+		this.hasPicture = hasPicture;
 	}
 }

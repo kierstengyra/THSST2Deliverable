@@ -1,5 +1,7 @@
 package com.thsst2.processes;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
