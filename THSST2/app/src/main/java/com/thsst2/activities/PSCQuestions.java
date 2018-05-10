@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.thsst2.processes.DBHelper;
 import com.thsst2.R;
+import com.thsst2.processes.DigitalFormManager;
 
 import java.util.ArrayList;
 
@@ -63,6 +64,7 @@ public class PSCQuestions extends AppCompatActivity {
         this.schoolID = intent.getIntExtra("SchoolID", -1);
 
         this.initComponents();
+        Toast.makeText(this, "Student ID: "+this.studentID+" | School ID: "+this.schoolID, Toast.LENGTH_SHORT).show();
     }
 
     //This method initializes the properties.
@@ -87,27 +89,13 @@ public class PSCQuestions extends AppCompatActivity {
         this.questionCtr = 1;
         this.optionCtr = 3;
 
-        Cursor res = this.db.getAllQuestions();
-        if(res.getCount() == 0)
-            Toast.makeText(this, "Could not retrieve questions.", Toast.LENGTH_SHORT).show();
-
-        while (res.moveToNext())
-            pscQuestions.add(res.getString(res.getColumnIndex("col_question_tag")));
-
-        Cursor drawings = this.db.getAllPSCOptionDrawings();
-        if(drawings.getCount() == 0)
-            Toast.makeText(this, "No drawings.", Toast.LENGTH_SHORT).show();
-
-        while(drawings.moveToNext()) {
-            byte[] imgarray = drawings.getBlob(drawings.getColumnIndex("col_pscoptions_img"));
-            pscDrawings.add(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
-        }
+        this.pscQuestions = DigitalFormManager.getInstance().getPscQuestions();
+        this.pscDrawings = DigitalFormManager.getInstance().getPscDrawings();
 
         this.btnHindi.setImageBitmap(pscDrawings.get(0));
         this.btnMinsan.setImageBitmap(pscDrawings.get(1));
         this.btnMinsan.setImageBitmap(pscDrawings.get(2));
 
-//        this.imgQuestion.setImageBitmap(pscDrawings.get(0));
         this.txtQuestion.setText(pscQuestions.get(0));
     }
 
@@ -183,6 +171,14 @@ public class PSCQuestions extends AppCompatActivity {
 
                 boolean result = this.db.insertAssessment(answers, sum, this.studentID);
                 if(result) {
+                    this.selected = 0;
+                    this.optionCtr = 3;
+                    this.questionCtr = 1;
+
+//                    this.pscQuestions.clear();
+//                    this.pscDrawings.clear();
+//                    this.pscAnswers.clear();
+
                     Intent intent = new Intent(this, FinalMenu.class);
                     intent.putExtra("StudentID", this.studentID);
                     intent.putExtra("SchoolID", this.schoolID);

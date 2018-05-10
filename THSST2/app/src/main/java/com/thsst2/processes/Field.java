@@ -1,5 +1,10 @@
 package com.thsst2.processes;
 
+/**
+ * Type: Process
+ * Field is the class type of pre-defined fields.
+ * */
+
 public class Field {
 
 	private double x;

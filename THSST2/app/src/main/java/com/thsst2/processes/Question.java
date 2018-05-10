@@ -3,7 +3,8 @@ package com.thsst2.processes;
 import java.util.ArrayList;
 
 /**
- * Created by gyra on 04/06/2018.
+ * Type: Process
+ * Question is the class type for all pre-defined questions.
  */
 public class Question {
 

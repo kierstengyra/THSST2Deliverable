@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by gyra on 03/25/2018.
+ * Type: Process
+ * FormDetector separates the detected paper from the background
+ * and uses four-point transform to straighten its perspective.
  */
 public class FormDetector {
 

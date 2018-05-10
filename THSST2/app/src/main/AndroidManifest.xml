@@ -27,11 +27,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.CheckStudentRecord"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
 
         </activity>
         <activity android:name=".activities.CreateStudentRecord"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
 
         </activity>
         <activity android:name=".activities.ChooseStudentRecord"
@@ -43,19 +45,18 @@
 
         </activity>
         <activity android:name=".activities.CameraOverlay"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity android:name=".activities.CaptureForm"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
 
         </activity>
         <activity android:name=".activities.PSCQuestions"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
 
         </activity>
         <activity android:name=".activities.FinalMenu"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
 
         </activity>
     </application>

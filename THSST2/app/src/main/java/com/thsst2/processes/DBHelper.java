@@ -21,6 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+/**
+ * Type: Process
+ * DBHelper is a helper class which handles all database operations.
+ * */
+
 public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "wellbeingapp.db";
 
@@ -309,6 +314,17 @@ public class DBHelper extends SQLiteOpenHelper {
     public Cursor getAllQuestions() {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.rawQuery("SELECT * FROM "+TABLE_PSC, null);
+    }
+
+    public String getSchoolName(int schoolId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT "+COL_SCHOOL_NAME+" FROM "+TABLE_SCHOOL+" WHERE "+COL_SCHOOL_ID+" = "+schoolId, null);
+        String schoolName = "";
+
+        while(cursor.moveToNext())
+            schoolName = cursor.getString(cursor.getColumnIndex(COL_SCHOOL_NAME));
+
+        return schoolName;
     }
 
     public boolean insertStudentRecord(String fname, String mname, String lname, String suffix, int age, char sex, int year, int day, int month, int grade, String section, int schoolID) {

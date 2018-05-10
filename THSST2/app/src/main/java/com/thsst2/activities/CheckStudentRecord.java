@@ -9,18 +9,20 @@ package com.thsst2.activities;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.thsst2.R;
 import com.thsst2.processes.DBHelper;
+import com.thsst2.processes.DigitalFormManager;
 import com.thsst2.processes.Field;
 import com.thsst2.processes.FieldManager;
-import com.thsst2.processes.FormManager;
+import com.thsst2.processes.PaperFormManager;
 import com.thsst2.processes.Question;
 
 import java.io.BufferedReader;
@@ -43,15 +45,16 @@ public class CheckStudentRecord extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.school_id = intent.getIntExtra("SchoolID", -1);
-        this.school_name = intent.getStringExtra("SchoolName");
+
+        this.dbHelper = new DBHelper(this);
+        this.school_name = this.dbHelper.getSchoolName(this.school_id);
 
         this.txtSchoolName = (TextView) findViewById(R.id.txtSchoolName);
         this.txtSchoolName.setText(this.school_name);
 
-        this.dbHelper = new DBHelper(this);
         this.readQuestions();
-
         this.readCSV();
+        this.getQuestionsAndDrawings();
     }
 
     //This method starts the CreateStudentRecord Activity.
@@ -70,6 +73,23 @@ public class CheckStudentRecord extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void getQuestionsAndDrawings() {
+        Cursor questions = this.dbHelper.getAllQuestions();
+        Cursor drawings = this.dbHelper.getAllPSCOptionDrawings();
+
+        if(questions.getCount() == 0 || drawings.getCount() == 0)
+            Toast.makeText(this, "Could not retrieve questions or drawings.", Toast.LENGTH_SHORT).show();
+        else {
+            while(questions.moveToNext())
+                DigitalFormManager.getInstance().addQuestion(questions.getString(questions.getColumnIndex("col_question_tag")));
+
+            while(drawings.moveToNext()) {
+                byte[] imgarray = drawings.getBlob(drawings.getColumnIndex("col_pscoptions_img"));
+                DigitalFormManager.getInstance().addDrawing(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
+            }
+        }
+    }
+
     //This method retrieves the questions from the database
     //and creates an object for each.
     private void readQuestions() {
@@ -84,7 +104,7 @@ public class CheckStudentRecord extends AppCompatActivity {
                 String question = result.getString(result.getColumnIndex("col_question_tag"));
 
                 Question q = new Question(num, question);
-                FormManager.getInstance().addQuestion(q);
+                PaperFormManager.getInstance().addQuestion(q);
             }
         }
     }
@@ -115,7 +135,7 @@ public class CheckStudentRecord extends AppCompatActivity {
                             fm.addField(field);
                         }
 
-                        FormManager.getInstance().addPage(fm);
+                        PaperFormManager.getInstance().addPage(fm);
                     }
                 }
             }

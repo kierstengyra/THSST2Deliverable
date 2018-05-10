@@ -23,6 +23,7 @@ public class ChooseModule extends AppCompatActivity {
     Button btnPSC;
     Button btnDAP;
     int studentID;
+    int schoolID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,7 @@ public class ChooseModule extends AppCompatActivity {
 
         Intent intent = getIntent();
         this.studentID = intent.getIntExtra("StudentID", -1);
+        this.schoolID = intent.getIntExtra("SchoolID", -1);
 
         this.initComponents();
     }
@@ -48,6 +50,7 @@ public class ChooseModule extends AppCompatActivity {
     public void loadPSC(View view) {
         Intent intent = new Intent(this, PSCQuestions.class);
         intent.putExtra("StudentID", this.studentID);
+        intent.putExtra("SchoolID", this.schoolID);
         startActivity(intent);
     }
 

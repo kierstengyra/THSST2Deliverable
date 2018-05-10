@@ -39,7 +39,6 @@ import android.widget.Toast;
 import com.thsst2.R;
 import com.thsst2.processes.FieldDetector;
 import com.thsst2.processes.FormDetector;
-import com.thsst2.processes.FormManager;
 
 import org.opencv.core.Mat;
 
@@ -53,6 +52,8 @@ import java.util.Date;
 
 
 public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Callback {
+
+    //TODO: Get school ID intent
 
     //Properties
     Bitmap croppedBmp;
@@ -172,7 +173,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 Mat dest = fd.extract(croppedBmp);
                 FieldDetector field = new FieldDetector(0);
                 Bitmap dest2 = field.analyze(dest);
-                //FormManager.getInstance().summarize();
+                //PaperFormManager.getInstance().summarize();
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
                 dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);

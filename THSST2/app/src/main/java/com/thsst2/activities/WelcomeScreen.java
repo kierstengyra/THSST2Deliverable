@@ -2,6 +2,8 @@ package com.thsst2.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import com.thsst2.processes.DBHelper;
 import com.thsst2.R;
+import com.thsst2.processes.DigitalFormManager;
 
 /**
  * Type: Activity
@@ -46,15 +49,12 @@ public class WelcomeScreen extends AppCompatActivity {
         }
         else {
             int school_id = 0;
-            String school_name = "";
 
             while(result.moveToNext()) {
                 school_id = result.getInt(result.getColumnIndex("col_school_id"));
-                school_name = result.getString(result.getColumnIndex("col_school_name"));
             }
 
             Intent intent = new Intent(this, CheckStudentRecord.class);
-            intent.putExtra("SchoolName", school_name);
             intent.putExtra("SchoolID", school_id);
             startActivity(intent);
         }

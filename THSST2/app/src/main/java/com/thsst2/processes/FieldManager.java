@@ -2,6 +2,12 @@ package com.thsst2.processes;
 
 import java.util.ArrayList;
 
+/**
+ * Type: Process
+ * FieldManager handles all the
+ * pre-defined fields per page.
+ * */
+
 public class FieldManager {
 
 	private ArrayList<Field> fieldList;
@@ -20,10 +26,10 @@ public class FieldManager {
 		for(int i = 0; i < this.fieldList.size(); i++) {
 			int question = this.fieldList.get(i).getQuestion();
 			int nonzero = this.fieldList.get(i).getNonzero_pixels();
-			FormManager.getInstance().getQuestion(question-1).addPixel(nonzero);
+			PaperFormManager.getInstance().getQuestion(question-1).addPixel(nonzero);
 
 			if((i+1)%3 == 0) {
-				FormManager.getInstance().getQuestion(qIndex).setAvgPixels();
+				PaperFormManager.getInstance().getQuestion(qIndex).setAvgPixels();
 				qIndex++;
 			}
 		}
@@ -34,10 +40,10 @@ public class FieldManager {
 
 		for(int i = 0; i < this.fieldList.size(); i++) {
 			int question = this.fieldList.get(i).getQuestion();
-			double avg = FormManager.getInstance().getQuestion(question-1).getAvgPixels();
+			double avg = PaperFormManager.getInstance().getQuestion(question-1).getAvgPixels();
 
 			if(this.fieldList.get(i).getNonzero_pixels() > avg) {
-				FormManager.getInstance().getQuestion(question-1).addAnswerCnt();
+				PaperFormManager.getInstance().getQuestion(question-1).addAnswerCnt();
 				this.fieldList.get(i).setSelected(true);
 			}
 		}

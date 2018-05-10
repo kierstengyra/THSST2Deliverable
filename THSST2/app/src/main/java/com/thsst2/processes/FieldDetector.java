@@ -80,7 +80,7 @@ public class FieldDetector {
 		Imgproc.cvtColor(srcGray, colored, Imgproc.COLOR_GRAY2BGR);
 		Imgproc.drawContours(colored, contours, -1, new Scalar(212, 173, 70));
 
-		FieldManager fm = FormManager.getInstance().getPage(this.page);
+		FieldManager fm = PaperFormManager.getInstance().getPage(this.page);
 		int size = fm.getFieldList().size();
 
 		for(int i = 0; i < size; i++) {
@@ -93,7 +93,7 @@ public class FieldDetector {
 			Mat roi_submat = srcGray.submat(roi);
 
 			int nonzero = Core.countNonZero(roi_submat);
-			FormManager.getInstance().getPage(this.page).getField(i).setNonzero_pixels(nonzero);
+			PaperFormManager.getInstance().getPage(this.page).getField(i).setNonzero_pixels(nonzero);
 		}
 
 		this.output_mat = srcGray;

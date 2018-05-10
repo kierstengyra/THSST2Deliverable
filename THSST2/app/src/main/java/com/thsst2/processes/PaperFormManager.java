@@ -5,34 +5,35 @@ import android.util.Log;
 import java.util.ArrayList;
 
 /**
- * Created by gyra on 05/08/2018.
+ * Type: Process
+ * PaperFormManager handles the paper form module.
  */
-public class FormManager {
+public class PaperFormManager {
 
-    private static FormManager instance = null;
+    private static PaperFormManager instance = null;
     private ArrayList<FieldManager> allPages;
     private int finalScore;
     private ArrayList<String> finalAnswers;
     private ArrayList<Question> questionList;
 
-    protected FormManager() {
+    protected PaperFormManager() {
         this.allPages = new ArrayList<FieldManager>();
         this.questionList = new ArrayList<Question>();
     }
 
-    public static FormManager getInstance() {
+    public static PaperFormManager getInstance() {
         if(instance == null)
-            instance = new FormManager();
+            instance = new PaperFormManager();
 
         return instance;
     }
 
     public void summarize() {
-        Log.e("FormManager", "SUMMARY");
+        Log.e("PaperFormManager", "SUMMARY");
 
         for(int i = 0; i < this.allPages.size(); i++) {
             this.allPages.get(i).selectPossibleAnswers();
-            Log.e("FormManager", "PAGE "+(i+1));
+            Log.e("PaperFormManager", "PAGE "+(i+1));
 
             int prevNo = 0;
             for(int j = 0; j < this.allPages.get(i).getFieldList().size(); j++) {
@@ -41,16 +42,16 @@ public class FormManager {
 
                 if(f.isSelected()) {
                     if(prevNo != qNo) {
-                        Log.e("FormManager", "");
-                        Log.e("FormManager", "No. "+qNo+": "+this.questionList.get(qNo-1).getQuestion());
+                        Log.e("PaperFormManager", "");
+                        Log.e("PaperFormManager", "No. "+qNo+": "+this.questionList.get(qNo-1).getQuestion());
                     }
 
-                    Log.e("FormManager", "Answer: "+f.getAnswer());
+                    Log.e("PaperFormManager", "Answer: "+f.getAnswer());
                     prevNo = qNo;
                 }
             }
-            Log.e("FormManager", "||||||||||||||||||||||||||");
-            Log.e("FormManager", "");
+            Log.e("PaperFormManager", "||||||||||||||||||||||||||");
+            Log.e("PaperFormManager", "");
         }
     }
 
