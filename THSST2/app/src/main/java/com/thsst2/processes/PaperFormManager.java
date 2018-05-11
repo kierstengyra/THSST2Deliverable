@@ -42,7 +42,6 @@ public class PaperFormManager {
 
                 if(f.isSelected()) {
                     if(prevNo != qNo) {
-                        Log.e("PaperFormManager", "");
                         Log.e("PaperFormManager", "No. "+qNo+": "+this.questionList.get(qNo-1).getQuestion());
                     }
 
@@ -51,7 +50,6 @@ public class PaperFormManager {
                 }
             }
             Log.e("PaperFormManager", "||||||||||||||||||||||||||");
-            Log.e("PaperFormManager", "");
         }
     }
 

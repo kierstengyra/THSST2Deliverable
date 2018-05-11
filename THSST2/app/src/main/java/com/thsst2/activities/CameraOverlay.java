@@ -185,13 +185,16 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 int endY =(int)(endRectY * bitHeight / (preHeight *1.125));
 
                 croppedBmp = Bitmap.createBitmap(bitmap, (int)startX, (int)startY, (int)endX, (int)endY);
+//                float ratio = (float) croppedBmp.getHeight()/1024;
+//                int height = 1024;
+//                int width = croppedBmp.getWidth()/(int)ratio;
+//                Bitmap resized = Bitmap.createScaledBitmap(croppedBmp, width, height, true);
 
                 //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
                 FormDetector fd = new FormDetector();
                 Mat dest = fd.extract(croppedBmp);
                 FieldDetector field = new FieldDetector(pageCounter);
                 Bitmap dest2 = field.analyze(dest);
-
                 PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
 
                 if(PaperFormManager.getInstance().isComplete()) {
@@ -205,7 +208,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 }
 
                 pageCounter++;
-                txtPageNum.setText("PAGE "+pageCounter+1);
+                txtPageNum.setText("PAGE "+(pageCounter+1));
                 //----------------COMMENT OUT THIS SECTION WHEN EDITING THE OVERLAY
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
@@ -215,12 +218,11 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(bitmapdata);
                 fos.close();
-
-                Toast.makeText(CameraOverlay.this, "Done", Toast.LENGTH_SHORT).show();
-
             } catch (FileNotFoundException e) {
+                e.printStackTrace();
 
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     };

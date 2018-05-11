@@ -25,18 +25,13 @@ public class FieldManager {
 	}
 
 	public void setAvgPixelsPerQuestion() {
-		int qIndex = 0;
-
 		for(int i = 0; i < this.fieldList.size(); i++) {
 			int question = this.fieldList.get(i).getQuestion();
 			int nonzero = this.fieldList.get(i).getNonzero_pixels();
 			PaperFormManager.getInstance().getQuestion(question-1).addPixel(nonzero);
-			Log.e("FieldManager", i+" Nonzero - "+nonzero);
 
 			if((i+1)%3 == 0) {
-				PaperFormManager.getInstance().getQuestion(qIndex).setAvgPixels();
-				Log.e("FieldManager", "AVG: "+PaperFormManager.getInstance().getQuestion(qIndex).getAvgPixels());
-				qIndex++;
+				PaperFormManager.getInstance().getQuestion(question-1).setAvgPixels();
 			}
 		}
 	}
