@@ -54,7 +54,7 @@ public class CheckStudentRecord extends AppCompatActivity {
 
         this.readQuestions();
         this.readCSV();
-//        this.getQuestionsAndDrawings();
+        this.getQuestionsAndDrawings();
     }
 
     //This method starts the CreateStudentRecord Activity.

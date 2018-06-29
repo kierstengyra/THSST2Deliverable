@@ -29,6 +29,23 @@ public class PaperFormManager {
     }
 
     public void summarize() {
+        Log.e("PaperFormManager", "Summary");
+
+        for(int m = 0; m < this.allPages.size(); m++)
+            this.allPages.get(m).setAnswers();
+
+        for(int i = 0; i < this.getQuestionList().size(); i++) {
+            Question q = this.getQuestion(i);
+
+            Log.e("PaperFormManager", (i+1)+". "+q.getQuestion());
+            for(int j = 0; j < q.getScoreList().size(); j++)
+                Log.e("PaperFormManager", "A: "+q.getAnswer(j));
+
+            System.out.println();
+        }
+    }
+
+    public void summarize1() {
         Log.e("PaperFormManager", "SUMMARY");
 
         for(int i = 0; i < this.allPages.size(); i++) {

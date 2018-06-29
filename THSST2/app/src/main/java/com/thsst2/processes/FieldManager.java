@@ -24,6 +24,16 @@ public class FieldManager {
 		this.hasPicture = false;
 	}
 
+	public void setAnswers() {
+		for(int i = 0; i < this.fieldList.size(); i++) {
+			int question = this.fieldList.get(i).getQuestion();
+			int answer = this.fieldList.get(i).getScore();
+
+			if(this.fieldList.get(i).isSelected())
+				PaperFormManager.getInstance().getQuestion(question-1).addScore(answer);
+		}
+	}
+
 	public void setAvgPixelsPerQuestion() {
 		for(int i = 0; i < this.fieldList.size(); i++) {
 			int question = this.fieldList.get(i).getQuestion();

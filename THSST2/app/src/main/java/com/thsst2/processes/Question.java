@@ -12,12 +12,17 @@ public class Question {
 
     private int number;
 	private ArrayList<Integer> pixelList;
+	private ArrayList<Integer> scoreList;
+	private ArrayList<String> answerList;
 	private double avgPixels;
 	private int answerCnt;
 	private String question;
 
 	public Question(int number, String question) {
 		this.pixelList = new ArrayList<Integer>();
+		this.scoreList = new ArrayList<Integer>();
+		this.answerList = new ArrayList<String>();
+
 		this.setNumber(number);
 		this.setQuestion(question);
 		this.setAnswerCnt(0);
@@ -78,6 +83,36 @@ public class Question {
 
 	public void addPixel(int pixel) {
 		this.pixelList.add(pixel);
+	}
+
+	public void addScore(int answer) {
+		this.scoreList.add(answer);
+
+		switch(answer) {
+			case 0: this.answerList.add("Hindi nangyayari");
+				break;
+			case 1: this.answerList.add("Minsan nangyayari");
+				break;
+			case 2: this.answerList.add("Madalas nangyayari");
+				break;
+			default: break;
+		}
+	}
+
+	public int getScore(int index) {
+		return this.scoreList.get(index);
+	}
+
+	public String getAnswer(int index) {
+		return this.answerList.get(index);
+	}
+
+	public ArrayList<Integer> getScoreList() {
+		return this.scoreList;
+	}
+
+	public ArrayList<String> getAnswerList() {
+		return this.answerList;
 	}
 
 }
