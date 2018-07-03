@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thsst2.processes.BackgroundCreateRecord;
 import com.thsst2.processes.DBHelper;
 import com.thsst2.R;
 
@@ -95,6 +97,11 @@ public class CreateStudentRecord extends AppCompatActivity implements OnItemSele
             int age = Integer.parseInt(rawAge);
             int gradeLevel = Integer.parseInt(rawGrade);
 
+//            BackgroundCreateRecord b = new BackgroundCreateRecord(this);
+//            Log.e("CreateRecord", "Start");
+//            b.execute(firstName, middleName, lastName, suffix, Character.toString(sex),
+//                    String.valueOf(month), String.valueOf(day), String.valueOf(year), rawAge, rawGrade, sec);
+//            Log.e("CreateRecord", "End");
             boolean isInserted = this.database.insertStudentRecord(firstName, middleName, lastName, suffix, age, sex, year, day, month, gradeLevel, sec, this.schoolID);
 
             if(isInserted)

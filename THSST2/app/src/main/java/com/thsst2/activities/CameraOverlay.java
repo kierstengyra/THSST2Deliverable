@@ -196,14 +196,17 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 FieldDetector field = new FieldDetector(pageCounter);
                 Bitmap dest2 = field.analyze(dest);
                 PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
+                Log.e("CameraOverlay", "Added");
 
                 if(PaperFormManager.getInstance().isComplete()) {
+                    Log.e("CameraOverlay", "Finished");
                     PaperFormManager.getInstance().summarize();
                     Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
                     intent.putExtra("SchoolID", schoolID);
                     startActivity(intent);
                 }
                 else {
+                    Log.e("CameraOverlay", "Refresh");
                     refreshCamera();
                 }
 
@@ -351,9 +354,9 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         param.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
         Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 
-        if(display.getRotation() == Surface.ROTATION_0) {
+//        if(display.getRotation() == Surface.ROTATION_0) {
             camera.setDisplayOrientation(90);
-        }
+//        }
 
         camera.setParameters(param);
 
