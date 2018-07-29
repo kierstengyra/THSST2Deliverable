@@ -57,7 +57,8 @@ public class FinalMenu extends AppCompatActivity {
     }
 
     public void exit(View view) {
-        super.finish();
+//        finish();
+        System.exit(0);
     }
 
     //This method initializes the properties.

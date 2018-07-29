@@ -17,6 +17,12 @@ public class Question {
 	private double avgPixels;
 	private int answerCnt;
 	private String question;
+	private int page;
+
+	private double x;
+	private double y;
+	private double width;
+	private double height;
 
 	public Question(int number, String question) {
 		this.pixelList = new ArrayList<Integer>();
@@ -113,6 +119,46 @@ public class Question {
 
 	public ArrayList<String> getAnswerList() {
 		return this.answerList;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public int getPage() {
+		return this.page;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getX() {
+		return this.x;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getY() {
+		return this.y;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getWidth() {
+		return this.width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public double getHeight() {
+		return this.height;
 	}
 
 }

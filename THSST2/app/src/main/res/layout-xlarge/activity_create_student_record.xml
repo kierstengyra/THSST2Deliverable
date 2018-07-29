@@ -60,19 +60,6 @@
         android:layout_below="@+id/txtLastName"
         android:layout_marginBottom="15dp" />
 
-    <EditText
-        android:layout_width="670dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/txtAge"
-        android:hint="Age"
-        android:backgroundTint="#19975D"
-        android:textSize="40sp"
-        android:layout_alignStart="@+id/txtFirstName"
-        android:layout_below="@+id/spinMonth"
-        android:layout_marginBottom="15dp" />
-
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -144,21 +131,21 @@
         android:layout_marginBottom="15dp" />
 
     <EditText
+        android:id="@+id/txtGrade"
         android:layout_width="335dp"
         android:layout_height="wrap_content"
-        android:id="@+id/txtGrade"
-        android:layout_below="@+id/txtAge"
         android:layout_alignStart="@+id/txtFirstName"
+        android:layout_below="@+id/spinMonth"
         android:hint="Grade Level"
         android:textSize="40sp" />
 
     <EditText
+        android:id="@+id/txtSection"
         android:layout_width="335dp"
         android:layout_height="wrap_content"
-        android:id="@+id/txtSection"
-        android:layout_below="@+id/txtAge"
-        android:hint="Section"
+        android:layout_below="@+id/spinDay"
         android:layout_toEndOf="@+id/txtGrade"
+        android:hint="Section"
         android:textSize="40sp" />
 
     <Button

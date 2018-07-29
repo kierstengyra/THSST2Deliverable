@@ -1,8 +1,14 @@
 package com.thsst2.processes;
 
+import android.os.Environment;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Type: Process
@@ -28,20 +34,49 @@ public class PaperFormManager {
         return instance;
     }
 
-    public void summarize() {
+    public void summarize(String studentName, String studentLastName, String schoolName) {
         Log.e("PaperFormManager", "Summary");
+        int total = 0;
 
-        for(int m = 0; m < this.allPages.size(); m++)
-            this.allPages.get(m).setAnswers();
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "Results/"+schoolName);
+            if(!root.exists()) {
+                root.mkdirs();
+            }
 
-        for(int i = 0; i < this.getQuestionList().size(); i++) {
-            Question q = this.getQuestion(i);
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File resultsFile = new File(root, studentLastName+"_PHY_"+timeStamp+".txt");
+            FileWriter writer = new FileWriter(resultsFile);
 
-            Log.e("PaperFormManager", (i+1)+". "+q.getQuestion());
-            for(int j = 0; j < q.getScoreList().size(); j++)
-                Log.e("PaperFormManager", "A: "+q.getAnswer(j));
+            writer.append(studentName+"\n\n");
 
-            System.out.println();
+            for(int m = 0; m < this.allPages.size(); m++)
+                this.allPages.get(m).setAnswers();
+
+            for(int i = 0; i < this.getQuestionList().size(); i++) {
+                Question q = this.getQuestion(i);
+
+                writer.append((i+1)+". "+q.getQuestion()+"\n");
+                for(int j = 0; j < q.getScoreList().size(); j++) {
+                    if(q.getScoreList().size() == 1) {
+                        if(q.getAnswer(j).equals("Minsan nangyayari"))
+                            total++;
+                        else if(q.getAnswer(j).equals("Madalas nangyayari"))
+                            total += 2;
+                    }
+
+                    writer.append("A: " + q.getAnswer(j));
+                }
+
+                writer.append("\n\n");
+            }
+
+            writer.append("TOTAL SCORE: "+total);
+            writer.flush();
+            writer.close();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
         }
     }
 

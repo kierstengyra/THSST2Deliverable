@@ -54,7 +54,7 @@ public class CheckStudentRecord extends AppCompatActivity {
 
         this.readQuestions();
         this.readCSV();
-        this.getQuestionsAndDrawings();
+        this.reset();
     }
 
     //This method starts the CreateStudentRecord Activity.
@@ -73,22 +73,32 @@ public class CheckStudentRecord extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void getQuestionsAndDrawings() {
-        Cursor questions = this.dbHelper.getAllQuestions();
-        Cursor drawings = this.dbHelper.getAllPSCOptionDrawings();
+    private void reset() {
+        if(DigitalFormManager.getInstance().getPscQuestions().size() != 0) {
+            DigitalFormManager.getInstance().getPscQuestions().clear();
+        }
 
-        if(questions.getCount() == 0 || drawings.getCount() == 0)
-            Toast.makeText(this, "Could not retrieve questions or drawings.", Toast.LENGTH_SHORT).show();
-        else {
-            while(questions.moveToNext())
-                DigitalFormManager.getInstance().addQuestion(questions.getString(questions.getColumnIndex("col_question_tag")));
-
-            while(drawings.moveToNext()) {
-                byte[] imgarray = drawings.getBlob(drawings.getColumnIndex("col_pscoptions_img"));
-                DigitalFormManager.getInstance().addDrawing(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
-            }
+        if(DigitalFormManager.getInstance().getPscDrawings().size() != 0) {
+            DigitalFormManager.getInstance().getPscDrawings().clear();
         }
     }
+
+//    private void getQuestionsAndDrawings() {
+//        Cursor questions = this.dbHelper.getAllQuestions();
+//        Cursor drawings = this.dbHelper.getAllPSCOptionDrawings();
+//
+//        if(questions.getCount() == 0 || drawings.getCount() == 0)
+//            Toast.makeText(this, "Could not retrieve questions or drawings.", Toast.LENGTH_SHORT).show();
+//        else {
+//            while(questions.moveToNext())
+//                DigitalFormManager.getInstance().addQuestion(questions.getString(questions.getColumnIndex("col_question_tag")));
+//
+//            while(drawings.moveToNext()) {
+//                byte[] imgarray = drawings.getBlob(drawings.getColumnIndex("col_pscoptions_img"));
+//                DigitalFormManager.getInstance().addDrawing(BitmapFactory.decodeByteArray(imgarray, 0, imgarray.length, null));
+//            }
+//        }
+//    }
 
     //This method retrieves the questions from the database
     //and creates an object for each.
@@ -105,6 +115,52 @@ public class CheckStudentRecord extends AppCompatActivity {
 
                 Question q = new Question(num, question);
                 PaperFormManager.getInstance().addQuestion(q);
+            }
+        }
+
+        AssetManager assetManager = getAssets();
+        String[] list;
+        BufferedReader reader = null;
+
+        try {
+            list = assetManager.list("csv");
+            String splitter = ",";
+
+            if(list.length > 0) {
+                for(String csvfile : list) {
+                    InputStream is = assetManager.open("csv/"+csvfile);
+                    InputStreamReader isr = new InputStreamReader(is);
+                    String line = "";
+
+                    if(csvfile.startsWith("QuestionBlocks") && csvfile.endsWith("csv")) {
+                        reader = new BufferedReader(isr);
+                        int q = 0;
+
+                        while((line = reader.readLine()) != null) {
+                            String[] info = line.split(splitter);
+                            PaperFormManager.getInstance().getQuestion(q).setX(Double.parseDouble(info[1]));
+                            PaperFormManager.getInstance().getQuestion(q).setY(Double.parseDouble(info[2]));
+                            PaperFormManager.getInstance().getQuestion(q).setWidth(Double.parseDouble(info[3]));
+                            PaperFormManager.getInstance().getQuestion(q).setHeight(Double.parseDouble(info[4]));
+                            PaperFormManager.getInstance().getQuestion(q).setPage(Integer.parseInt(info[5])-1);
+
+                            q++;
+                        }
+                    }
+                }
+            }
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(reader != null) {
+                try {
+                    reader.close();
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -125,7 +181,7 @@ public class CheckStudentRecord extends AppCompatActivity {
                     InputStreamReader isr = new InputStreamReader(is);
                     String line = "";
 
-                    if(csvfile.startsWith("Page") && csvfile.endsWith("csv")) {
+                    if(csvfile.startsWith("PageBlock") && csvfile.endsWith("csv")) {
                         FieldManager fm = new FieldManager();
                         reader = new BufferedReader(isr);
 

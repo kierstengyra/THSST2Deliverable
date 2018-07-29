@@ -46,7 +46,7 @@ public class FormDetector {
 //        this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
 //        Utils.matToBitmap(this.output_mat, this.output_bmp);
 //        return this.output_bmp;
-        return this.srcGray;
+        return this.srcOrig;
     }
 
     private void convertToMat(Bitmap source) {
@@ -68,8 +68,8 @@ public class FormDetector {
 
     private void transform() {
         Imgproc.cvtColor(this.srcOrig, srcGray, Imgproc.COLOR_BGR2GRAY);
-        Photo.fastNlMeansDenoising(srcGray, srcGray);
-        Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 11, 2);
+//        Photo.fastNlMeansDenoising(srcGray, srcGray);
+        Imgproc.adaptiveThreshold(srcGray, srcGray, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY_INV, 21, 2);
 
         Log.e("FormDetector", "Preprocessed");
     }
@@ -101,8 +101,8 @@ public class FormDetector {
         Log.e("FormDetector", "Rectangle "+rectangle.size());
 
         //Apply four-point transform
-        this.srcGray = this.getFourPointTransform(rectangle, this.srcGray);
-        this.srcGray.convertTo(this.srcGray, -1, 1.5, 1);
+        this.srcOrig = this.getFourPointTransform(rectangle, this.srcOrig);
+//        this.srcGray.convertTo(this.srcGray, -1, 1.5, 1);
         Log.e("FormDetector", "Transformed");
     }
 

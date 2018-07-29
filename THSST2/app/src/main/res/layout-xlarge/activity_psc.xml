@@ -4,6 +4,48 @@
     android:padding="6dp"
     android:background="#FFFFFF">
 
+    <!--
+    Use when images are replaced with GIFs
+    <pl.droidsonroids.gif.GifTextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@drawable/placeholder"-->
+        <!--/>-->
+
+    <Button
+        android:id="@+id/btnTnxOK"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_column="1"
+        android:layout_gravity="right"
+        android:background="#179E9A"
+        android:onClick="okTnx"
+        android:padding="10dp"
+        android:text="OK"
+        android:layout_below="@id/txtQuestion"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="45sp"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtRemarks"
+        android:layout_centerHorizontal="true"
+        android:layout_column="1"
+        android:layout_gravity="right"
+        android:layout_marginBottom="-100dp"
+        android:background="#CCCCCC"
+        android:onClick="highlightAnswer"
+        android:padding="10dp"
+        android:text="Hindi Masasagot"
+        android:textAllCaps="false"
+        android:textColor="#179E9A"
+        android:textSize="36sp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,60 +59,82 @@
         android:layout_alignParentStart="true" />
 
     <Button
+        android:id="@+id/btnPrevQ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Susunod"
-        android:id="@+id/btnNext"
-        android:background="#179E9A"
-        android:textSize="45sp"
-        android:padding="10dp"
-        android:onClick="nextQuestion"
+        android:layout_alignEnd="@+id/btnHindi"
+        android:layout_alignTop="@+id/btnNext"
         android:layout_column="1"
         android:layout_gravity="right"
-        android:textColor="#FFFFFF"
+        android:background="#179E9A"
+        android:onClick="prevQuestion"
+        android:padding="10dp"
+        android:text="Bumalik"
         android:textAllCaps="false"
-        android:layout_below="@+id/txtMinsan"
-        android:layout_alignStart="@+id/txtMinsan"
-        android:layout_marginTop="119dp" />
+        android:textColor="#FFFFFF"
+        android:textSize="45sp"
+        android:visibility="invisible" />
 
-    <TextView
+    <Button
+        android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/btnMadalas"
+        android:layout_column="1"
+        android:layout_gravity="right"
+        android:layout_marginBottom="240dp"
+        android:background="#179E9A"
+        android:onClick="nextQuestion"
+        android:padding="10dp"
+        android:text="Susunod"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="45sp" />
+
+    <TextView
         android:id="@+id/txtQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/txtQuestionNo"
         android:layout_centerHorizontal="true"
-        android:textSize="45sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="100dp"
+        android:text="Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad"
+        android:textAlignment="center"
         android:textColor="#5D4F42"
-        android:layout_marginBottom="100dp"/>
+        android:textSize="45sp"
+        android:textStyle="bold" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="100dp"
         android:id="@+id/btnHindi"
-        android:layout_below="@+id/txtQuestion"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
         android:layout_alignParentStart="true"
-        android:src="@drawable/q1_1"
-        android:onClick="highlightAnswer" />
+        android:layout_alignTop="@+id/btnMadalas"
+        android:onClick="highlightAnswer"
+        android:scaleType="fitXY"
+        android:src="@drawable/q1_1" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="100dp"
         android:id="@+id/btnMinsan"
-        android:src="@drawable/q1_1"
-        android:onClick="highlightAnswer"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
         android:layout_alignTop="@+id/btnHindi"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="highlightAnswer"
+        android:scaleType="fitXY"
+        android:src="@drawable/q1_1" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="100dp"
         android:id="@+id/btnMadalas"
-        android:src="@drawable/q1_1"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="351dp"
         android:onClick="highlightAnswer"
-        android:layout_above="@+id/txtMadalas"
-        android:layout_alignEnd="@+id/txtQuestion" />
+        android:scaleType="fitXY"
+        android:src="@drawable/q1_1" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -114,5 +178,24 @@
         android:layout_alignStart="@+id/btnMadalas"
         android:layout_alignEnd="@+id/btnMadalas"
         android:onClick="highlightAnswer"/>
+
+    <EditText
+        android:id="@+id/txtRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="294dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/txtMinsan"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="350dp"
+        android:layout_marginTop="150dp"
+        android:background="@drawable/btn_border_only"
+        android:ems="30"
+        android:gravity="top"
+        android:hint="Maglagay ng paliwanag"
+        android:inputType="textMultiLine"
+        android:lines="10"
+        android:padding="10dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:textColor="@android:color/black" />
 
 </RelativeLayout>

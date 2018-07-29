@@ -117,7 +117,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 COL_SESSION_IS_EXPIRED + "," + COL_SCHOOL_ID + ")" +
                 " VALUES ('fvM41]0:', '2016-02-29 09:00', 0, 3)," +
                 "('8+kA_7%~', '2014-10-17 07:30', 0, 1)," +
-                "('0v(SVFyG', '2018-01-11 08:15', 0, 5);");
+                "('0v(SVFyG', '2018-01-11 08:15', 0, 5)," +
+                "('wk?UFdIm', '2018-07-27 15:00', 0, 1)");
 
         // Create tbl_students:
         db.execSQL("CREATE TABLE "+TABLE_STUDENT+
@@ -137,12 +138,12 @@ public class DBHelper extends SQLiteOpenHelper {
         //Insert values for tbl_students:
         db.execSQL("INSERT INTO "+TABLE_STUDENT+"("+COL_STUDENT_FNAME+","+COL_STUDENT_MNAME+","+COL_STUDENT_LNAME+","+COL_STUDENT_SUFFIX+","+
                 COL_STUDENT_BIRTHDAY+","+COL_STUDENT_AGE+","+COL_STUDENT_SEX+","+COL_SCHOOL_ID+","+COL_STUDENT_GRADE+","+COL_STUDENT_SECTION+")"+
-                " VALUES ('Amze', 'Lauguico', 'Raymundo', null, '1997-09-18', 20, 'F', 1, 5, 'Emerald'),"+
-                "('Candy', 'Herminado', 'Espulgar', null, '1997-02-02', 20, 'F', 1, 5, 'Amethyst'),"+
+                " VALUES ('Katrina', 'Fuente', 'Lazarte', null, '2012-09-18', 5, 'F', 1, 5, 'Emerald'),"+
+                "('Candy', 'Herminado', 'Espulgar', null, '2012-02-02', 6, 'F', 1, 5, 'Amethyst'),"+
                 "('Jazmine', 'Manongsong', 'Sace', null, '1998-07-09', 19, 'F', 5, 5, 'Ruby'),"+
-                "('Gyra', 'Abanes', 'Ramos', null, '1998-09-30', 19, 'F', 3, 5, 'Sapphire'),"+
-                "('Jeruel', 'Garrido', 'Trinidad', 'Jr.', '1998-02-13', 19, 'M', 5, 6, 'Opal'),"+
-                "('Luis', 'Quibol', 'Madrigal', null, '1998-05-18', 19, 'M', 3, 6, 'Garnet'),"+
+                "('Anzel Gavrie', 'Laugico', 'Raymundo', null, '2013-09-30', 4, 'M', 1, 5, 'Sapphire'),"+
+                "('Jeruel', 'Garrido', 'Trinidad', 'Jr.', '2013-02-13', 19, 'M', 5, 6, 'Opal'),"+
+                "('Luis', 'Quibol', 'Madrigal', null, '2012-05-18', 6, 'M', 1, 6, 'Garnet'),"+
                 "('Neil', 'Villagracia', 'Romblon', null, '1997-11-19', 20, 'M', 4, 6, 'Diamond');");
 
         // Create tbl_dap:
@@ -172,41 +173,41 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Insert values for tbl_psc:
         db.execSQL("INSERT INTO " + TABLE_PSC + "(" + COL_QUESTION_TAG + "," + COL_QUESTION_ENG + ")" +
-                " VALUES ('May reklamo na nakakaramdam ng sakit', 'Complaints about aches and pains')," +
-                "('Mas maraming oras akong mag-isa', 'Spends more time alone')," +
-                "('Madali akong mapagod, unti-unting nauubos ang aking lakas', 'Tires easily, has little energy')," +
-                "('Magalaw ako sa aking upuan, hindi ako makaupo ng diretso', 'Fidgety, unable to sit still')," +
-                "('Lagi akong napapagsabihan (napapagalitan) ni titser', 'Has trouble with teacher')," +
-                "('Hindi masyado interesado sa aking pag-aaral', 'Less interested in school')," +
-                "('Kumilos na parang hinihimok ng motor (sasakyan)', 'Acts as if driven by motor')," +
-                "('Madalas na nananaginip ng gising', 'Daydreams too much')," +
-                "('Madaling maguluhan sa bagay-bagay, hindi maka-focus ng maayos sa aking gawain','Distracted easily')," +
-                "('Takot ako sa bagong sitwasyon sa paligid', 'Is afraid of new situations')," +
-                "('Nakakaramdam ng lungkot, hindi masaya','Feels sad, unhappy')," +
-                "('Ako ay iritable at galit','Is irritable, angry')," +
-                "('Nakakaramdam ng kawalang pag-asa', 'Feels hopeless')," +
-                "('May problema sa pag-focus', 'Has trouble concentrating')," +
-                "('Hindi masyado interesado sa mga kaibigan', 'Less interested in friends')," +
-                "('Nakikipag-away sa ibang bata','Fights with other children')," +
-                "('Lumiliban sa klase/eskwela', 'Absent from school')," +
-                "('Bumababa ang mga marka/grado sa eskwela','School grades dropping')," +
-                "('Bumababa ang tingin sa sarili', 'Is down on him or herself')," +
-                "('Bumibisita sa doktor, kahit walang nakikitang sakit','Visits the doctor with doctor finding nothing wrong')," +
-                "('Nahihirapan matulog/may problema sa pagtulog','Has trouble sleeping')," +
-                "('Madalas mag-alala', 'Worries a lot')," +
-                "('Mas gustong may kasama lagi hindi tulad dati (na mas kayang mag-isa)', 'Wants to be with you more than before')," +
-                "('Nararamdaman na masama ang sarili', 'Feels he or she is bad')," +
-                "('Madalas na sumusubok ng hindi kinakailangang bagay','Takes unnecessary risks')," +
-                "('Madalas na nakakaramdam ng sakit', 'Gets hurt frequently')," +
-                "('Tila nakakaramdam ng mas kaunting kasiyahan','Seems to be having less fun')," +
-                "('Kumikilos ng hindi naaayon sa kanyang edad/kumikilos ng mas mababa sa kanyang edad', 'Acts younger than children his or her age')," +
-                "('Hindi nakikinig sa mga paalala/panuntunan', 'Does not listen to rules')," +
-                "('Hindi pagpapakita ng damdamin', 'Does not show feelings')," +
-                "('Hindi inuunawa ang damdamin ng iba','Does not understand people''s feelings')," +
-                "('Mapanukso sa ibang tao', 'Teases others')," +
-                "('Sinisisi ang iba dahil sa kanyang problema', 'Blames others for his or her troubles')," +
-                "('Kumukuha ng bagay na hindi sa kanya/o hindi niya pag-aari', 'Takes things that do not belong to him or her')," +
-                "('Tumatangging mag-bahagi', 'Refuses to share');");
+                " VALUES ('Nagsasabi na may nararamdamang kirot o sakit sa katawan.', 'Complaints about aches and pains')," +
+                "('Mas gustong mapag-isa.', 'Spends more time alone')," +
+                "('Madaling mapagod, hindi maliksi.', 'Tires easily, has little energy')," +
+                "('Di mapakali, di makaupo nang matagal sa isang lugar.', 'Fidgety, unable to sit still')," +
+                "('Nagkakaroon ng problema sa titser.', 'Has trouble with teacher')," +
+                "('Hindi masyadong interesado sa pag-aaral.', 'Less interested in school')," +
+                "('Sobrang likot.', 'Acts as if driven by motor')," +
+                "('Madalas nangangarap nang gising.', 'Daydreams too much')," +
+                "('Mabilis malipat ang atensyon.','Distracted easily')," +
+                "('Takot sa mga bagong sitwasyon.', 'Is afraid of new situations')," +
+                "('Malungkutin.','Feels sad, unhappy')," +
+                "('Iritable, madalas magalit.','Is irritable, angry')," +
+                "('Nakakaramdam ng kawalan ng pag-asa.', 'Feels hopeless')," +
+                "('Hirap ituon ang pansin sa iisang bagay lamang.', 'Has trouble concentrating')," +
+                "('Kaunti ang interes makipagkaibigan.', 'Less interested in friends')," +
+                "('Nakikipag-away sa ibang mga bata.','Fights with other children')," +
+                "('Lumiliban o nag-aabsent sa klase', 'Absent from school')," +
+                "('Bumababa ang mga marka sa eskwelahan.','School grades dropping')," +
+                "('Walang tiwala sa sarili.', 'Is down on him or herself')," +
+                "('Kumukonsulta sa doktor na wala namang nakikitang problema ang doktor.','Visits the doctor with doctor finding nothing wrong')," +
+                "('Hirap matulog.','Has trouble sleeping')," +
+                "('Palaging nag-aalala.', 'Worries a lot')," +
+                "('Hirap humiwalay mula sa iyo kumpara sa dati.', 'Wants to be with you more than before')," +
+                "('Pakiramdam niya siya ay masama.', 'Feels he or she is bad')," +
+                "('Gumagawa ng mga bagay o aksyon na walang pag-iingat.','Takes unnecessary risks')," +
+                "('Palaging nasasaktan.', 'Gets hurt frequently')," +
+                "('Parang palagi siyang kulang sa kasiyahan.','Seems to be having less fun')," +
+                "('Kumikilos na parang mas bata sa kanyang totoong edad.', 'Acts younger than children his or her age')," +
+                "('Hindi nakikinig o sumusunod sa mga patakaran.', 'Does not listen to rules')," +
+                "('Hindi ipinapakita ang nararamdaman.', 'Does not show feelings')," +
+                "('Hindi naiintindihan ang damdamin ng ibang tao.','Does not understand people''s feelings')," +
+                "('Nanunukso ng iba.', 'Teases others')," +
+                "('Sinisisi sa iba ang mga masasamang nangyayari sa kanya.', 'Blames others for his or her troubles')," +
+                "('Kumukuha ng mga bagay na hindi sa kanya.', 'Takes things that do not belong to him or her')," +
+                "('Madamot.', 'Refuses to share');");
 
         //Create tbl_psc_drawings
         db.execSQL("CREATE TABLE " + TABLE_PSC_DRAWING +
@@ -309,6 +310,32 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT "+COL_STUDENT_ID+" FROM "+TABLE_STUDENT+
                 " WHERE "+COL_STUDENT_FNAME+" = '"+fname+"' AND "+COL_STUDENT_MNAME+" = '"+mname+"' AND "+COL_STUDENT_LNAME+" = '"+lname+"' AND "+
                 COL_STUDENT_SUFFIX+" = '"+suffix+"' AND "+COL_STUDENT_AGE+" = "+age+" AND "+COL_SCHOOL_ID+" = "+schoolID, null);
+    }
+
+    public String getStudentName(int studentID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT "+COL_STUDENT_FNAME+","+COL_STUDENT_MNAME+","+COL_STUDENT_LNAME+" FROM "+TABLE_STUDENT+
+                " WHERE "+COL_STUDENT_ID+" = "+studentID, null);
+        String studentName = "";
+
+        while(cursor.moveToNext())
+            studentName = cursor.getString(cursor.getColumnIndex(COL_STUDENT_FNAME))+" "+
+                    cursor.getString(cursor.getColumnIndex(COL_STUDENT_MNAME))+" "+
+                    cursor.getString(cursor.getColumnIndex(COL_STUDENT_LNAME));
+
+        return studentName;
+    }
+
+    public String getStudentLastName(int studentID) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT "+COL_STUDENT_LNAME+" FROM "+TABLE_STUDENT+
+                " WHERE "+COL_STUDENT_ID+" = "+studentID, null);
+        String studentName = "";
+
+        while(cursor.moveToNext())
+            studentName = cursor.getString(cursor.getColumnIndex(COL_STUDENT_LNAME));
+
+        return studentName;
     }
 
     public Cursor getAllQuestions() {

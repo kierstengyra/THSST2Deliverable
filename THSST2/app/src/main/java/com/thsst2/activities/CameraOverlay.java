@@ -11,6 +11,7 @@ package com.thsst2.activities;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -41,6 +42,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thsst2.R;
+import com.thsst2.processes.DBHelper;
+import com.thsst2.processes.DigitalFormManager;
 import com.thsst2.processes.FieldDetector;
 import com.thsst2.processes.FormDetector;
 import com.thsst2.processes.PaperFormManager;
@@ -55,6 +58,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.content.Context.WINDOW_SERVICE;
+
 
 public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Callback {
 
@@ -62,12 +67,17 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     int schoolID;
     int studentID;
     int pageCounter;
+    String studentName;
+    String studentLastName;
+    String schoolName;
     TextView txtPageNum;
+    DBHelper db;
 
     Bitmap croppedBmp;
     Uri photoUri;
     String path;
 
+    TextView txtLoading;
     SurfaceView  cameraView,transparentView;
     SurfaceHolder holder,holderTransparent;
     Camera camera;
@@ -82,11 +92,23 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         cameraView = (SurfaceView)findViewById(R.id.CameraView);
+        txtLoading = (TextView)findViewById(R.id.txtLoading);
+
+        if(DigitalFormManager.getInstance().getPscQuestions().size() != 0) {
+            DigitalFormManager.getInstance().getPscQuestions().clear();
+        }
+
+        if(DigitalFormManager.getInstance().getPscDrawings().size() != 0) {
+            DigitalFormManager.getInstance().getPscDrawings().clear();
+        }
+
+        this.db = new DBHelper(this);
 
         holder = cameraView.getHolder();
         holder.addCallback((SurfaceHolder.Callback) this);
         //holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         cameraView.setSecure(true);
+        // cameraView.setRotation(90);
         // Create second surface with another holder (holderTransparent)
         transparentView = (SurfaceView)findViewById(R.id.TransparentView);
         holderTransparent = transparentView.getHolder();
@@ -106,6 +128,11 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         Intent intent = getIntent();
         this.schoolID = intent.getIntExtra("SchoolID", -1);
         this.studentID = intent.getIntExtra("StudentID", -1);
+
+        this.schoolName = this.db.getSchoolName(schoolID);
+        this.studentName = this.db.getStudentName(studentID);
+        this.studentLastName = this.db.getStudentLastName(studentID);
+
         this.pageCounter = 0;
         this.txtPageNum = (TextView) findViewById(R.id.txtPageNum);
         this.txtPageNum.setText("PAGE 1");
@@ -115,6 +142,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                txtLoading.setVisibility(View.VISIBLE);
                 camera.takePicture(null, null, picture);
             }
         });
@@ -139,8 +167,8 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         paint.setStrokeWidth(3);
         int x0 = canvas.getWidth()/2;
         int y0 = canvas.getHeight()/2;
-        double dx = canvas.getWidth()/2.5;
-        double dy = canvas.getHeight()/2.55;
+        double dx = canvas.getWidth()/2.3;
+        double dy = canvas.getHeight()/2.85;
 
         //this.topLeft = (int) (x0-dx);
         //this.bottomRight
@@ -168,7 +196,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
             File pictureFile = getOutputMediaFile();
             if (pictureFile == null)
                 return;
-            try {
+//            try {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
                 Matrix mat = new Matrix();
                 mat.postRotate(90);  // angle is the desired angle you wish to rotate
@@ -181,8 +209,8 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 double preHeight = cameraView.getHeight();
                 int startX = (int)(startRectX * bitWidth / preWidth);
                 int startY = (int)(startRectY * bitHeight / preHeight);
-                int endX = (int)(endRectX * bitWidth / (preWidth*1.16));
-                int endY =(int)(endRectY * bitHeight / (preHeight *1.125));
+                int endX = (int)(endRectX * bitWidth / (preWidth*1.06));
+                int endY =(int)(endRectY * bitHeight / (preHeight *1.225));
 
                 croppedBmp = Bitmap.createBitmap(bitmap, (int)startX, (int)startY, (int)endX, (int)endY);
 //                float ratio = (float) croppedBmp.getHeight()/1024;
@@ -196,19 +224,6 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 FieldDetector field = new FieldDetector(pageCounter);
                 Bitmap dest2 = field.analyze(dest);
                 PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
-                Log.e("CameraOverlay", "Added");
-
-                if(PaperFormManager.getInstance().isComplete()) {
-                    Log.e("CameraOverlay", "Finished");
-                    PaperFormManager.getInstance().summarize();
-                    Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
-                    intent.putExtra("SchoolID", schoolID);
-                    startActivity(intent);
-                }
-                else {
-                    Log.e("CameraOverlay", "Refresh");
-                    refreshCamera();
-                }
 
                 pageCounter++;
                 txtPageNum.setText("PAGE "+(pageCounter+1));
@@ -216,19 +231,34 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
                 ByteArrayOutputStream blob = new ByteArrayOutputStream();
                 dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+                croppedBmp.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
                 byte[] bitmapdata = blob.toByteArray();
 
-                FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(bitmapdata);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+//                FileOutputStream fos = new FileOutputStream(pictureFile);
+//                fos.write(bitmapdata);
+//                fos.close();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                if(PaperFormManager.getInstance().isComplete()) {
+                    PaperFormManager.getInstance().summarize(studentName, studentLastName, schoolName);
+                    Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
+                    intent.putExtra("SchoolID", schoolID);
+                    startActivity(intent);
+                }
+                else {
+                    refreshCamera();
+                }
+//            }
+//            catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//
+//            }
+//            catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     };
+
+
 
     //Thread Start
 //                Runnable r = new Runnable() {
@@ -352,11 +382,12 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         Camera.Parameters param;
         param = camera.getParameters();
         param.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+        param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
-
-//        if(display.getRotation() == Surface.ROTATION_0) {
+        camera.setDisplayOrientation(90);
+        /*if(display.getRotation() == Surface.ROTATION_0) {
             camera.setDisplayOrientation(90);
-//        }
+        }*/
 
         camera.setParameters(param);
 
@@ -384,16 +415,32 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
     //This method refreshes the camera preview.
     public void refreshCamera() {
+        txtLoading.setVisibility(View.INVISIBLE);
+
         if (holder.getSurface() == null) {
             return;
         }
         try {
+            Camera.Parameters param;
+            param = camera.getParameters();
+            param.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            camera.setDisplayOrientation(90);
+
+            camera.setParameters(param);
             camera.stopPreview();
         }
         catch (Exception e) {
         }
 
         try {
+            Camera.Parameters param;
+            param = camera.getParameters();
+            param.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            camera.setDisplayOrientation(90);
+
+            camera.setParameters(param);
             camera.setPreviewDisplay(holder);
             camera.startPreview();
         }
@@ -406,3 +453,4 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         camera.release(); //for release a camera
     }
 }
+
