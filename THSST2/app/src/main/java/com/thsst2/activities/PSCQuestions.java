@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,21 +54,26 @@ public class PSCQuestions extends AppCompatActivity {
     Button prevQuestion;
     Button nextQuestion;
     Button confirmTnx;
+    Button confirmGets;
+    Button confirmNotGets;
 
     DBHelper db;
 
-    ImageView imgQuestion;
-    RadioGroup radioChoices;
     ArrayList<Bitmap> pscDrawings;
     ArrayList<String> pscQuestions;
     ArrayList<Integer> pscAnswers;
     ArrayList<String> pscAnswersStr;
     ArrayList<String> pscRemarks;
+    String[] testQuestions;
+    ArrayList<Integer> testAnswers;
+    ArrayList<String> testRemarks;
 
     int questionCtr;
+    int testQuestionCtr;
     int optionCtr;
     int selected;
     boolean isSelected;
+    boolean isSelectedTest;
 
     String studentName;
     String studentLastName;
@@ -90,6 +92,8 @@ public class PSCQuestions extends AppCompatActivity {
     int newAnswer;
     String newRemark;
 
+    boolean isTutorial;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,8 +109,11 @@ public class PSCQuestions extends AppCompatActivity {
 
     //This method initializes the properties.
     public void initComponents() {
+        this.isTutorial = true;
+
         this.selected = 0;
         this.isSelected = false;
+        this.isSelectedTest = false;
         this.isBackPressed = false;
         this.isChangedAnswer = false;
         this.isChangedRemark = false;
@@ -133,6 +140,8 @@ public class PSCQuestions extends AppCompatActivity {
         this.prevQuestion = (Button) findViewById(R.id.btnPrevQ);
         this.nextQuestion = (Button) findViewById(R.id.btnNext);
         this.confirmTnx = (Button) findViewById(R.id.btnTnxOK);
+        this.confirmGets = (Button) findViewById(R.id.btnTnxGets);
+        this.confirmNotGets = (Button) findViewById(R.id.btnTnxNotGets);
 
         this.db = new DBHelper(this);
         this.getQuestionsAndDrawings();
@@ -145,17 +154,31 @@ public class PSCQuestions extends AppCompatActivity {
         this.pscAnswers = new ArrayList<Integer>();
         this.pscAnswersStr = new ArrayList<String>();
         this.pscRemarks = new ArrayList<String>();
+        this.testQuestions = new String[5];
+        this.testAnswers = new ArrayList<Integer>();
+        this.testRemarks = new ArrayList<String>();
 
         this.questionCtr = 0;
+        this.testQuestionCtr = 0;
         this.optionCtr = 3;
 
         this.pscQuestions = DigitalFormManager.getInstance().getPscQuestions();
         this.pscDrawings = DigitalFormManager.getInstance().getPscDrawings();
 
+        this.testQuestions[0] = "Mapag-isa ang aking anak.";
+        this.testQuestions[1] = "Mahirap kausapin.";
+        this.testQuestions[2] = "Maraming kaibigan ang aking anak.";
+        this.testQuestions[3] = "Hindi bumabagsak sa eskwelahan.";
+
         for(int i = 0; i < this.pscQuestions.size(); i++) {
             this.pscAnswers.add(-2);
             this.pscAnswersStr.add("");
             this.pscRemarks.add("");
+        }
+
+        for(int i = 0; i <this.testQuestions.length; i++) {
+            this.testAnswers.add(-2);
+            this.testRemarks.add("");
         }
 
         this.txtRemarks.addTextChangedListener(new TextWatcher() {
@@ -171,7 +194,10 @@ public class PSCQuestions extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                pscRemarks.set(questionCtr, editable.toString());
+                if(!isTutorial)
+                    pscRemarks.set(questionCtr, editable.toString());
+                else
+                    testRemarks.set(testQuestionCtr, editable.toString());
             }
         });
 
@@ -179,11 +205,12 @@ public class PSCQuestions extends AppCompatActivity {
         this.btnMinsan.setImageBitmap(pscDrawings.get(1));
         this.btnMinsan.setImageBitmap(pscDrawings.get(2));
 
-        this.txtQuestion.setText(pscQuestions.get(0));
+//        this.txtQuestion.setText(pscQuestions.get(0));
     }
 
     public void highlightAnswer(View view) {
         this.isSelected = true;
+        this.isSelectedTest = true;
 
         if(this.btnSkip.isPressed()) {
             this.txtHindi.setBackgroundColor(Color.WHITE);
@@ -192,8 +219,13 @@ public class PSCQuestions extends AppCompatActivity {
             this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
             this.btnSkip.setTextColor(Color.WHITE);
 
-            this.pscAnswers.set(this.questionCtr, -1);
-            this.pscAnswersStr.set(this.questionCtr, "Hindi ko masasagot");
+            if(!this.isTutorial) {
+                this.pscAnswers.set(this.questionCtr, -1);
+                this.pscAnswersStr.set(this.questionCtr, "Hindi ko masasagot");
+            }
+            else {
+                this.testAnswers.set(this.testQuestionCtr, -1);
+            }
         }
 
         if(this.btnHindi.isPressed() || this.txtHindi.isPressed()) {
@@ -203,8 +235,13 @@ public class PSCQuestions extends AppCompatActivity {
             this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
             this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
 
-            this.pscAnswers.set(this.questionCtr, 0);
-            this.pscAnswersStr.set(this.questionCtr, "Hindi nangyayari");
+            if(!this.isTutorial) {
+                this.pscAnswers.set(this.questionCtr, 0);
+                this.pscAnswersStr.set(this.questionCtr, "Hindi nangyayari");
+            }
+            else {
+                this.testAnswers.set(this.testQuestionCtr, 0);
+            }
         }
 
         if(this.btnMinsan.isPressed() || this.txtMinsan.isPressed()) {
@@ -214,8 +251,13 @@ public class PSCQuestions extends AppCompatActivity {
             this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
             this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
 
-            this.pscAnswers.set(this.questionCtr, 1);
-            this.pscAnswersStr.set(this.questionCtr, "Minsan nangyayari");
+            if(!this.isTutorial) {
+                this.pscAnswers.set(this.questionCtr, 1);
+                this.pscAnswersStr.set(this.questionCtr, "Minsan nangyayari");
+            }
+            else {
+                this.testAnswers.set(this.testQuestionCtr, 1);
+            }
         }
 
         if(this.btnMadalas.isPressed() || this.txtMadalas.isPressed()) {
@@ -225,8 +267,13 @@ public class PSCQuestions extends AppCompatActivity {
             this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
             this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
 
-            this.pscAnswers.set(this.questionCtr, 2);
-            this.pscAnswersStr.set(this.questionCtr, "Madalas nangyayari");
+            if(!this.isTutorial) {
+                this.pscAnswers.set(this.questionCtr, 2);
+                this.pscAnswersStr.set(this.questionCtr, "Madalas nangyayari");
+            }
+            else {
+                this.testAnswers.set(this.testQuestionCtr, 2);
+            }
         }
     }
 
@@ -248,116 +295,159 @@ public class PSCQuestions extends AppCompatActivity {
     }
 
     public void prevQuestion(View view) {
-        this.isSelected = true;
+        if(!this.isTutorial) {
+            this.isSelected = true;
 
-        this.questionCtr--;
-        this.optionCtr -= 3;
+            this.questionCtr--;
+            this.optionCtr -= 3;
 
-        if(this.questionCtr == 0)
-            this.prevQuestion.setVisibility(View.INVISIBLE);
+            if(this.questionCtr == 0)
+                this.prevQuestion.setVisibility(View.INVISIBLE);
 
-        this.btnHindi.setImageBitmap(this.pscDrawings.get(this.optionCtr));
-        this.btnMinsan.setImageBitmap(this.pscDrawings.get(this.optionCtr+1));
-        this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
-        this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
+            this.btnHindi.setImageBitmap(this.pscDrawings.get(this.optionCtr));
+            this.btnMinsan.setImageBitmap(this.pscDrawings.get(this.optionCtr+1));
+            this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
+            this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
 
-        this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
-        int prevAnswer = this.pscAnswers.get(this.questionCtr);
+            this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
+            int prevAnswer = this.pscAnswers.get(this.questionCtr);
 
             switch(prevAnswer) {
-            case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
                     this.txtMinsan.setBackgroundColor(Color.WHITE);
                     this.txtMadalas.setBackgroundColor(Color.WHITE);
                     this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
                     this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
                     break;
-            case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
                     this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
                     this.txtMadalas.setBackgroundColor(Color.WHITE);
                     this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
                     this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
                     break;
-            case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
+                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
                     this.txtMinsan.setBackgroundColor(Color.WHITE);
                     this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
                     this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
                     this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
                     break;
-            case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
                     this.txtMinsan.setBackgroundColor(Color.WHITE);
                     this.txtMadalas.setBackgroundColor(Color.WHITE);
                     this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
                     this.btnSkip.setTextColor(Color.WHITE);
                     break;
-            default: break;
-        }
+                default: break;
+            }
 
-        this.txtQuestionNo.setText((this.questionCtr+1)+".");
+            this.txtQuestionNo.setText((this.questionCtr+1)+".");
+        }
+        else {
+            this.isSelectedTest = true;
+            this.testQuestionCtr--;
+
+            if(this.testQuestionCtr == 0) {
+                this.prevQuestion.setVisibility(View.INVISIBLE);
+            }
+
+            this.txtRemarks.setText(this.testRemarks.get(this.testQuestionCtr));
+            int prevAnswer = this.testAnswers.get(this.testQuestionCtr);
+
+            switch(prevAnswer) {
+                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                    break;
+                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                    this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
+                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                    break;
+                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
+                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                    this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
+                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                    break;
+                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                    this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
+                    this.btnSkip.setTextColor(Color.WHITE);
+                    break;
+                default: break;
+            }
+        }
     }
 
     //This method displays the next question.
     public void nextQuestion(View view) {
-        if(this.isSelected) {
-            if(this.questionCtr+1 < pscQuestions.size()) {
-                if(this.optionCtr < pscDrawings.size()) {
-                    this.prevQuestion.setVisibility(View.VISIBLE);
-                    this.questionCtr++;
+        if(!this.isTutorial) {
+            this.isTutorial = false;
+            if(this.isSelected) {
+                if(this.questionCtr+1 < pscQuestions.size()) {
+                    if(this.optionCtr < pscDrawings.size()) {
+                        this.prevQuestion.setVisibility(View.VISIBLE);
+                        this.questionCtr++;
 
-                    this.txtQuestionNo.setText((this.questionCtr+1)+".");
+                        this.txtQuestionNo.setText((this.questionCtr+1)+".");
 
-                    this.btnHindi.setImageBitmap(this.pscDrawings.get(this.optionCtr));
-                    this.btnMinsan.setImageBitmap(this.pscDrawings.get(this.optionCtr+1));
-                    this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
-                    this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
-                    this.optionCtr += 3;
+                        this.btnHindi.setImageBitmap(this.pscDrawings.get(this.optionCtr));
+                        this.btnMinsan.setImageBitmap(this.pscDrawings.get(this.optionCtr+1));
+                        this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
+                        this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
+                        this.optionCtr += 3;
 
-                    if(this.pscAnswers.get(this.questionCtr) > -2) {
-                        int answer = this.pscAnswers.get(this.questionCtr);
+                        if(this.pscAnswers.get(this.questionCtr) > -2) {
+                            int answer = this.pscAnswers.get(this.questionCtr);
 
-                        switch(answer) {
-                            case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                break;
-                            case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                break;
-                            case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                break;
-                            case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.btnSkip.setTextColor(Color.WHITE);
-                                break;
-                            default: break;
+                            switch(answer) {
+                                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                    break;
+                                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                    this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
+                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                    break;
+                                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                    this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
+                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                    break;
+                                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                    this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
+                                    this.btnSkip.setTextColor(Color.WHITE);
+                                    break;
+                                default: break;
+                            }
+
+                            this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
                         }
-
-                        this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
-                    }
-                    else {
-                        this.isSelected = false;
-                        this.txtRemarks.setText("");
-                        this.txtRemarks.setHint("Maglagay ng paliwanag");
-                        this.clearAnswers();
+                        else {
+                            this.isSelected = false;
+                            this.txtRemarks.setText("");
+                            this.txtRemarks.setHint("Maglagay ng paliwanag");
+                            this.clearAnswers();
+                        }
                     }
                 }
-            }
-            else {
+                else {
                     String answers = "";
                     int sum = 0;
 
                     for(int i = 0; i < pscAnswers.size(); i++) {
-                        if(pscAnswers.get(i) > -1)
+                        if(pscAnswers.get(i) > -2)
                             sum += pscAnswers.get(i);
 
                         switch(pscAnswers.get(i)) {
@@ -405,6 +495,124 @@ public class PSCQuestions extends AppCompatActivity {
                         Toast.makeText(this, "Could not insert PSC Answers", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+        else {
+            if(this.isSelectedTest) {
+                this.testQuestionCtr++;
+                if(this.testQuestionCtr < 4) {
+                    this.txtQuestion.setText(this.testQuestions[this.testQuestionCtr]);
+                    this.prevQuestion.setVisibility(View.VISIBLE);
+                    this.txtRemarks.setText("");
+                    this.txtRemarks.setHint("Maglagay ng paliwanag");
+
+                    if(this.testAnswers.get(this.testQuestionCtr) > -2) {
+                        int answer = this.testAnswers.get(this.testQuestionCtr);
+
+                        Log.e("PSCQuestions", "Answer: "+answer);
+                        switch(answer) {
+                            case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+                                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                Log.e("PSCQuestions", "Hindi");
+                                break;
+                            case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
+                                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                Log.e("PSCQuestions", "Minsan");
+                                break;
+                            case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
+                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                                Log.e("PSCQuestions", "Madalas");
+                                break;
+                            case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                                this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
+                                this.btnSkip.setTextColor(Color.WHITE);
+                                Log.e("PSCQuestions", "Skip");
+                                break;
+                            default: break;
+                        }
+                        this.txtRemarks.setText(this.testRemarks.get(this.testQuestionCtr));
+                    }
+                    else {
+                        this.isSelectedTest = false;
+                        this.txtRemarks.setText("");
+                        this.txtRemarks.setHint("Maglagay ng paliwanag");
+                        this.clearAnswers();
+                    }
+
+                }
+                else {
+                    this.txtQuestion.setText("Naintindihan po ba?");
+
+                    this.btnHindi.setVisibility(View.INVISIBLE);
+                    this.btnMinsan.setVisibility(View.INVISIBLE);
+                    this.btnMadalas.setVisibility(View.INVISIBLE);
+                    this.btnSkip.setVisibility(View.INVISIBLE);
+
+                    this.txtHindi.setVisibility(View.INVISIBLE);
+                    this.txtMinsan.setVisibility(View.INVISIBLE);
+                    this.txtMadalas.setVisibility(View.INVISIBLE);
+                    this.txtRemarks.setVisibility(View.INVISIBLE);
+
+                    this.prevQuestion.setVisibility(View.INVISIBLE);
+                    this.nextQuestion.setVisibility(View.INVISIBLE);
+
+                    this.confirmGets.setVisibility(View.VISIBLE);
+                    this.confirmNotGets.setVisibility(View.VISIBLE);
+                }
+
+                this.txtRemarks.setHint("Magalagay ng paliwanag");
+            }
+        }
+    }
+
+    public void okGets(View view) {
+        this.confirmGets.setVisibility(View.INVISIBLE);
+        this.confirmNotGets.setVisibility(View.INVISIBLE);
+
+        if(this.confirmGets.isPressed()) {
+            this.isTutorial = false;
+            this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
+            this.txtQuestionNo.setText((this.questionCtr+1)+".");
+
+            this.prevQuestion.setVisibility(View.INVISIBLE);
+            this.confirmGets.setVisibility(View.INVISIBLE);
+            this.confirmNotGets.setVisibility(View.INVISIBLE);
+        }
+
+        if(this.confirmNotGets.isPressed()) {
+            this.testQuestionCtr = 0;
+            this.txtQuestion.setText(this.testQuestions[this.testQuestionCtr]);
+
+            for(int i = 0; i < this.testQuestions.length; i++) {
+                testAnswers.set(i, -2);
+                testRemarks.set(i, "");
+            }
+        }
+
+        this.btnHindi.setVisibility(View.VISIBLE);
+        this.btnMinsan.setVisibility(View.VISIBLE);
+        this.btnMadalas.setVisibility(View.VISIBLE);
+        this.btnSkip.setVisibility(View.VISIBLE);
+
+        this.txtHindi.setVisibility(View.VISIBLE);
+        this.txtMinsan.setVisibility(View.VISIBLE);
+        this.txtMadalas.setVisibility(View.VISIBLE);
+        this.txtRemarks.setVisibility(View.VISIBLE);
+
+        this.clearAnswers();
+
+        this.prevQuestion.setVisibility(View.INVISIBLE);
+        this.nextQuestion.setVisibility(View.VISIBLE);
     }
 
     public void okTnx(View view) {

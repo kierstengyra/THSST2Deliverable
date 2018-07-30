@@ -3,36 +3,36 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/btnNewRecord"
         android:layout_width="500dp"
         android:layout_height="100dp"
-        android:text="Create Student Record"
-        android:id="@+id/btnNewRecord"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="452dp"
         android:background="#179E9A"
+        android:onClick="createRecord"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:textSize="45sp"
-        android:onClick="createRecord"
-        android:layout_marginBottom="25dp"
-        android:layout_above="@+id/btnNextStudent"
-        android:layout_centerHorizontal="true"
+        android:text="Create Student Record"
+        android:textAllCaps="false"
         android:textColor="#FFFFFF"
-        android:textAllCaps="false"/>
+        android:textSize="45sp" />
 
     <Button
+        android:id="@+id/btnNextStudent"
         android:layout_width="500dp"
         android:layout_height="100dp"
-        android:text="Choose from list"
-        android:id="@+id/btnNextStudent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="518dp"
         android:background="#179E9A"
+        android:onClick="selectRecord"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:textSize="45sp"
-        android:onClick="selectRecord"
-        android:textColor="#FFFFFF"
+        android:text="Choose from list"
         android:textAllCaps="false"
-        android:layout_marginBottom="340dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/btnNewRecord" />
+        android:textColor="#FFFFFF"
+        android:textSize="45sp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -51,16 +51,16 @@
         android:textIsSelectable="false" />
 
     <TextView
+        android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What do you want to do next?"
-        android:id="@+id/textView9"
-        android:textAlignment="center"
-        android:textSize="50sp"
-        android:layout_above="@+id/btnNewRecord"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="49dp"
-        android:textStyle="bold"
-        android:textColor="#958F83" />
+        android:layout_marginTop="259dp"
+        android:text="What do you want to do next?"
+        android:textAlignment="center"
+        android:textColor="#958F83"
+        android:textSize="50sp"
+        android:textStyle="bold" />
 </RelativeLayout>
 
