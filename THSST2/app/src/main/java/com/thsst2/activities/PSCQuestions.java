@@ -12,9 +12,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +39,19 @@ import java.util.Date;
  * PSCQuestions displays the Digital Form.
  * */
 
-public class PSCQuestions extends AppCompatActivity {
+public class PSCQuestions extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     //Properties
+    RelativeLayout psc_layout;
+    ListView listSummary;
+    ArrayAdapter<String> listAnswers;
+
     ImageView btnHindi;
     ImageView btnMinsan;
     ImageView btnMadalas;
     Button btnSkip;
+
+    Button btnConfirmAns;
 
     TextView txtHindi;
     TextView txtMinsan;
@@ -56,6 +67,7 @@ public class PSCQuestions extends AppCompatActivity {
     Button confirmTnx;
     Button confirmGets;
     Button confirmNotGets;
+    Button btnEditOK;
 
     DBHelper db;
 
@@ -123,10 +135,15 @@ public class PSCQuestions extends AppCompatActivity {
         this.newAnswer = 0;
         this.newRemark = "";
 
+        this.psc_layout = (RelativeLayout) findViewById(R.id.psc_layout);
+        this.listSummary = (ListView) findViewById(R.id.listSummary);
+
         this.btnHindi = (ImageView) findViewById(R.id.btnHindi);
         this.btnMinsan = (ImageView) findViewById(R.id.btnMinsan);
         this.btnMadalas = (ImageView) findViewById(R.id.btnMadalas);
         this.btnSkip = (Button) findViewById(R.id.btnSkip);
+        this.btnConfirmAns = (Button) findViewById(R.id.btnConfirmAns);
+        this.btnEditOK = (Button) findViewById(R.id.btnEditOK);
 
         this.txtHindi = (TextView) findViewById(R.id.txtHindi);
         this.txtMinsan = (TextView) findViewById(R.id.txtMinsan);
@@ -204,8 +221,6 @@ public class PSCQuestions extends AppCompatActivity {
         this.btnHindi.setImageBitmap(pscDrawings.get(0));
         this.btnMinsan.setImageBitmap(pscDrawings.get(1));
         this.btnMinsan.setImageBitmap(pscDrawings.get(2));
-
-//        this.txtQuestion.setText(pscQuestions.get(0));
     }
 
     public void highlightAnswer(View view) {
@@ -309,36 +324,7 @@ public class PSCQuestions extends AppCompatActivity {
             this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
             this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
 
-            this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
-            int prevAnswer = this.pscAnswers.get(this.questionCtr);
-
-            switch(prevAnswer) {
-                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.btnSkip.setTextColor(Color.WHITE);
-                    break;
-                default: break;
-            }
+            this.showSelAnswers(this.testQuestionCtr);
 
             this.txtQuestionNo.setText((this.questionCtr+1)+".");
         }
@@ -350,36 +336,7 @@ public class PSCQuestions extends AppCompatActivity {
                 this.prevQuestion.setVisibility(View.INVISIBLE);
             }
 
-            this.txtRemarks.setText(this.testRemarks.get(this.testQuestionCtr));
-            int prevAnswer = this.testAnswers.get(this.testQuestionCtr);
-
-            switch(prevAnswer) {
-                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                    break;
-                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                    this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
-                    this.btnSkip.setTextColor(Color.WHITE);
-                    break;
-                default: break;
-            }
+            this.showSelAnswers(this.testQuestionCtr);
         }
     }
 
@@ -394,45 +351,12 @@ public class PSCQuestions extends AppCompatActivity {
                         this.questionCtr++;
 
                         this.txtQuestionNo.setText((this.questionCtr+1)+".");
-
-                        this.btnHindi.setImageBitmap(this.pscDrawings.get(this.optionCtr));
-                        this.btnMinsan.setImageBitmap(this.pscDrawings.get(this.optionCtr+1));
-                        this.btnMadalas.setImageBitmap(this.pscDrawings.get(this.optionCtr+2));
+                        this.changeOptions(optionCtr);
                         this.txtQuestion.setText(this.pscQuestions.get(this.questionCtr));
                         this.optionCtr += 3;
 
                         if(this.pscAnswers.get(this.questionCtr) > -2) {
-                            int answer = this.pscAnswers.get(this.questionCtr);
-
-                            switch(answer) {
-                                case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
-                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                    break;
-                                case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                    this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
-                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                    break;
-                                case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                    this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
-                                    this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                    this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                    break;
-                                case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                    this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                    this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                    this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
-                                    this.btnSkip.setTextColor(Color.WHITE);
-                                    break;
-                                default: break;
-                            }
-
-                            this.txtRemarks.setText(this.pscRemarks.get(this.questionCtr));
+                            this.showSelAnswers(this.questionCtr);
                         }
                         else {
                             this.isSelected = false;
@@ -443,56 +367,40 @@ public class PSCQuestions extends AppCompatActivity {
                     }
                 }
                 else {
-                    String answers = "";
-                    int sum = 0;
+                    this.showSummary();
+//                    String answers = "";
+//                    int sum = 0;
+//
+//                    for(int i = 0; i < pscAnswers.size(); i++) {
+//                        if(pscAnswers.get(i) > -2)
+//                            sum += pscAnswers.get(i);
+//
+//                        switch(pscAnswers.get(i)) {
+//                            case 2: answers += "Madalas";
+//                                break;
+//                            case 1: answers += "Minsan";
+//                                break;
+//                            case 0: answers += "Hindi";
+//                                break;
+//                            case -1: answers += "Hindi masagot";
+//                                break;
+//                            default: break;
+//                        }
+//
+//                        if(i < pscAnswers.size()-1)
+//                            answers += ",";
+//                    }
+//
+//                    boolean result = this.db.insertAssessment(answers, sum, this.studentID);
+//                    if(result) {
+//                        this.selected = 0;
+//                        this.optionCtr = 3;
+//                        this.questionCtr = 1;
 
-                    for(int i = 0; i < pscAnswers.size(); i++) {
-                        if(pscAnswers.get(i) > -2)
-                            sum += pscAnswers.get(i);
 
-                        switch(pscAnswers.get(i)) {
-                            case 2: answers += "Madalas";
-                                break;
-                            case 1: answers += "Minsan";
-                                break;
-                            case 0: answers += "Hindi";
-                                break;
-                            case -1: answers += "Hindi masagot";
-                                break;
-                            default: break;
-                        }
-
-                        if(i < pscAnswers.size()-1)
-                            answers += ",";
-                    }
-
-                    boolean result = this.db.insertAssessment(answers, sum, this.studentID);
-                    if(result) {
-                        this.selected = 0;
-                        this.optionCtr = 3;
-                        this.questionCtr = 1;
-
-                        this.txtQuestionNo.setText("");
-                        this.btnHindi.setVisibility(View.GONE);
-                        this.btnMinsan.setVisibility(View.GONE);
-                        this.btnMadalas.setVisibility(View.GONE);
-                        this.btnSkip.setVisibility(View.GONE);
-
-                        this.txtHindi.setVisibility(View.GONE);
-                        this.txtMinsan.setVisibility(View.GONE);
-                        this.txtMadalas.setVisibility(View.GONE);
-                        this.txtRemarks.setVisibility(View.GONE);
-
-                        this.prevQuestion.setVisibility(View.GONE);
-                        this.nextQuestion.setVisibility(View.GONE);
-
-                        this.confirmTnx.setVisibility(View.VISIBLE);
-
-                        this.txtQuestion.setText("Maraming salamat sa pagsagot! Kung mayroon kayong mga katanungan,"+
-                                "mangyari lamang na lumapit sa guro ng inyong anak o sa guidance counselor ng eskwelahan.");
-                    }
-                    else
-                        Toast.makeText(this, "Could not insert PSC Answers", Toast.LENGTH_SHORT).show();
+//                    }
+//                    else
+//                        Toast.makeText(this, "Could not insert PSC Answers", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -506,41 +414,7 @@ public class PSCQuestions extends AppCompatActivity {
                     this.txtRemarks.setHint("Maglagay ng paliwanag");
 
                     if(this.testAnswers.get(this.testQuestionCtr) > -2) {
-                        int answer = this.testAnswers.get(this.testQuestionCtr);
-
-                        Log.e("PSCQuestions", "Answer: "+answer);
-                        switch(answer) {
-                            case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                Log.e("PSCQuestions", "Hindi");
-                                break;
-                            case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                Log.e("PSCQuestions", "Minsan");
-                                break;
-                            case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
-                                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
-                                Log.e("PSCQuestions", "Madalas");
-                                break;
-                            case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
-                                this.txtMinsan.setBackgroundColor(Color.WHITE);
-                                this.txtMadalas.setBackgroundColor(Color.WHITE);
-                                this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
-                                this.btnSkip.setTextColor(Color.WHITE);
-                                Log.e("PSCQuestions", "Skip");
-                                break;
-                            default: break;
-                        }
-                        this.txtRemarks.setText(this.testRemarks.get(this.testQuestionCtr));
+                        this.showSelAnswers(this.testQuestionCtr);
                     }
                     else {
                         this.isSelectedTest = false;
@@ -551,21 +425,8 @@ public class PSCQuestions extends AppCompatActivity {
 
                 }
                 else {
+                    this.hideQuestions();
                     this.txtQuestion.setText("Naintindihan po ba?");
-
-                    this.btnHindi.setVisibility(View.INVISIBLE);
-                    this.btnMinsan.setVisibility(View.INVISIBLE);
-                    this.btnMadalas.setVisibility(View.INVISIBLE);
-                    this.btnSkip.setVisibility(View.INVISIBLE);
-
-                    this.txtHindi.setVisibility(View.INVISIBLE);
-                    this.txtMinsan.setVisibility(View.INVISIBLE);
-                    this.txtMadalas.setVisibility(View.INVISIBLE);
-                    this.txtRemarks.setVisibility(View.INVISIBLE);
-
-                    this.prevQuestion.setVisibility(View.INVISIBLE);
-                    this.nextQuestion.setVisibility(View.INVISIBLE);
-
                     this.confirmGets.setVisibility(View.VISIBLE);
                     this.confirmNotGets.setVisibility(View.VISIBLE);
                 }
@@ -573,6 +434,115 @@ public class PSCQuestions extends AppCompatActivity {
                 this.txtRemarks.setHint("Magalagay ng paliwanag");
             }
         }
+    }
+
+    public void changeOptions(int option) {
+        this.btnHindi.setImageBitmap(this.pscDrawings.get(option));
+        this.btnMinsan.setImageBitmap(this.pscDrawings.get(option+1));
+        this.btnMadalas.setImageBitmap(this.pscDrawings.get(option+2));
+    }
+
+    public void showSelAnswers(int questionNo) {
+        int answer = this.testAnswers.get(questionNo);
+
+        switch(answer) {
+            case 0: this.txtHindi.setBackgroundColor(Color.rgb(23, 158, 154));
+                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                break;
+            case 1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                this.txtMinsan.setBackgroundColor(Color.rgb(23, 158, 154));
+                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                break;
+            case 2: this.txtHindi.setBackgroundColor(Color.WHITE);
+                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                this.txtMadalas.setBackgroundColor(Color.rgb(23, 158, 154));
+                this.btnSkip.setBackgroundColor(Color.rgb(204, 204, 204));
+                this.btnSkip.setTextColor(Color.rgb(23, 158, 154));
+                break;
+            case -1: this.txtHindi.setBackgroundColor(Color.WHITE);
+                this.txtMinsan.setBackgroundColor(Color.WHITE);
+                this.txtMadalas.setBackgroundColor(Color.WHITE);
+                this.btnSkip.setBackgroundColor(Color.rgb(23, 158, 154));
+                this.btnSkip.setTextColor(Color.WHITE);
+                break;
+            default: break;
+        }
+        this.txtRemarks.setText(this.testRemarks.get(questionNo));
+    }
+
+    public void showQuestions() {
+        this.btnHindi.setVisibility(View.VISIBLE);
+        this.btnMinsan.setVisibility(View.VISIBLE);
+        this.btnMadalas.setVisibility(View.VISIBLE);
+        this.btnSkip.setVisibility(View.VISIBLE);
+
+        this.txtHindi.setVisibility(View.VISIBLE);
+        this.txtMinsan.setVisibility(View.VISIBLE);
+        this.txtMadalas.setVisibility(View.VISIBLE);
+        this.txtRemarks.setVisibility(View.VISIBLE);
+    }
+
+    public void hideQuestions() {
+        this.btnHindi.setVisibility(View.INVISIBLE);
+        this.btnMinsan.setVisibility(View.INVISIBLE);
+        this.btnMadalas.setVisibility(View.INVISIBLE);
+        this.btnSkip.setVisibility(View.INVISIBLE);
+
+        this.txtHindi.setVisibility(View.INVISIBLE);
+        this.txtMinsan.setVisibility(View.INVISIBLE);
+        this.txtMadalas.setVisibility(View.INVISIBLE);
+        this.txtRemarks.setVisibility(View.INVISIBLE);
+
+        this.prevQuestion.setVisibility(View.INVISIBLE);
+        this.nextQuestion.setVisibility(View.INVISIBLE);
+    }
+
+    public void showSummary() {
+        this.txtQuestionNo.setText("");
+        this.btnHindi.setVisibility(View.INVISIBLE);
+        this.btnMinsan.setVisibility(View.INVISIBLE);
+        this.btnMadalas.setVisibility(View.INVISIBLE);
+        this.btnSkip.setVisibility(View.INVISIBLE);
+
+        this.txtHindi.setVisibility(View.INVISIBLE);
+        this.txtMinsan.setVisibility(View.INVISIBLE);
+        this.txtMadalas.setVisibility(View.INVISIBLE);
+        this.txtRemarks.setVisibility(View.INVISIBLE);
+
+        this.prevQuestion.setVisibility(View.INVISIBLE);
+        this.nextQuestion.setVisibility(View.INVISIBLE);
+
+        this.btnConfirmAns.setVisibility(View.VISIBLE);
+
+        this.listAnswers = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_2, android.R.id.text1, this.pscAnswersStr) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+                text1.setText(pscQuestions.get(position));
+                text2.setText(pscAnswersStr.get(position));
+                return view;
+            }
+        };
+
+        this.listSummary.setAdapter(this.listAnswers);
+        this.listSummary.setOnItemClickListener(this);
+        this.listSummary.setVisibility(View.VISIBLE);
+
+        this.txtQuestion.setText("Tignan muli ang iyong mga sagot. Kung may nais kang baguhin,"+
+                "pindutin lamang ang tanong na iyon.");
+    }
+
+    public void editOK(View view) {
+        this.btnEditOK.setVisibility(View.INVISIBLE);
+        this.showSummary();
     }
 
     public void okGets(View view) {
@@ -661,4 +631,26 @@ public class PSCQuestions extends AppCompatActivity {
         this.selected = 0;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        this.listSummary.setVisibility(View.INVISIBLE);
+        this.btnConfirmAns.setVisibility(View.INVISIBLE);
+
+        this.questionCtr = position;
+
+        this.txtQuestionNo.setText((position+1)+".");
+        this.txtQuestion.setText(this.pscQuestions.get(position));
+
+        this.btnEditOK.setVisibility(View.VISIBLE);
+        Log.e("PSCQuestions","Showing button");
+
+        this.changeOptions(position*3);
+        Log.e("PSCQuestions","Showing options "+position);
+
+        this.showQuestions();
+        Log.e("PSCQuestions","Showing questions");
+
+        Log.e("PSCQuestions","Showing sel answers");
+        this.showSelAnswers(position);
+    }
 }
