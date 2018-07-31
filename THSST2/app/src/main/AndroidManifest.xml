@@ -50,6 +50,11 @@
             android:noHistory="true">
 
         </activity>
+        <activity android:name=".activities.InformedConsent"
+            android:screenOrientation="portrait"
+            android:noHistory="true">
+
+        </activity>
         <activity android:name=".activities.PSCQuestions"
             android:screenOrientation="portrait"
             android:noHistory="true">

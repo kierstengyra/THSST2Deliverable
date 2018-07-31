@@ -48,7 +48,7 @@ public class ChooseModule extends AppCompatActivity {
 
     //This method loads the PSCQuestions Activity.
     public void loadPSC(View view) {
-        Intent intent = new Intent(this, PSCQuestions.class);
+        Intent intent = new Intent(this, InformedConsent.class);
         intent.putExtra("StudentID", this.studentID);
         intent.putExtra("SchoolID", this.schoolID);
         startActivity(intent);
