@@ -52,7 +52,6 @@ public class FormDetector {
     private void convertToMat(Bitmap source) {
         Bitmap copy = source.copy(Bitmap.Config.ARGB_8888, true);
         this.srcOrig = new Mat(source.getHeight(), source.getWidth(), CvType.CV_8UC1);
-//        this.src = new Mat();
         Utils.bitmapToMat(copy, this.srcOrig);
 
         Log.e("FormDetector", "Scaled");

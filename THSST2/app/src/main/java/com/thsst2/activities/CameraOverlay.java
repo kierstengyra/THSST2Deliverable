@@ -200,10 +200,10 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
     public void analyzeAll() {
         for(int i = 0; i < photos.length; i++) {
-            FormDetector fd = new FormDetector();
-            Mat dest = fd.extract(photos[i]);
+//            FormDetector fd = new FormDetector();
+//            Mat dest = fd.extract(photos[i]);
             FieldDetector field = new FieldDetector(i);
-            field.analyze(dest);
+            field.analyze(photos[i]);
 
 //            ByteArrayOutputStream blob = new ByteArrayOutputStream();
 //            dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
