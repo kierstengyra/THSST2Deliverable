@@ -203,11 +203,11 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
             FormDetector fd = new FormDetector();
             Mat dest = fd.extract(photos[i]);
             FieldDetector field = new FieldDetector(i);
-            Bitmap dest2 = field.analyze(dest);
+            field.analyze(dest);
 
-            ByteArrayOutputStream blob = new ByteArrayOutputStream();
-            dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
-            photos[i].compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+//            ByteArrayOutputStream blob = new ByteArrayOutputStream();
+//            dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+//            photos[i].compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
         }
 
         PaperFormManager.getInstance().summarize(studentName, studentLastName, schoolName);

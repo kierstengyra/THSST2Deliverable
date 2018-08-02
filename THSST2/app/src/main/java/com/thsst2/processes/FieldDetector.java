@@ -25,43 +25,37 @@ public class FieldDetector {
 	private Bitmap output_bmp;
 	private int page;
 
+	private ArrayList<Mat> checkfields;
+	private ArrayList<Integer> checkfieldIndices;
+
 	public FieldDetector(int pageNo) {
 		this.setPageNo(pageNo);
 	}
 
-	public Bitmap analyze(Mat source) {
+	public void analyze(Mat source) {
+		this.checkfields = new ArrayList<Mat>();
+		this.checkfieldIndices = new ArrayList<Integer>();
+
 		this.srcOrig = source;
 		this.srcGray = this.srcOrig.clone();
-		this.extract();
+		Imgproc.cvtColor(this.srcGray, srcGray, Imgproc.COLOR_BGR2GRAY);
+		this.detectChecks();
 
 		this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
 		Utils.matToBitmap(this.output_mat, this.output_bmp);
-		return this.output_bmp;
-	}
-
-	private void extract() {
-		Imgproc.cvtColor(this.srcGray, srcGray, Imgproc.COLOR_BGR2GRAY);
-
-//		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-//		Mat hierarchy = new Mat();
-//		Imgproc.findContours(srcGray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
-		this.detectChecks();
+//		return this.output_bmp;
 	}
 
 	private void detectChecks() {
-//		//Apply adaptive threshold at the bitwise_not of gray
 		Mat bw = this.srcGray.clone();
 		Core.bitwise_not(this.srcGray, this.srcGray);
 		Imgproc.adaptiveThreshold(this.srcGray, bw, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 15, -2);
 		Log.e("CameraOverlay", "Adaptive Threshold.");
 
-//		//Create containers for horizontal and vertical lines
 		Mat horizontal = bw.clone();
 		Mat vertical = bw.clone();
 		Log.e("CameraOverlay", "Containers.");
-//
-//		//Horizontal+Vertical Lines
+
 		int horizontal_size = horizontal.rows() / 150; // change to higher values
 		int horizontal_size_2 = horizontal.rows() / 150;
 
@@ -74,16 +68,15 @@ public class FieldDetector {
 		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
 		Mat verticalStructure2 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size_2));
 		Log.e("CameraOverlay", "Morphological Transform.");
-//
-//		//Apply morphological operations
+
 		Imgproc.erode(horizontal, horizontal, horizontalStructure);
 		Imgproc.dilate(horizontal, horizontal, horizontalStructure2);
 		Log.e("CameraOverlay", "Erode/Dilate1.");
-//
+
 		Imgproc.erode(vertical, vertical, verticalStructure);
 		Imgproc.dilate(vertical, vertical, verticalStructure2);
 		Log.e("CameraOverlay", "Erode/Dilate2.");
-//
+
 		Mat cleaned = new Mat();
 		Core.add(horizontal, vertical, cleaned);
 
@@ -164,6 +157,8 @@ public class FieldDetector {
 				Mat selected_hierarchy = new Mat();
 				Imgproc.findContours(dst, selected_contours, selected_hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
+				int selectedCtr = 0;
+
 				for(int k = 0; k < PaperFormManager.getInstance().getPage(this.page).getFieldList().size(); k++) {
 					Log.e("CameraOverlay", "Field_"+k+"_"+i);
 					int f_question = PaperFormManager.getInstance().getPage(this.page).getField(k).getQuestion();
@@ -203,90 +198,101 @@ public class FieldDetector {
 							cropped = new Mat(field, roi_crop);
 
 						if(Core.countNonZero(cropped) != 0) {
-							Mat structure = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(3, 3));
-							Mat skeleton = new Mat(cropped.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
-							boolean isDone = false;
-
-							while(!isDone) {
-								Mat eroded = new Mat();
-								Mat temp = new Mat();
-
-								Imgproc.erode(cropped, eroded, structure);
-								Imgproc.dilate(eroded, temp, structure);
-								Core.subtract(cropped, temp, temp);
-								Core.bitwise_or(temp, skeleton, skeleton);
-								cropped = eroded.clone();
-
-								isDone = (Core.countNonZero(cropped) == 0);
-								Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
-							}
-
-								int count = 0;
-								double pixel[];
-								ArrayList<Integer> coords = new ArrayList<Integer>();
-								for(int xSkel = 1; xSkel < skeleton.rows()-1; xSkel++) {
-									for(int ySkel = 1; ySkel < skeleton.cols()-1; ySkel++) {
-										pixel = skeleton.get(xSkel, ySkel);
-
-										if(pixel[0] == 0)
-											continue;
-
-										count = 0;
-
-										for(int a = -1; a <= 1; a++) {
-											for(int b = -1; b <= 1; b++) {
-												pixel = skeleton.get(xSkel+a, ySkel+b);
-
-												if(pixel[0] != 0)
-													count++;
-											}
-										}
-
-										if(count > 1) {
-											coords.add(xSkel);
-											coords.add(ySkel);
-										}
-									}
-								}
-
-								int xPrev = 0;
-								int yPrev = 0;
-								int prevDiff = Integer.MAX_VALUE;
-
-								boolean isBreak = false;
-
-								for(int m = (coords.size()/2)-1; m >= 0; m--) {
-									int xCurr = coords.get(2*m+1);
-									int yCurr = coords.get(2*m);
-
-									if(m != (coords.size()/2)-1) {
-										if(yPrev == yCurr) {
-											int diff = Math.abs(xPrev-xCurr);
-
-											if(diff > 10) {
-												if(prevDiff > diff && prevDiff-diff > 1) {
-													isBreak = true;
-												}
-											}
-
-											prevDiff = diff;
-										}
-									}
-
-									xPrev = xCurr;
-									yPrev = yCurr;
-								}
-
-								if(isBreak)
-									Log.e("CameraOverlay", "Cross");
-								else {
-									PaperFormManager.getInstance().getPage(this.page).getField(k).setSelected(true);
-									Log.e("CameraOverlay", "Check");
-								}
+							selectedCtr++;
+							checkfields.add(cropped);
+							checkfieldIndices.add(k);
 						}
-
 					}
 				}
+
+				if(selectedCtr > 1) {
+					for(int iterator = 0; iterator < checkfields.size(); iterator++) {
+						Mat cropped = checkfields.get(iterator);
+
+						Mat structure = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(3, 3));
+						Mat skeleton = new Mat(cropped.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
+						boolean isDone = false;
+
+						while(!isDone) {
+							Mat eroded = new Mat();
+							Mat temp = new Mat();
+
+							Imgproc.erode(cropped, eroded, structure);
+							Imgproc.dilate(eroded, temp, structure);
+							Core.subtract(cropped, temp, temp);
+							Core.bitwise_or(temp, skeleton, skeleton);
+							cropped = eroded.clone();
+
+							isDone = (Core.countNonZero(cropped) == 0);
+							Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
+						}
+
+						int count = 0;
+						double pixel[];
+						ArrayList<Integer> coords = new ArrayList<Integer>();
+						for(int xSkel = 1; xSkel < skeleton.rows()-1; xSkel++) {
+							for(int ySkel = 1; ySkel < skeleton.cols()-1; ySkel++) {
+								pixel = skeleton.get(xSkel, ySkel);
+
+								if(pixel[0] == 0)
+									continue;
+
+								count = 0;
+
+								for(int a = -1; a <= 1; a++) {
+									for(int b = -1; b <= 1; b++) {
+										pixel = skeleton.get(xSkel+a, ySkel+b);
+
+										if(pixel[0] != 0)
+											count++;
+									}
+								}
+
+								if(count > 1) {
+									coords.add(xSkel);
+									coords.add(ySkel);
+								}
+							}
+						}
+
+						int xPrev = 0;
+						int yPrev = 0;
+						int prevDiff = Integer.MAX_VALUE;
+
+						boolean isBreak = false;
+
+						for(int m = (coords.size()/2)-1; m >= 0; m--) {
+							int xCurr = coords.get(2*m+1);
+							int yCurr = coords.get(2*m);
+
+							if(m != (coords.size()/2)-1) {
+								if(yPrev == yCurr) {
+									int diff = Math.abs(xPrev-xCurr);
+
+									if(diff > 10) {
+										if(prevDiff > diff && prevDiff-diff > 1) {
+											isBreak = true;
+										}
+									}
+
+									prevDiff = diff;
+								}
+							}
+
+							xPrev = xCurr;
+							yPrev = yCurr;
+						}
+
+						if(isBreak)
+							Log.e("CameraOverlay", "Cross");
+						else {
+							PaperFormManager.getInstance().getPage(this.page).getField(iterator).setSelected(true);
+							Log.e("CameraOverlay", "Check");
+						}
+					}
+				}
+				else if(selectedCtr == 1)
+					PaperFormManager.getInstance().getPage(this.page).getField(checkfieldIndices.get(0)).setSelected(true);
 			}
 		}
 		this.output_mat = cleaned;
