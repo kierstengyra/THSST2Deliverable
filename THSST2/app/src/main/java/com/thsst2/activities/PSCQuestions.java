@@ -4,9 +4,16 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
 import android.os.Environment;
+import android.print.PrintAttributes;
+import android.print.pdf.PrintedPdfDocument;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +35,7 @@ import com.thsst2.R;
 import com.thsst2.processes.DigitalFormManager;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -586,6 +594,8 @@ public class PSCQuestions extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void okTnx(View view) {
+        this.createFile();
+
         Intent intent = new Intent(this, FinalMenu.class);
         intent.putExtra("StudentID", this.studentID);
         intent.putExtra("SchoolID", this.schoolID);
@@ -596,6 +606,87 @@ public class PSCQuestions extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void createFile() {
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(816, 1056, 1).create();
+
+        PdfDocument.Page page = document.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+
+        Typeface linux = Typeface.createFromAsset(getAssets(), "fonts/LinLibertine_R.ttf");
+        Typeface linuxBold =Typeface.createFromAsset(getAssets(), "fonts/LinLibertine_RB.ttf");
+
+        Paint heading = new Paint();
+        heading.setTypeface(linuxBold);
+        heading.setTextSize(25.0f);
+        heading.setTextAlign(Paint.Align.CENTER);
+        heading.setColor(Color.rgb(23,158,154));
+        canvas.drawText("PEDIATRIC SYMPTOM CHECKLIST", 408, 96, heading);
+        heading.setColor(Color.BLACK);
+        canvas.drawText("DIGITAL FORM RESULTS", 408, 126, heading);
+        heading.setTextSize(18.0f);
+        heading.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Student Name: "+this.studentName, 48, 176, heading);
+
+        Paint legend = new Paint();
+        legend.setStyle(Paint.Style.FILL);
+
+        legend.setColor(Color.rgb(95,159,159));
+        canvas.drawRect(48, 200, 78, 215, legend);
+        canvas.drawText("Madalas nangyayari", 85, 216, heading);
+
+        legend.setColor(Color.rgb(150,205,205));
+        canvas.drawRect(285, 200, 315, 215, legend);
+        canvas.drawText("Minsan nangyayari", 322, 216, heading);
+
+        legend.setColor(Color.rgb(209,238,238));
+        canvas.drawRect(522, 200, 552, 215, legend);
+        canvas.drawText("Hindi nangyayari", 559, 216, heading);
+
+        Paint questions = new Paint();
+        questions.setTypeface(linux);
+        questions.setTextSize(18.0f);
+        questions.setTextAlign(Paint.Align.LEFT);
+        questions.setColor(Color.BLACK);
+
+        Paint results = new Paint();
+        results.setTypeface(linux);
+        results.setTextSize(18.0f);
+        results.setTextAlign(Paint.Align.LEFT);
+        results.setColor(Color.BLACK);
+
+        int initY = 236;
+        for(int i = 0; i < this.pscAnswersStr.size(); i++) {
+            switch(this.pscAnswersStr.get(i)) {
+                case "Madalas nangyayari": legend.setColor(Color.rgb(95,159,159));
+                                           canvas.drawRect(48, initY, 78, initY+32, legend);
+                                           break;
+                case "Minsan nangyayari": legend.setColor(Color.rgb(150,205,205));
+                                          canvas.drawRect(48, initY, 78, initY+32, legend);
+                                          break;
+                case "Hindi nangyayari": legend.setColor(Color.rgb(209,238,238));
+                                         canvas.drawRect(48, initY, 78, initY+32, legend);
+                                         break;
+                case "Hindi ko masasagot": legend.setColor(Color.WHITE);
+                                            canvas.drawRect(48, initY, 78, initY+32, legend);
+                                            break;
+            }
+
+            canvas.drawText((i+1)+". "+this.pscQuestions.get(i), 85, initY+15, questions);
+            canvas.drawText(this.pscAnswersStr.get(i), 85, initY+32, results);
+
+            initY += 47;
+
+            if(initY >= 1056-48) {
+                document.finishPage(page);
+                page = document.startPage(pageInfo);
+                canvas = page.getCanvas();
+
+                initY = 96;
+            }
+        }
+
+        document.finishPage(page);
+
         try {
             File root = new File(Environment.getExternalStorageDirectory(), "Results/"+this.schoolName);
             if(!root.exists()) {
@@ -603,22 +694,27 @@ public class PSCQuestions extends AppCompatActivity implements AdapterView.OnIte
             }
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            File resultsFile = new File(root, this.studentLastName+"_DIG_"+timeStamp+".txt");
-            FileWriter writer = new FileWriter(resultsFile);
+            File resultsFile = new File(root, this.studentLastName+"_DIG_"+timeStamp+".pdf");
+            document.writeTo(new FileOutputStream(resultsFile));
 
-            writer.append(this.studentName+"\n\n");
-
-            for(int i = 0; i < pscAnswersStr.size(); i++) {
-                writer.append(this.pscQuestions.get(i)+"\n");
-                writer.append(this.pscAnswersStr.get(i)+"\n\n");
-            }
-
-            writer.flush();
-            writer.close();
+//            FileWriter writer = new FileWriter(resultsFile);
+//
+//            writer.append(this.studentName+"\n\n");
+//
+//            for(int i = 0; i < pscAnswersStr.size(); i++) {
+//                writer.append(this.pscQuestions.get(i)+"\n");
+//                writer.append(this.pscAnswersStr.get(i)+"\n\n");
+//            }
+//
+//            writer.flush();
+//            writer.close();
         }
         catch(IOException e) {
+            Toast.makeText(this, "OOPS", Toast.LENGTH_LONG).show();
            e.printStackTrace();
         }
+
+        document.close();
     }
 
     public void clearAnswers() {
