@@ -43,8 +43,8 @@ public class FieldDetector {
 		Imgproc.cvtColor(this.srcGray, srcGray, Imgproc.COLOR_BGR2GRAY);
 		this.detectChecks();
 
-		this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
-		Utils.matToBitmap(this.output_mat, this.output_bmp);
+//		this.output_bmp = Bitmap.createBitmap(this.output_mat.cols(), this.output_mat.rows(), Bitmap.Config.ARGB_8888);
+//		Utils.matToBitmap(this.output_mat, this.output_bmp);
 //		return this.output_bmp;
 	}
 
@@ -218,26 +218,26 @@ public class FieldDetector {
 						Mat skeleton = new Mat(cropped.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
 						boolean isDone = false;
 
-						while(!isDone) {
-							Mat eroded = new Mat();
-							Mat temp = new Mat();
-
-							Imgproc.erode(cropped, eroded, structure);
-							Imgproc.dilate(eroded, temp, structure);
-							Core.subtract(cropped, temp, temp);
-							Core.bitwise_or(temp, skeleton, skeleton);
-							cropped = eroded.clone();
-
-							isDone = (Core.countNonZero(cropped) == 0);
-							Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
-						}
+//						while(!isDone) {
+//							Mat eroded = new Mat();
+//							Mat temp = new Mat();
+//
+//							Imgproc.erode(cropped, eroded, structure);
+//							Imgproc.dilate(eroded, temp, structure);
+//							Core.subtract(cropped, temp, temp);
+//							Core.bitwise_or(temp, skeleton, skeleton);
+//							cropped = eroded.clone();
+//
+//							isDone = (Core.countNonZero(cropped) == 0);
+//							Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
+//						}
 
 						int count = 0;
 						double pixel[];
 						ArrayList<Integer> coords = new ArrayList<Integer>();
 						for(int xSkel = 1; xSkel < skeleton.rows()-1; xSkel++) {
 							for(int ySkel = 1; ySkel < skeleton.cols()-1; ySkel++) {
-								pixel = skeleton.get(xSkel, ySkel);
+								pixel = cropped.get(xSkel, ySkel);
 
 								if(pixel[0] == 0)
 									continue;
@@ -246,7 +246,7 @@ public class FieldDetector {
 
 								for(int a = -1; a <= 1; a++) {
 									for(int b = -1; b <= 1; b++) {
-										pixel = skeleton.get(xSkel+a, ySkel+b);
+										pixel = cropped.get(xSkel+a, ySkel+b);
 
 										if(pixel[0] != 0)
 											count++;

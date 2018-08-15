@@ -79,7 +79,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     Uri photoUri;
     String path;
 
-    Bitmap[] photos;
+//    Bitmap[] photos;
 
     TextView txtLoading;
     SurfaceView  cameraView,transparentView;
@@ -98,7 +98,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         cameraView = (SurfaceView)findViewById(R.id.CameraView);
         txtLoading = (TextView)findViewById(R.id.txtLoading);
 
-        photos = new Bitmap[6];
+//        photos = new Bitmap[6];
 
         if(DigitalFormManager.getInstance().getPscQuestions().size() != 0) {
             DigitalFormManager.getInstance().getPscQuestions().clear();
@@ -199,18 +199,13 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     }
 
     public void analyzeAll() {
-        for(int i = 0; i < photos.length; i++) {
-//            FormDetector fd = new FormDetector();
-//            Mat dest = fd.extract(photos[i]);
+        for(int i = 0; i < PaperFormManager.getInstance().getPhotos().size(); i++) {
             FieldDetector field = new FieldDetector(i);
-            field.analyze(photos[i]);
-
-//            ByteArrayOutputStream blob = new ByteArrayOutputStream();
-//            dest2.compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
-//            photos[i].compress(Bitmap.CompressFormat.PNG, 0 /* Ignored for PNGs */, blob);
+            field.analyze(PaperFormManager.getInstance().getPhoto(i));
         }
 
-        PaperFormManager.getInstance().summarize(studentName, studentLastName, schoolName);
+        Log.e("PaperFormManager", "Finish analyze all");
+        PaperFormManager.getInstance().summarize(this, studentName, studentLastName, schoolName);
         Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
         intent.putExtra("SchoolID", schoolID);
         startActivity(intent);
@@ -238,7 +233,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
                 int endX = (int)(endRectX * bitWidth / (preWidth*1.06));
                 int endY =(int)(endRectY * bitHeight / (preHeight *1.225));
 
-                photos[pageCounter] = Bitmap.createBitmap(bitmap, (int)startX, (int)startY, (int)endX, (int)endY);
+                PaperFormManager.getInstance().addPhoto(Bitmap.createBitmap(bitmap, (int)startX, (int)startY, (int)endX, (int)endY));
                 PaperFormManager.getInstance().getPage(pageCounter).setHasPicture(true);
 
                 if(PaperFormManager.getInstance().isComplete())
