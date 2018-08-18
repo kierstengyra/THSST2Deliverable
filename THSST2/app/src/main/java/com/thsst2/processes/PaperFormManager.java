@@ -48,125 +48,125 @@ public class PaperFormManager {
     }
 
     public void summarize(Context ctx, String studentName, String studentLastName, String schoolName) {
-//        Log.e("PaperFormManager", "Analyze");
-//        PdfDocument document = new PdfDocument();
-//        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(816, 1056, 1).create();
-//
-//        PdfDocument.Page page = document.startPage(pageInfo);
-//        Canvas canvas = page.getCanvas();
-//
-//        Typeface linux = Typeface.createFromAsset(ctx.getAssets(), "fonts/LinLibertine_R.ttf");
-//        Typeface linuxBold =Typeface.createFromAsset(ctx.getAssets(), "fonts/LinLibertine_RB.ttf");
-//
-//        Paint heading = new Paint();
-//        heading.setTypeface(linuxBold);
-//        heading.setTextSize(25.0f);
-//        heading.setTextAlign(Paint.Align.CENTER);
-//        heading.setColor(Color.rgb(23,158,154));
-//        canvas.drawText("PEDIATRIC SYMPTOM CHECKLIST", 408, 96, heading);
-//        heading.setColor(Color.BLACK);
-//        canvas.drawText("PHYSICAL FORM RESULTS", 408, 126, heading);
-//        heading.setTextSize(18.0f);
-//        heading.setTextAlign(Paint.Align.LEFT);
-//        canvas.drawText("Student Name: "+studentName, 48, 176, heading);
-//
-//        Paint legend = new Paint();
-//        legend.setStyle(Paint.Style.FILL);
-//
-//        legend.setColor(Color.rgb(95,159,159));
-//        canvas.drawRect(48, 200, 78, 215, legend);
-//        canvas.drawText("Madalas nangyayari", 85, 216, heading);
-//
-//        legend.setColor(Color.rgb(150,205,205));
-//        canvas.drawRect(285, 200, 315, 215, legend);
-//        canvas.drawText("Minsan nangyayari", 322, 216, heading);
-//
-//        legend.setColor(Color.rgb(209,238,238));
-//        canvas.drawRect(522, 200, 552, 215, legend);
-//        canvas.drawText("Hindi nangyayari", 559, 216, heading);
-//
-//        Paint questions = new Paint();
-//        questions.setTypeface(linux);
-//        questions.setTextSize(18.0f);
-//        questions.setTextAlign(Paint.Align.LEFT);
-//        questions.setColor(Color.BLACK);
-//
-//        Paint results = new Paint();
-//        results.setTypeface(linux);
-//        results.setTextSize(18.0f);
-//        results.setTextAlign(Paint.Align.LEFT);
-//        results.setColor(Color.BLACK);
-//
-//        Paint pictures = new Paint(6);
-//
-//        int initY = 236;
-//
-//        for(int m = 0; m < this.allPages.size(); m++)
-//                this.allPages.get(m).setAnswers();
-//
-//        for(int i = 0; i < this.questionList.size(); i++) {
-//            canvas.drawText((i+1)+". "+this.getQuestion(i).getQuestion(), 85, initY+15, questions);
-//
-//            for(int j = 0; j < this.getQuestion(i).getScoreList().size(); j++) {
-//                switch(this.getQuestion(i).getAnswer(j)) {
-//                    case "Madalas nangyayari": legend.setColor(Color.rgb(95,159,159));
-//                        canvas.drawRect(48, initY, 78, initY+32, legend);
-//                        break;
-//                    case "Minsan nangyayari": legend.setColor(Color.rgb(150,205,205));
-//                        canvas.drawRect(48, initY, 78, initY+32, legend);
-//                        break;
-//                    case "Hindi nangyayari": legend.setColor(Color.rgb(209,238,238));
-//                        canvas.drawRect(48, initY, 78, initY+32, legend);
-//                        break;
-//                    case "Hindi ko masasagot": legend.setColor(Color.WHITE);
-//                        canvas.drawRect(48, initY, 78, initY+32, legend);
-//                        break;
-//                }
-//
-//                Log.e("PaperFormManager", "Answer: "+this.getQuestion(i).getAnswer(j));
-//
-//                canvas.drawText(this.getQuestion(i).getAnswer(j), 85, initY+32, results);
-//                initY += 15;
-//            }
-//
-//            initY += 47;
-//
-//            if(initY >= 1056-48) {
-//                document.finishPage(page);
-//                page = document.startPage(pageInfo);
-//                canvas = page.getCanvas();
-//
-//                initY = 96;
-//            }
-//        }
-//
-//        document.finishPage(page);
-//
-//        for(int iphoto = 0; iphoto < this.photos.size(); iphoto++) {
-//            page = document.startPage(pageInfo);
-//            Matrix m = new Matrix();
-//            m.postScale((float)720/this.photos.get(iphoto).getWidth(), (float)960/this.photos.get(iphoto).getHeight());
-//            Bitmap b = Bitmap.createBitmap(this.photos.get(iphoto), 0, 0, 720, 960, m, false);
-//            canvas.drawBitmap(b, 48, 96, pictures);
-//            document.finishPage(page);
-//        }
-//
-//        try {
-//            File root = new File(Environment.getExternalStorageDirectory(), "Results/"+schoolName);
-//            if(!root.exists()) {
-//                root.mkdirs();
-//            }
-//
-//            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//            File resultsFile = new File(root, studentLastName+"_PHY_"+timeStamp+".pdf");
-//            document.writeTo(new FileOutputStream(resultsFile));
-//        }
-//        catch(IOException e) {
-//            Toast.makeText(ctx, "OOPS", Toast.LENGTH_LONG).show();
-//            e.printStackTrace();
-//        }
-//
-//        document.close();
+        Log.e("PaperFormManager", "Analyze");
+        PdfDocument document = new PdfDocument();
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(816, 1056, 1).create();
+
+        PdfDocument.Page page = document.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+
+        Typeface linux = Typeface.createFromAsset(ctx.getAssets(), "fonts/LinLibertine_R.ttf");
+        Typeface linuxBold =Typeface.createFromAsset(ctx.getAssets(), "fonts/LinLibertine_RB.ttf");
+
+        Paint heading = new Paint();
+        heading.setTypeface(linuxBold);
+        heading.setTextSize(25.0f);
+        heading.setTextAlign(Paint.Align.CENTER);
+        heading.setColor(Color.rgb(23,158,154));
+        canvas.drawText("PEDIATRIC SYMPTOM CHECKLIST", 408, 96, heading);
+        heading.setColor(Color.BLACK);
+        canvas.drawText("PHYSICAL FORM RESULTS", 408, 126, heading);
+        heading.setTextSize(18.0f);
+        heading.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("Student Name: "+studentName, 48, 176, heading);
+
+        Paint legend = new Paint();
+        legend.setStyle(Paint.Style.FILL);
+
+        legend.setColor(Color.rgb(95,159,159));
+        canvas.drawRect(48, 200, 78, 215, legend);
+        canvas.drawText("Madalas nangyayari", 85, 216, heading);
+
+        legend.setColor(Color.rgb(150,205,205));
+        canvas.drawRect(285, 200, 315, 215, legend);
+        canvas.drawText("Minsan nangyayari", 322, 216, heading);
+
+        legend.setColor(Color.rgb(209,238,238));
+        canvas.drawRect(522, 200, 552, 215, legend);
+        canvas.drawText("Hindi nangyayari", 559, 216, heading);
+
+        Paint questions = new Paint();
+        questions.setTypeface(linux);
+        questions.setTextSize(18.0f);
+        questions.setTextAlign(Paint.Align.LEFT);
+        questions.setColor(Color.BLACK);
+
+        Paint results = new Paint();
+        results.setTypeface(linux);
+        results.setTextSize(18.0f);
+        results.setTextAlign(Paint.Align.LEFT);
+        results.setColor(Color.BLACK);
+
+        Paint pictures = new Paint(6);
+
+        int initY = 236;
+
+        for(int m = 0; m < this.allPages.size(); m++)
+                this.allPages.get(m).setAnswers();
+
+        for(int i = 0; i < this.questionList.size(); i++) {
+            canvas.drawText((i+1)+". "+this.getQuestion(i).getQuestion(), 85, initY+15, questions);
+
+            for(int j = 0; j < this.getQuestion(i).getScoreList().size(); j++) {
+                switch(this.getQuestion(i).getAnswer(j)) {
+                    case "Madalas nangyayari": legend.setColor(Color.rgb(95,159,159));
+                        canvas.drawRect(48, initY, 78, initY+32, legend);
+                        break;
+                    case "Minsan nangyayari": legend.setColor(Color.rgb(150,205,205));
+                        canvas.drawRect(48, initY, 78, initY+32, legend);
+                        break;
+                    case "Hindi nangyayari": legend.setColor(Color.rgb(209,238,238));
+                        canvas.drawRect(48, initY, 78, initY+32, legend);
+                        break;
+                    case "Hindi ko masasagot": legend.setColor(Color.WHITE);
+                        canvas.drawRect(48, initY, 78, initY+32, legend);
+                        break;
+                }
+
+                Log.e("PaperFormManager", "Answer: "+this.getQuestion(i).getAnswer(j));
+
+                canvas.drawText(this.getQuestion(i).getAnswer(j), 85, initY+32, results);
+                initY += 15;
+            }
+
+            initY += 47;
+
+            if(initY >= 1056-48) {
+                document.finishPage(page);
+                page = document.startPage(pageInfo);
+                canvas = page.getCanvas();
+
+                initY = 96;
+            }
+        }
+
+        document.finishPage(page);
+
+        for(int iphoto = 0; iphoto < this.photos.size(); iphoto++) {
+            page = document.startPage(pageInfo);
+            Matrix m = new Matrix();
+            m.postScale((float)720/this.photos.get(iphoto).getWidth(), (float)960/this.photos.get(iphoto).getHeight());
+            Bitmap b = Bitmap.createBitmap(this.photos.get(iphoto), 0, 0, 720, 960, m, false);
+            canvas.drawBitmap(b, 48, 96, pictures);
+            document.finishPage(page);
+        }
+
+        try {
+            File root = new File(Environment.getExternalStorageDirectory(), "Results/"+schoolName);
+            if(!root.exists()) {
+                root.mkdirs();
+            }
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            File resultsFile = new File(root, studentLastName+"_PHY_"+timeStamp+".pdf");
+            document.writeTo(new FileOutputStream(resultsFile));
+        }
+        catch(IOException e) {
+            Toast.makeText(ctx, "OOPS", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+
+        document.close();
 
 //        Log.e("PaperFormManager", "Summary");
 //        int total = 0;

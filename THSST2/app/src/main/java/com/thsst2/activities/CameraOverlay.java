@@ -201,11 +201,45 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
     public void analyzeAll() {
         for(int i = 0; i < PaperFormManager.getInstance().getPhotos().size(); i++) {
             FieldDetector field = new FieldDetector(i);
-            field.analyze(PaperFormManager.getInstance().getPhoto(i));
+            Bitmap bmp = field.analyze(PaperFormManager.getInstance().getPhoto(i));
+
+            FileOutputStream out = null;
+            try {
+                File mediaStorageDir = new File(
+                        Environment
+                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                        "MyCameraApp");
+                if (!mediaStorageDir.exists()) {
+                    if (!mediaStorageDir.mkdirs()) {
+                        Log.d("MyCameraApp", "failed to create directory");
+                    }
+                }
+                // Create a media file name
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                        .format(new Date());
+                File mediaFile;
+                mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                        + "IMG_" + timeStamp + ".jpg");
+
+                out = new FileOutputStream(mediaFile);
+                bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally {
+                try {
+                    if(out != null)
+                        out.close();
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         Log.e("PaperFormManager", "Finish analyze all");
-        PaperFormManager.getInstance().summarize(this, studentName, studentLastName, schoolName);
+//        PaperFormManager.getInstance().summarize(this, studentName, studentLastName, schoolName);
         Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
         intent.putExtra("SchoolID", schoolID);
         startActivity(intent);

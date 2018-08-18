@@ -181,7 +181,7 @@ public class CheckStudentRecord extends AppCompatActivity {
                     InputStreamReader isr = new InputStreamReader(is);
                     String line = "";
 
-                    if(csvfile.startsWith("PageBlock") && csvfile.endsWith("csv")) {
+                    if(csvfile.startsWith("Page") && csvfile.endsWith("csv") && !csvfile.contains("Block")) {
                         FieldManager fm = new FieldManager();
                         reader = new BufferedReader(isr);
 
