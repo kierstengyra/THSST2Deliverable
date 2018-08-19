@@ -61,7 +61,7 @@ public class FieldDetector {
 
 		Mat horizontal = bw.clone();
 		Mat vertical = bw.clone();
-		Log.e("CameraOverlay", "Containers.");
+//		Log.e("CameraOverlay", "Containers.");
 
 		int horizontal_size = horizontal.rows() / 100; // change to higher values
 		int horizontal_size_2 = horizontal.rows() / 100;
@@ -74,27 +74,27 @@ public class FieldDetector {
 
 		Mat verticalStructure = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size));
 		Mat verticalStructure2 = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(1, vertical_size_2));
-		Log.e("CameraOverlay", "Morphological Transform.");
+//		Log.e("CameraOverlay", "Morphological Transform.");
 
 		Imgproc.erode(horizontal, horizontal, horizontalStructure);
 		Imgproc.dilate(horizontal, horizontal, horizontalStructure2);
-		Log.e("CameraOverlay", "Erode/Dilate1.");
+//		Log.e("CameraOverlay", "Erode/Dilate1.");
 
 		Imgproc.erode(vertical, vertical, verticalStructure);
 		Imgproc.dilate(vertical, vertical, verticalStructure2);
-		Log.e("CameraOverlay", "Erode/Dilate2.");
+//		Log.e("CameraOverlay", "Erode/Dilate2.");
 
 		Mat cleaned = new Mat();
 		Core.add(horizontal, vertical, cleaned);
 
-		Mat kernel = Mat.ones(new Size(10, 10), CvType.CV_8U);
+		Mat kernel = Mat.ones(new Size(20, 20), CvType.CV_8U);
 		Imgproc.morphologyEx(cleaned, cleaned, Imgproc.MORPH_CLOSE, kernel);
 
 		Mat bwColored = new Mat(bw.size(), CvType.CV_8UC3);
 		Imgproc.cvtColor(bw, bwColored, Imgproc.COLOR_GRAY2BGR);
-		Log.e("CameraOverlay", "Adaptive Threshold.");
+//		Log.e("CameraOverlay", "Adaptive Threshold.");
 
-		Log.e("CameraOverlay", "Cleaned.");
+//		Log.e("CameraOverlay", "Cleaned.");
 
 //		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 //		Mat hierarchy = new Mat();
@@ -120,10 +120,10 @@ public class FieldDetector {
 
 		FieldManager fm = PaperFormManager.getInstance().getPage(this.page);
 		int size = fm.getFieldList().size();
-		Log.e("CameraOverlay", "Field List.");
+//		Log.e("CameraOverlay", "Field List.");
 
 		for(int i = 0; i < PaperFormManager.getInstance().getQuestionList().size(); i++) {
-			Log.e("CameraOverlay", "Question_"+i);
+//			Log.e("CameraOverlay", "Question_"+i);
 			int q_page = PaperFormManager.getInstance().getQuestion(i).getPage();
 			if(!this.checkfieldIndices.isEmpty() && !this.checkfields.isEmpty()) {
 				this.checkfields.clear();
@@ -172,7 +172,7 @@ public class FieldDetector {
 //
 				List<MatOfPoint> selected_contours = new ArrayList<MatOfPoint>();
 				Mat selected_hierarchy = new Mat();
-				Imgproc.findContours(bw, selected_contours, selected_hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+				Imgproc.findContours(cleaned, selected_contours, selected_hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
 				ArrayList<MatOfPoint> filtered = new ArrayList<MatOfPoint>();
 				for(int filter = 0; filter < selected_contours.size(); filter++) {
@@ -184,7 +184,7 @@ public class FieldDetector {
 						if(area >= 5500 && area < 6500) {
 							filtered.add(selected_contours.get(filter));
 							Rect fieldRect = Imgproc.boundingRect(selected_contours.get(filter));
-							Imgproc.rectangle(bwColored, fieldRect.tl(), fieldRect.br(), new Scalar(0, 255, 0), 5);
+//							Imgproc.rectangle(bwColored, fieldRect.tl(), fieldRect.br(), new Scalar(0, 255, 0), 5);
 						}
 //						if(area >= 5500 && area <= 6000) {
 //							Rect fieldRect = Imgproc.boundingRect(selected_contours.get(filter));
@@ -200,7 +200,7 @@ public class FieldDetector {
 				int selectedCtr = 0;
 
 				for(int k = 0; k < PaperFormManager.getInstance().getPage(this.page).getFieldList().size(); k++) {
-					Log.e("CameraOverlay", "Field_"+k+"_"+i);
+//					Log.e("CameraOverlay", "Field_"+k+"_"+i);
 					int f_question = PaperFormManager.getInstance().getPage(this.page).getField(k).getQuestion();
 
 					if(f_question == q.getNumber()) {
@@ -218,23 +218,21 @@ public class FieldDetector {
 						double sel_min_dist = Double.MAX_VALUE;
 
 						for(int j = 0; j < filtered.size(); j++) {
-//							Rect fieldRect = Imgproc.boundingRect(filtered.get(j));
-//							Imgproc.rectangle(bwColored, fieldRect.tl(), fieldRect.br(), new Scalar(0, 255, 255), 5);
-							double distance_tl = computeDistance(f_roi, Imgproc.boundingRect(selected_contours.get(j)));
+							Rect fieldRect1 = Imgproc.boundingRect(filtered.get(j));
+//							Imgproc.rectangle(bwColored, fieldRect1.tl(), fieldRect1.br(), new Scalar(255, 0, 0), 5);
+							double distance_tl = computeDistance(f_roi, fieldRect1);
 							if(distance_tl < sel_min_dist) {
 								sel_min_dist = distance_tl;
 								sel_index = j;
 							}
 						}
 
-						Rect fieldRect = Imgproc.boundingRect(selected_contours.get(sel_index));
-
-//						Imgproc.rectangle(bwColored, fieldRect.tl(), fieldRect.br(), new Scalar(0, 255, 255), 5);
+						Rect fieldRect2 = Imgproc.boundingRect(filtered.get(sel_index));
+//						Imgproc.rectangle(bwColored, fieldRect2.tl(), fieldRect2.br(), new Scalar(0, 255, 0), 5);
+						Mat field = bw.submat(fieldRect2);
 //
-						Mat field = bw.submat(fieldRect);
-//
-						double x_midpoint = f_width/2;
-						double y_midpoint = f_height/2;
+						double x_midpoint = fieldRect2.width/2;
+						double y_midpoint = fieldRect2.height/2;
 						Rect roi_crop = new Rect(new Point(Math.abs(x_midpoint-32), Math.abs(y_midpoint-20)), new Point(x_midpoint+32, y_midpoint+20));
 						Mat cropped = field.clone();
 
@@ -245,7 +243,7 @@ public class FieldDetector {
 
 						if(Core.countNonZero(cropped) != 0) {
 							selectedCtr++;
-							checkfields.add(cropped);
+							checkfields.add(field);
 							checkfieldIndices.add(k);
 						}
 					}
@@ -255,23 +253,25 @@ public class FieldDetector {
 					for(int iterator = 0; iterator < checkfields.size(); iterator++) {
 						Mat cropped = checkfields.get(iterator);
 
-//						Mat structure = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(3, 3));
-//						Mat skeleton = new Mat(cropped.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
-//						boolean isDone = false;
-//
-//						while(!isDone) {
-//							Mat eroded = new Mat();
-//							Mat temp = new Mat();
-//
-//							Imgproc.erode(cropped, eroded, structure);
-//							Imgproc.dilate(eroded, temp, structure);
-//							Core.subtract(cropped, temp, temp);
-//							Core.bitwise_or(temp, skeleton, skeleton);
-//							cropped = eroded.clone();
-//
-//							isDone = (Core.countNonZero(cropped) == 0);
-//							Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
-//						}
+						Mat structure = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(3, 3));
+						Mat skeleton = new Mat(cropped.size(), CvType.CV_8UC1, new Scalar(0, 0, 0));
+						boolean isDone = false;
+						int countskel = 0;
+
+						while(!isDone && countskel < 100) {
+							Mat eroded = new Mat();
+							Mat temp = new Mat();
+
+							Imgproc.erode(cropped, eroded, structure);
+							Imgproc.dilate(eroded, temp, structure);
+							Core.subtract(cropped, temp, temp);
+							Core.bitwise_or(temp, skeleton, skeleton);
+							cropped = eroded.clone();
+
+							isDone = (Core.countNonZero(cropped) == 0);
+							countskel++;
+							Log.e("CameraOverlay", "Skeleton_"+i+"_"+Core.countNonZero(cropped));
+						}
 
 						int count = 0;
 						double pixel[];
@@ -329,11 +329,11 @@ public class FieldDetector {
 							yPrev = yCurr;
 						}
 
-						if(isBreak)
-							Log.e("CameraOverlay", "Cross");
-						else {
+//						if(isBreak)
+//							Log.e("CameraOverlay", "Cross");
+						if(!isBreak) {
 							PaperFormManager.getInstance().getPage(this.page).getField(iterator).setSelected(true);
-							Log.e("CameraOverlay", "Check");
+//							Log.e("CameraOverlay", "Check");
 						}
 					}
 				}

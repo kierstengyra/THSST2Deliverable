@@ -106,26 +106,25 @@ public class PaperFormManager {
 
         for(int i = 0; i < this.questionList.size(); i++) {
             canvas.drawText((i+1)+". "+this.getQuestion(i).getQuestion(), 85, initY+15, questions);
+            Log.e("PaperFormManager", "Question "+i);
 
             for(int j = 0; j < this.getQuestion(i).getScoreList().size(); j++) {
-                switch(this.getQuestion(i).getAnswer(j)) {
-                    case "Madalas nangyayari": legend.setColor(Color.rgb(95,159,159));
+                switch(this.getQuestion(i).getScore(j)) {
+                    case 2: legend.setColor(Color.rgb(95,159,159));
                         canvas.drawRect(48, initY, 78, initY+32, legend);
+                        canvas.drawText("Madalas nangyayari", 85, initY+32, results);
                         break;
-                    case "Minsan nangyayari": legend.setColor(Color.rgb(150,205,205));
+                    case 1: legend.setColor(Color.rgb(150,205,205));
                         canvas.drawRect(48, initY, 78, initY+32, legend);
+                        canvas.drawText("Minsan nangyayari", 85, initY+32, results);
                         break;
-                    case "Hindi nangyayari": legend.setColor(Color.rgb(209,238,238));
+                    case 0: legend.setColor(Color.rgb(209,238,238));
                         canvas.drawRect(48, initY, 78, initY+32, legend);
+                        canvas.drawText("Hindi nangyayari", 85, initY+32, results);
                         break;
-                    case "Hindi ko masasagot": legend.setColor(Color.WHITE);
-                        canvas.drawRect(48, initY, 78, initY+32, legend);
-                        break;
+                    default: break;
                 }
-
-                Log.e("PaperFormManager", "Answer: "+this.getQuestion(i).getAnswer(j));
-
-                canvas.drawText(this.getQuestion(i).getAnswer(j), 85, initY+32, results);
+                Log.e("PaperFormManager", "Question "+i+" | Answer: "+this.getQuestion(i).getScore(j));
                 initY += 15;
             }
 

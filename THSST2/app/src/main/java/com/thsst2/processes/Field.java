@@ -84,11 +84,11 @@ public class Field {
 		this.score = score;
 
 		switch(score) {
-			case 1: this.setAnswer("Hindi nangyayari");
+			case 0: this.setAnswer("Hindi nangyayari");
 				break;
-			case 2: this.setAnswer("Paminsan-minsang nangyayari");
+			case 1: this.setAnswer("Paminsan-minsang nangyayari");
 				break;
-			case 3: this.setAnswer("Madalas mangyari");
+			case 2: this.setAnswer("Madalas mangyari");
 				break;
 			default: break;
 		}

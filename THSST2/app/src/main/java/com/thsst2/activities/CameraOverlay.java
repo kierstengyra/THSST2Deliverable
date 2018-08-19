@@ -239,7 +239,7 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
         }
 
         Log.e("PaperFormManager", "Finish analyze all");
-//        PaperFormManager.getInstance().summarize(this, studentName, studentLastName, schoolName);
+        PaperFormManager.getInstance().summarize(this, studentName, studentLastName, schoolName);
         Intent intent = new Intent(CameraOverlay.this, FinalMenu.class);
         intent.putExtra("SchoolID", schoolID);
         startActivity(intent);
