@@ -143,10 +143,17 @@ public class PaperFormManager {
 
         for(int iphoto = 0; iphoto < this.photos.size(); iphoto++) {
             page = document.startPage(pageInfo);
-            Matrix m = new Matrix();
-            m.postScale((float)720/this.photos.get(iphoto).getWidth(), (float)960/this.photos.get(iphoto).getHeight());
-            Bitmap b = Bitmap.createBitmap(this.photos.get(iphoto), 0, 0, 720, 960, m, false);
-            canvas.drawBitmap(b, 48, 96, pictures);
+
+            float ratio = Math.min(
+                    (float) 720 / this.photos.get(iphoto).getWidth(),
+                    (float) 960 / this.photos.get(iphoto).getHeight());
+            int width = Math.round((float) ratio * this.photos.get(iphoto).getWidth());
+            int height = Math.round((float) ratio * this.photos.get(iphoto).getHeight());
+
+            Bitmap newBitmap = Bitmap.createScaledBitmap(this.photos.get(iphoto), width,
+                    height, false);
+
+            canvas.drawBitmap(newBitmap, 48, 48, pictures);
             document.finishPage(page);
         }
 
@@ -166,50 +173,6 @@ public class PaperFormManager {
         }
 
         document.close();
-
-//        Log.e("PaperFormManager", "Summary");
-//        int total = 0;
-//
-//        try {
-//            File root = new File(Environment.getExternalStorageDirectory(), "Results/"+schoolName);
-//            if(!root.exists()) {
-//                root.mkdirs();
-//            }
-//
-//            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//            File resultsFile = new File(root, studentLastName+"_PHY_"+timeStamp+".txt");
-//            FileWriter writer = new FileWriter(resultsFile);
-//
-//            writer.append(studentName+"\n\n");
-//
-//            for(int m = 0; m < this.allPages.size(); m++)
-//                this.allPages.get(m).setAnswers();
-//
-//            for(int i = 0; i < this.getQuestionList().size(); i++) {
-//                Question q = this.getQuestion(i);
-//
-//                writer.append((i+1)+". "+q.getQuestion()+"\n");
-//                for(int j = 0; j < q.getScoreList().size(); j++) {
-//                    if(q.getScoreList().size() == 1) {
-//                        if(q.getAnswer(j).equals("Minsan nangyayari"))
-//                            total++;
-//                        else if(q.getAnswer(j).equals("Madalas nangyayari"))
-//                            total += 2;
-//                    }
-//
-//                    writer.append("A: " + q.getAnswer(j));
-//                }
-//
-//                writer.append("\n\n");
-//            }
-//
-//            writer.append("TOTAL SCORE: "+total);
-//            writer.flush();
-//            writer.close();
-//        }
-//        catch(IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
     public void summarize1() {
