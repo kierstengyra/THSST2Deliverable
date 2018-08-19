@@ -10,16 +10,31 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Type: Process
@@ -101,43 +116,43 @@ public class PaperFormManager {
 
         int initY = 236;
 
-        for(int m = 0; m < this.allPages.size(); m++)
-                this.allPages.get(m).setAnswers();
-
-        for(int i = 0; i < this.questionList.size(); i++) {
-            canvas.drawText((i+1)+". "+this.getQuestion(i).getQuestion(), 85, initY+15, questions);
-            Log.e("PaperFormManager", "Question "+i);
-
-            for(int j = 0; j < this.getQuestion(i).getScoreList().size(); j++) {
-                switch(this.getQuestion(i).getScore(j)) {
-                    case 2: legend.setColor(Color.rgb(95,159,159));
-                        canvas.drawRect(48, initY, 78, initY+32, legend);
-                        canvas.drawText("Madalas nangyayari", 85, initY+32, results);
-                        break;
-                    case 1: legend.setColor(Color.rgb(150,205,205));
-                        canvas.drawRect(48, initY, 78, initY+32, legend);
-                        canvas.drawText("Minsan nangyayari", 85, initY+32, results);
-                        break;
-                    case 0: legend.setColor(Color.rgb(209,238,238));
-                        canvas.drawRect(48, initY, 78, initY+32, legend);
-                        canvas.drawText("Hindi nangyayari", 85, initY+32, results);
-                        break;
-                    default: break;
-                }
-                Log.e("PaperFormManager", "Question "+i+" | Answer: "+this.getQuestion(i).getScore(j));
-                initY += 15;
-            }
-
-            initY += 47;
-
-            if(initY >= 1056-48) {
-                document.finishPage(page);
-                page = document.startPage(pageInfo);
-                canvas = page.getCanvas();
-
-                initY = 96;
-            }
-        }
+//        for(int m = 0; m < this.allPages.size(); m++)
+//                this.allPages.get(m).setAnswers();
+//
+//        for(int i = 0; i < this.questionList.size(); i++) {
+//            canvas.drawText((i+1)+". "+this.getQuestion(i).getQuestion(), 85, initY+15, questions);
+//            Log.e("PaperFormManager", "Question "+i);
+//
+//            for(int j = 0; j < this.getQuestion(i).getScoreList().size(); j++) {
+//                switch(this.getQuestion(i).getScore(j)) {
+//                    case 2: legend.setColor(Color.rgb(95,159,159));
+//                        canvas.drawRect(48, initY, 78, initY+32, legend);
+//                        canvas.drawText("Madalas nangyayari", 85, initY+32, results);
+//                        break;
+//                    case 1: legend.setColor(Color.rgb(150,205,205));
+//                        canvas.drawRect(48, initY, 78, initY+32, legend);
+//                        canvas.drawText("Minsan nangyayari", 85, initY+32, results);
+//                        break;
+//                    case 0: legend.setColor(Color.rgb(209,238,238));
+//                        canvas.drawRect(48, initY, 78, initY+32, legend);
+//                        canvas.drawText("Hindi nangyayari", 85, initY+32, results);
+//                        break;
+//                    default: break;
+//                }
+//                Log.e("PaperFormManager", "Question "+i+" | Answer: "+this.getQuestion(i).getScore(j));
+//                initY += 15;
+//            }
+//
+//            initY += 47;
+//
+//            if(initY >= 1056-48) {
+//                document.finishPage(page);
+//                page = document.startPage(pageInfo);
+//                canvas = page.getCanvas();
+//
+//                initY = 96;
+//            }
+//        }
 
         document.finishPage(page);
 
@@ -166,13 +181,69 @@ public class PaperFormManager {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File resultsFile = new File(root, studentLastName+"_PHY_"+timeStamp+".pdf");
             document.writeTo(new FileOutputStream(resultsFile));
+
+            byte[] pdfBytes = readFully(new FileInputStream(resultsFile));
+            Log.e("PaperFormManager", "Encrypted");
+            byte[] pdfEncryptedBytes = encryptPDF(pdfBytes);
+            Log.e("PaperFormManager", "Encrypted string");
+
+            FileOutputStream fos = new FileOutputStream(root.getAbsolutePath()+"/Encrypted.txt");
+            fos.write(pdfEncryptedBytes);
+            fos.close();
+
+            File encryptedFile = new File(root.getAbsolutePath()+"/Encrypted.txt");
+            byte[] bytes = new byte[(int) encryptedFile.length()];
+            FileInputStream fis = new FileInputStream(encryptedFile);
+            fis.read(bytes);
+
+//            byte[] decrypted = decryptPDF(bytes);
+//            File data = new File(root, "Decrypted.pdf");
+//            OutputStream op = new FileOutputStream(data);
+//            op.write(decrypted);
+//            op.flush();
+//            op.close();
+//            Log.e("DECRYPT", "Finished decrypting.");
         }
-        catch(IOException e) {
-            Toast.makeText(ctx, "OOPS", Toast.LENGTH_LONG).show();
+        catch(Exception e) {
             e.printStackTrace();
         }
 
         document.close();
+    }
+
+    public static byte[] encryptPDF(byte[] pdf) throws Exception {
+        byte[] keyValue = new byte[] { 'T', 'h', 'e', 'B', 'e', 's', 't',
+                        'S', 'e', 'c', 'r','e', 't', 'K', 'e', 'y' };
+        Key key = new SecretKeySpec(keyValue, "AES");
+        Cipher c = Cipher.getInstance("AES");
+        c.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encVal = c.doFinal(pdf);
+
+        return encVal;
+    }
+
+//    public byte[] decryptPDF(byte[] pdfEncrypt) throws Exception {
+//        byte[] keyValue = new byte[] { 'T', 'h', 'e', 'B', 'e', 's', 't',
+//                'S', 'e', 'c', 'r','e', 't', 'K', 'e', 'y' };
+//        Key key = new SecretKeySpec(keyValue, "AES");
+//        Cipher c = Cipher.getInstance("AES");
+//        c.init(Cipher.DECRYPT_MODE, key);
+//        byte[] decValue = c.doFinal(pdfEncrypt);
+//        Log.e("DECRYPT", "decValue");
+//
+//        return decValue;
+//    }
+
+    public static byte[] readFully(InputStream stream) throws IOException {
+        byte[] buffer = new byte[8192];
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        int bytesRead;
+        while((bytesRead = stream.read(buffer)) != -1) {
+            baos.write(buffer, 0, bytesRead);
+        }
+
+        return baos.toByteArray();
     }
 
     public void summarize1() {

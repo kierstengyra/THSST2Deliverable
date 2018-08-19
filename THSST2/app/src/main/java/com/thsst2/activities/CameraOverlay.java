@@ -200,8 +200,8 @@ public class CameraOverlay extends AppCompatActivity implements SurfaceHolder.Ca
 
     public void analyzeAll() {
         for(int i = 0; i < PaperFormManager.getInstance().getPhotos().size(); i++) {
-            FieldDetector field = new FieldDetector(i);
-            Bitmap bmp = field.analyze(PaperFormManager.getInstance().getPhoto(i));
+//            FieldDetector field = new FieldDetector(i);
+//            Bitmap bmp = field.analyze(PaperFormManager.getInstance().getPhoto(i));
 
 //            FileOutputStream out = null;
 //            try {
